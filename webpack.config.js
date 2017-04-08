@@ -7,7 +7,7 @@ function resolve (dir) {
 module.exports = {
   entry: './src/index.js',
   output: {
-    library: 'vue-pulldown-pullup',
+    library: 'VuePulldownPullup',
     libraryTarget: 'umd',
     filename: 'vue-pulldown-pullup.js',
     path: resolve('dist'),
@@ -18,21 +18,28 @@ module.exports = {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: "pre",
+        include: [resolve('src'), resolve('example')],
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
         loader: 'babel-loader?presets[]=es2015',
+        include: [resolve('src'), resolve('example')],
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        include: [resolve('src'), resolve('example')],
         options: {
           loaders: {
             js: 'babel!eslint'
           }
         },
       },
-    ]
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader',
+        include: [resolve('src'), resolve('example')],
+      },
+    ],
   },
 };
