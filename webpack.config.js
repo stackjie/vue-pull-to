@@ -15,29 +15,31 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        include: [resolve('src'), resolve('example')],
+        options: {
+          loaders: {
+            js: 'babel!eslint'
+          }
+        },
+      },
+      {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: "pre",
         include: [resolve('src'), resolve('example')],
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
-      },
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        include: [resolve('src'), resolve('example')]
       },
       {
         test: /\.js$/,
         loader: 'babel-loader?presets[]=es2015',
-        include: [resolve('src'), resolve('example')]
+        include: [resolve('src'), resolve('example')],
       },
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader',
-        include: [resolve('src'), resolve('example')]
-      }
+        include: [resolve('src'), resolve('example')],
+      },
     ],
   },
 };

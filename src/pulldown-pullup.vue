@@ -1,21 +1,19 @@
 <template>
-  <div class="pull-wrap">
-    <slot name="top-info">
+  <div class="pulldown-pullup">
+    <!--<slot name="top-info">-->
 
-    </slot>
-    <slot name="content">
+    <!--</slot>-->
+    <!--<slot name="pulldown-pullup-content">-->
 
-    </slot>
+    <!--</slot>-->
+    <div>哈哈哈</div>
   </div>
 </template>
 
-<style>
-  .pull-wrap {
-    position: relative;
-  }
-</style>
-
 <script type="text/babel">
+  /* eslint-disable */
+  import utils from './utils'
+
   export default {
     name: 'pulldown-pullup',
     props: {
@@ -29,9 +27,31 @@
 
     },
     methods: {
+      handleTouchMove(event) {
+        console.log(event);
+      },
+      handleTouchStart(event) {
+
+      },
+      handleTouchEnd(event) {
+
+      },
+      bindEvents() {
+        this.$el.addEventListener('touchstart', this.handleTouchStart);
+        this.$el.addEventListener('touchmove', this.handleTouchMove);
+        this.$el.addEventListener('touchend', this.handleTouchEnd);
+      }
     },
     mounted() {
-      this.init();
     }
   };
 </script>
+
+<style>
+  .pulldown-pullup {
+    position: relative;
+  }
+
+  .pulldown-pullup-content {
+  }
+</style>
