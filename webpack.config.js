@@ -1,4 +1,5 @@
 var path = require('path');
+var autoprefixer = require('autoprefixer');
 
 function resolve (dir) {
   return path.join(__dirname, dir)
@@ -12,18 +13,15 @@ module.exports = {
     filename: 'vue-pulldown-pullup.js',
     path: resolve('dist'),
   },
+  resolve: {
+    extensions: ['.js', '.vue', '.json'],
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': resolve('src')
+    }
+  },
   module: {
     loaders: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        include: [resolve('src'), resolve('example')],
-        options: {
-          loaders: {
-            js: 'babel!eslint'
-          }
-        },
-      },
       {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
@@ -31,8 +29,15 @@ module.exports = {
         include: [resolve('src'), resolve('example')],
       },
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        include: [resolve('src'), resolve('example')],
+        options: {
+        },
+      },
+      {
         test: /\.js$/,
-        loader: 'babel-loader?presets[]=es2015',
+        loader: 'babel-loader',
         include: [resolve('src'), resolve('example')],
       },
       {

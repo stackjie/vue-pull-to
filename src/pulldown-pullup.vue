@@ -10,12 +10,21 @@
   </div>
 </template>
 
+<style>
+  .pulldown-pullup {
+    position: relative;
+  }
+
+  .pulldown-pullup-content {
+  }
+</style>
+
 <script type="text/babel">
   /* eslint-disable */
   import utils from './utils'
 
   export default {
-    name: 'pulldown-pullup',
+    name: 'vue-pulldown-pullup',
     props: {
     },
     data() {
@@ -46,12 +55,3 @@
     }
   };
 </script>
-
-<style>
-  .pulldown-pullup {
-    position: relative;
-  }
-
-  .pulldown-pullup-content {
-  }
-</style>

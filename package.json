@@ -11,7 +11,7 @@
     "url": "git+https://github.com/stackjie/vue-pulldown-pullup.git"
   },
   "author": "stackjie",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/stackjie/vue-pulldown-pullup/issues"
   },
@@ -20,7 +20,7 @@
     "vue": "^2.2.6"
   },
   "devDependencies": {
-    "babel": "^6.23.0",
+    "autoprefixer": "^6.3.6",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
@@ -29,7 +29,6 @@
     "babel-preset-env": "^1.2.1",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",
-    "cooking": "^1.5.2",
     "css-loader": "^0.28.0",
     "eslint": "^3.19.0",
     "eslint-friendly-formatter": "^3.0.0",

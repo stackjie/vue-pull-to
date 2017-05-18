@@ -1,6 +1,6 @@
 new Vue({
   el: '#app',
-  components: {PulldownPullup},
+  components: {VuePulldownPullup: VuePulldownPullup.default},
   computed: {
 
   },
