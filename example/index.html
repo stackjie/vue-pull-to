@@ -17,12 +17,42 @@
   </style>
 </head>
 <body style="height: 100%">
-  <div id="app" style="background: #ccc;height: 100%">
-    <vue-pulldown-pullup>
+  <div id="app" style="background: #ccc;height: 100%;overflow-y: auto;">
+    <vue-pulldown-pullup ref="vue-pulldown-pullup" :top-method="topMethod" :bottom-method="function(){}" :top-loaded="topLoaded">
+      <div style="background: #fff;height: 800px;">
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+        </ul>
+      </div>
     </vue-pulldown-pullup>
   </div>
   <script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
   <script src="../dist/vue-pulldown-pullup.js"></script>
-  <script src="main.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      components: {VuePulldownPullup: VuePulldownPullup.default},
+      computed: {
+
+      },
+      data: {
+        topLoaded: false
+      },
+      created: function() {
+      },
+      methods: {
+        topMethod: function () {
+          var that = this;
+          setTimeout(function () {
+            that.$refs['vue-pulldown-pullup'].onTopLoaded();
+          }, 1000)
+
+        }
+      }
+    })
+  </script>
 </body>
 </html>

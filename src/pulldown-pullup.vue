@@ -1,34 +1,117 @@
 <template>
-  <div class="pulldown-pullup">
-    <!--<slot name="top-info">-->
-
-    <!--</slot>-->
-    <!--<slot name="pulldown-pullup-content">-->
-
-    <!--</slot>-->
-    <div>哈哈哈</div>
+  <div class="pulldown-pullup-wapper">
+    <div class="pulldown-pullup-content" :class="{dropped: topDropped || bottomDropped}"
+         :style="{ 'transform': 'translate3d(0, ' + translate + 'px, 0)' }">
+      <slot name="top">
+        <p v-if="topMethod" class="status-text status-text-top">{{ topText }}</p>
+      </slot>
+      <slot></slot>
+      <slot name="bottom">
+        <p v-if="bottomMethod" class="status-text status-text-bottom">{{ bottomText }}</p>
+      </slot>
+    </div>
   </div>
 </template>
 
 <style>
-  .pulldown-pullup {
-    height: 100%;
-    position: relative;
-    top: 0;
-    background-color: aqua;
+  .pulldown-pullup-wapper {
+    overflow: hidden;
   }
 
-  .pulldown-pullup-content {
+  .pulldown-pullup-wapper .dropped {
+    transition: .2s;
+  }
+
+  .pulldown-pullup-content .status-text {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .status-text-top {
+    margin-top: -50px;
+  }
+
+  .status-text-bottom {
+    margin-bottom: -50px;
   }
 </style>
 
 <script type="text/babel">
-  /* eslint-disable */
-  import utils from './utils'
-
   export default {
     name: 'vue-pulldown-pullup',
-    props: {},
+    props: {
+      maxDistance: {
+        type: Number,
+        default: 0
+      },
+      autoFill: {
+        type: Boolean,
+        default: true
+      },
+      distanceIndex: {
+        type: Number,
+        default: 2
+      },
+      topPullText: {
+        type: String,
+        default: '下拉刷新'
+      },
+      topDropText: {
+        type: String,
+        default: '释放更新'
+      },
+      topLoadingText: {
+        type: String,
+        default: '加载中...'
+      },
+      topLoadedText: {
+        type: String,
+        default: '加载完成'
+      },
+      topLoadedStayTime: {
+        type: Number,
+        default: 400
+      },
+      topDistance: {
+        type: Number,
+        default: 70
+      },
+      topMethod: {
+        type: Function
+      },
+      bottomPullText: {
+        type: String,
+        default: '上拉刷新'
+      },
+      bottomDropText: {
+        type: String,
+        default: '释放更新'
+      },
+      bottomLoadingText: {
+        type: String,
+        default: '加载中...'
+      },
+      bottomLoadedText: {
+        type: String,
+        default: '加载完成'
+      },
+      bottomLoadedStayTime: {
+        type: Number,
+        default: 400
+      },
+      bottomDistance: {
+        type: Number,
+        default: 70
+      },
+      bottomMethod: {
+        type: Function
+      },
+      bottomAllLoaded: {
+        type: Boolean,
+        default: false
+      }
+    },
     data() {
       return {
         translate: 0,
@@ -47,90 +130,124 @@
         bottomStatus: ''
       };
     },
-    watch: {},
+    watch: {
+      topStatus(val) {
+        this.$emit('top-status-change', val);
+        switch (val) {
+          case 'pull':
+            this.topText = this.topPullText;
+            break;
+          case 'drop':
+            this.topText = this.topDropText;
+            break;
+          case 'loading':
+            this.topText = this.topLoadingText;
+            break;
+          case 'loaded':
+            this.topText = this.topLoadedText;
+            break;
+        }
+      },
+
+      bottomStatus(val) {
+        this.$emit('bottom-status-change', val);
+        switch (val) {
+          case 'pull':
+            this.bottomText = this.bottomPullText;
+            break;
+          case 'drop':
+            this.bottomText = this.bottomDropText;
+            break;
+          case 'loading':
+            this.bottomText = this.bottomLoadingText;
+            break;
+          case 'loaded':
+            this.bottomText = this.bottomLoadedText;
+            break;
+        }
+      }
+    },
     methods: {
+      onTopLoaded() {
+        this.topStatus = 'loaded';
+        setTimeout(() => {
+          this.translate = 0;
+          setTimeout(() => {
+            this.topStatus = 'pull';
+          }, 200);
+        }, this.topLoadedStayTime);
+      },
+
+      getScrollTop(element) {
+        if (element) {
+          return element.scrollTop;
+        } else {
+          return document.documentElement.scrollTop;
+        }
+      },
+
+      getVisibleHeight(element) {
+        if (element) {
+          return element.offsetHeight;
+        } else {
+          return document.documentElement.offsetHeight;
+        }
+      },
+
+      getScrollHeight(element) {
+        if (element) {
+          return element.scrollHeight;
+        } else {
+          return document.documentElement.scrollHeight;
+        }
+      },
+
+      handleTouchStart(event) {
+        this.startY = event.touches[0].clientY;
+        this.topDropped = false;
+        this.bottomDropped = false;
+        this.topStatus = 'pull';
+      },
+
+      onBottomLoaded() {
+        this.bottomStatus = 'pull';
+        this.bottomDropped = false;
+      },
+
       handleTouchMove(event) {
         if (this.startY < this.$el.getBoundingClientRect().top && this.startY > this.$el.getBoundingClientRect().bottom) {
           return;
         }
         this.currentY = event.touches[0].clientY;
         let distance = (this.currentY - this.startY) / this.distanceIndex;
-        this.direction = distance > 0 ? 'down' : 'up';
-        if (typeof this.topMethod === 'function' && this.direction === 'down' &&
-          this.getScrollTop(this.scrollEventTarget) === 0 && this.topStatus !== 'loading') {
-          event.preventDefault();
-          event.stopPropagation();
-          if (this.maxDistance > 0) {
-            this.translate = distance <= this.maxDistance ? distance - this.startScrollTop : this.translate;
-          } else {
-            this.translate = distance - this.startScrollTop;
-          }
-          if (this.translate < 0) {
-            this.translate = 0;
-          }
-          this.topStatus = this.translate >= this.topDistance ? 'drop' : 'pull';
-        }
-        if (this.direction === 'up') {
-          this.bottomReached = this.bottomReached || this.checkBottomReached();
-        }
-        if (typeof this.bottomMethod === 'function' && this.direction === 'up' &&
-          this.bottomReached && this.bottomStatus !== 'loading' && !this.bottomAllLoaded) {
-          event.preventDefault();
-          event.stopPropagation();
-          if (this.maxDistance > 0) {
-            this.translate = Math.abs(distance) <= this.maxDistance
-              ? this.getScrollTop(this.scrollEventTarget) - this.startScrollTop + distance : this.translate;
-          } else {
-            this.translate = this.getScrollTop(this.scrollEventTarget) - this.startScrollTop + distance;
-          }
-          if (this.translate > 0) {
-            this.translate = 0;
-          }
-          this.bottomStatus = -this.translate >= this.bottomDistance ? 'drop' : 'pull';
-        }
-        this.$emit('translate-change', this.translate);
-      },
 
-      handleTouchStart(event) {
-        this.startY = event.touches[0].clientY;
-        this.startScrollTop = this.getScrollTop(this.scrollEventTarget);
-        this.bottomReached = false;
-        if (this.topStatus !== 'loading') {
-          this.topStatus = 'pull';
-          this.topDropped = false;
-        }
-        if (this.bottomStatus !== 'loading') {
-          this.bottomStatus = 'pull';
-          this.bottomDropped = false;
+        // 当下拉和上拉的时候通过判断props中的topMethod和bottomMethod是否传入回调函数来检测是否要改变位置及状态
+        if (distance > 0 && typeof this.topMethod === 'function') {
+          if (distance >= this.topDistance) {
+            this.topStatus = 'drop';
+          }
+          this.translate = distance;
+        } else if (distance < 0 && typeof this.bottomMethod === 'function') {
+          if (Math.abs(distance) >= this.bottomDistance) {
+            this.bottomStatus = 'drop';
+          }
+          this.translate = distance;
         }
       },
 
       handleTouchEnd() {
-        if (this.direction === 'down' && this.getScrollTop(this.scrollEventTarget) === 0 && this.translate > 0) {
-          this.topDropped = true;
-          if (this.topStatus === 'drop') {
-            this.translate = '50';
-            this.topStatus = 'loading';
-            this.topMethod();
-          } else {
-            this.translate = '0';
-            this.topStatus = 'pull';
-          }
+        this.topDropped = true;
+        this.bottomDropped = true;
+        if (this.topStatus === 'drop') {
+          this.translate = 50;
+          this.topStatus = 'loading';
+          // 判断topMethod是否为function，如果是执行topMethod否则将translate距离置空
+          typeof this.topMethod === 'function'
+            ? this.topMethod()
+            : this.translate = 0;
+        } else {
+          this.translate = 0;
         }
-        if (this.direction === 'up' && this.bottomReached && this.translate < 0) {
-          this.bottomDropped = true;
-          this.bottomReached = false;
-          if (this.bottomStatus === 'drop') {
-            this.translate = '-50';
-            this.bottomStatus = 'loading';
-            this.bottomMethod();
-          } else {
-            this.translate = '0';
-            this.bottomStatus = 'pull';
-          }
-        }
-        this.$emit('translate-change', this.translate);
-        this.direction = '';
       },
 
       bindEvents() {
@@ -141,6 +258,8 @@
     },
     mounted() {
       this.bindEvents();
+      this.topText = this.topPullText;
+      this.bottomText = this.bottomPullText;
     }
   };
 </script>
