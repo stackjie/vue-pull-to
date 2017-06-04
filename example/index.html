@@ -21,9 +21,7 @@
 <div id="app" style="background: #ccc;height: 100%;overflow-y: auto;">
   <vue-pulldown-pullup
     ref="vue-pulldown-pullup"
-    :top-method="topMethod"
-    :bottom-method="function(){}"
-    :top-loaded="topLoaded">
+    :top-method="topMethod">
       <div style="background: #fff;height: 1200px;">
         <ul>
           <li>1</li>
@@ -42,18 +40,11 @@
     components: {VuePulldownPullup: VuePulldownPullup.default},
     computed: {},
     data: {
-      topLoaded: false
     },
     created: function () {
     },
     methods: {
       topMethod: function () {
-        var that = this;
-        setTimeout(function () {
-          that.$refs['vue-pulldown-pullup'].onTopLoaded();
-        }, 1000)
-      },
-      bottomMethod: function () {
         var that = this;
         setTimeout(function () {
           that.$refs['vue-pulldown-pullup'].onTopLoaded();
