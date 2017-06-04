@@ -8,9 +8,9 @@ function resolve (dir) {
 module.exports = {
   entry: './src/index.js',
   output: {
-    library: 'VuePulldownPullup',
+    library: 'VuePulltorefresh',
     libraryTarget: 'umd',
-    filename: 'vue-pulldown-pullup.js',
+    filename: 'vue-pulltorefresh.js',
     path: resolve('dist'),
   },
   resolve: {

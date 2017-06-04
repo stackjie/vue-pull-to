@@ -1,6 +1,6 @@
 <template>
-  <div class="pulldown-pullup-wapper">
-    <div class="pulldown-pullup-content" :class="{dropped: topDropped}"
+  <div class="vue-pulltorefresh-wapper">
+    <div class="vue-pulltorefresh-content" :class="{dropped: topDropped}"
          :style="{ 'transform': 'translate3d(0, ' + translate + 'px, 0)' }">
       <slot name="top">
         <p v-if="topMethod" class="status-text status-text-top">{{ topText }}</p>
@@ -11,18 +11,18 @@
 </template>
 
 <style>
-  .pulldown-pullup-wapper {
+  .vue-pulltorefresh-wapper {
   }
 
-  .pulldown-pullup-wapper .dropped {
+  .vue-pulltorefresh-wapper .dropped {
     transition: .2s;
   }
 
-  .pulldown-pullup-content {
+  .vue-pulltorefresh-content {
     position: relative;
   }
 
-  .pulldown-pullup-content .status-text {
+  .vue-pulltorefresh-content .status-text {
     height: 50px;
     line-height: 50px;
     text-align: center;
@@ -36,7 +36,7 @@
 
 <script type="text/babel">
   export default {
-    name: 'vue-pulldown-pullup',
+    name: 'vue-pulltorefresh',
     props: {
       maxDistance: {
         type: Number,

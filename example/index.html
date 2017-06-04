@@ -19,8 +19,8 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;overflow-y: auto;">
-  <vue-pulldown-pullup
-    ref="vue-pulldown-pullup"
+  <vue-pulltorefresh
+    ref="vue-pulltorefresh"
     :top-method="topMethod">
       <div style="background: #fff;height: 1200px;">
         <ul>
@@ -30,14 +30,14 @@
           <li>4</li>
         </ul>
       </div>
-  </vue-pulldown-pullup>
+  </vue-pulltorefresh>
 </div>
 <script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
-<script src="../dist/vue-pulldown-pullup.js"></script>
+<script src="../dist/vue-pulltorefresh.js"></script>
 <script>
   new Vue({
     el: '#app',
-    components: {VuePulldownPullup: VuePulldownPullup.default},
+    components: {VuePulltorefresh: VuePulltorefresh.default},
     computed: {},
     data: {
     },
@@ -47,7 +47,7 @@
       topMethod: function () {
         var that = this;
         setTimeout(function () {
-          that.$refs['vue-pulldown-pullup'].onTopLoaded();
+          that.$refs['vue-pulltorefresh'].onTopLoaded();
         }, 1000)
       }
     }

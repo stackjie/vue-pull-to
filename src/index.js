@@ -1,3 +1,3 @@
-import PulldownPullup from './pulldown-pullup.vue';
+import VuePulltorefresh from './vue-pulltorefresh.vue';
 
-export default PulldownPullup;
+export default VuePulltorefresh;
