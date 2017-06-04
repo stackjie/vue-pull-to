@@ -35,6 +35,7 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-html": "^2.0.3",
     "eslint-plugin-import": "^2.2.0",
+    "less-loader": "^4.0.4",
     "standard": "^10.0.2",
     "style-loader": "^0.16.1",
     "vue-loader": "^11.3.4",
