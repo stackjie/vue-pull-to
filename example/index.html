@@ -18,7 +18,7 @@
   </style>
 </head>
 <body style="height: 100%">
-<div id="app" style="height: 100%;overflow-y: auto;">
+<div id="app" style="background: #ccc;height: 100%;overflow-y: auto;">
   <vue-pulldown-pullup
     ref="vue-pulldown-pullup"
     :top-method="topMethod"
@@ -52,7 +52,12 @@
         setTimeout(function () {
           that.$refs['vue-pulldown-pullup'].onTopLoaded();
         }, 1000)
-
+      },
+      bottomMethod: function () {
+        var that = this;
+        setTimeout(function () {
+          that.$refs['vue-pulldown-pullup'].onTopLoaded();
+        }, 1000)
       }
     }
   })

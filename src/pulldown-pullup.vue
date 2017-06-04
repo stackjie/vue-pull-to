@@ -15,11 +15,16 @@
 
 <style>
   .pulldown-pullup-wapper {
-    overflow: hidden;
+    /*overflow: hidden;*/
+    /*position: relative;*/
   }
 
   .pulldown-pullup-wapper .dropped {
     transition: .2s;
+  }
+
+  .pulldown-pullup-content {
+    position: relative;
   }
 
   .pulldown-pullup-content .status-text {
@@ -33,7 +38,7 @@
   }
 
   .status-text-bottom {
-    margin-bottom: -50px;
+    margin-top: -50px;
   }
 </style>
 
@@ -173,7 +178,10 @@
         setTimeout(() => {
           this.translate = 0;
           setTimeout(() => {
+            // reset status
             this.topStatus = 'pull';
+            this.topDropped = false;
+            this.bottomDropped = false;
           }, 200);
         }, this.topLoadedStayTime);
       },
@@ -202,11 +210,36 @@
         }
       },
 
+      getScrollEventTarget(element) {
+        let currentNode = element;
+        while (currentNode && currentNode.tagName !== 'HTML' &&
+        currentNode.tagName !== 'BODY' && currentNode.nodeType === 1) {
+          let overflowY = document.defaultView.getComputedStyle(currentNode).overflowY;
+          if (overflowY === 'scroll' || overflowY === 'auto') {
+            return currentNode;
+          }
+          currentNode = currentNode.parentNode;
+        }
+        return window;
+      },
+
+      checkBottomReached() {
+        if (this.scrollEventTarget === window) {
+          return document.body.scrollTop + document.documentElement.clientHeight >= document.body.scrollHeight;
+        } else {
+          return this.$el.getBoundingClientRect().bottom <= this.scrollEventTarget.getBoundingClientRect().bottom + 1;
+        }
+      },
+
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
-        this.topDropped = false;
-        this.bottomDropped = false;
-        this.topStatus = 'pull';
+        if (this.topStatus !== 'loading') {
+          this.topStatus = 'pull';
+          this.topDropped = false;
+        } else if (this.bottomStatus !== 'loading') {
+          this.bottomStatus = 'pull';
+          this.bottomDropped = false;
+        }
       },
 
       onBottomLoaded() {
@@ -218,16 +251,22 @@
         if (this.startY < this.$el.getBoundingClientRect().top && this.startY > this.$el.getBoundingClientRect().bottom) {
           return;
         }
+
         this.currentY = event.touches[0].clientY;
         let distance = (this.currentY - this.startY) / this.distanceIndex;
+        this.direction = distance > 0 ? 'down' : 'up';
 
         // 当下拉和上拉的时候通过判断props中的topMethod和bottomMethod是否传入回调函数来检测是否要改变位置及状态
-        if (distance > 0 && typeof this.topMethod === 'function') {
+        if (this.getScrollTop(this.scrollEventTarget) === 0 && distance > 0 && typeof this.topMethod === 'function') {
+          event.preventDefault();
+          event.stopPropagation();
           if (distance >= this.topDistance) {
             this.topStatus = 'drop';
           }
           this.translate = distance;
-        } else if (distance < 0 && typeof this.bottomMethod === 'function') {
+        } else if (this.checkBottomReached() && distance < 0 && typeof this.bottomMethod === 'function') {
+          event.preventDefault();
+          event.stopPropagation();
           if (Math.abs(distance) >= this.bottomDistance) {
             this.bottomStatus = 'drop';
           }
@@ -236,17 +275,33 @@
       },
 
       handleTouchEnd() {
-        this.topDropped = true;
-        this.bottomDropped = true;
-        if (this.topStatus === 'drop') {
-          this.translate = 50;
-          this.topStatus = 'loading';
-          // 判断topMethod是否为function，如果是执行topMethod否则将translate距离置空
-          typeof this.topMethod === 'function'
-            ? this.topMethod()
-            : this.translate = 0;
-        } else {
-          this.translate = 0;
+        if (this.direction === 'down' && this.getScrollTop(this.scrollEventTarget) === 0 && this.translate > 0) {
+          this.topDropped = true;
+          if (this.topStatus === 'drop') {
+            this.translate = 50;
+            this.topStatus = 'loading';
+            // 判断topMethod是否为function，如果是执行topMethod否则将translate距离置空
+            typeof this.topMethod === 'function'
+              ? this.topMethod()
+              : this.translate = 0;
+          } else {
+            this.translate = 0;
+          }
+        }
+
+        if (this.direction === 'up' && this.bottomReached && this.translate < 0) {
+          this.bottomDropped = true;
+          this.bottomReached = false;
+          if (this.bottomStatus === 'drop') {
+//            this.translate = 50;
+            this.bottomStatus = 'loading';
+            // 判断bottomMethod是否为function，如果是执行topMethod否则将translate距离置空
+            typeof this.bottomMethod === 'function'
+              ? this.bottomMethod()
+              : this.translate = 0;
+          } else {
+            this.translate = 0;
+          }
         }
       },
 
@@ -260,6 +315,7 @@
       this.bindEvents();
       this.topText = this.topPullText;
       this.bottomText = this.bottomPullText;
+      this.scrollEventTarget = this.getScrollEventTarget(this.$el);
     }
   };
 </script>
