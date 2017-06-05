@@ -18,10 +18,8 @@
   </style>
 </head>
 <body style="height: 100%">
-<div id="app" style="background: #ccc;height: 100%;overflow-y: auto;">
-  <vue-superscroll
-    ref="vue-superscroll"
-    :top-method="topMethod">
+<div id="app" style="background: #ccc;height: 100%;">
+  <vue-superscroll>
       <div style="background: #fff;height: 1200px;">
         <ul>
           <li>1</li>
@@ -47,7 +45,7 @@
       topMethod: function () {
         var that = this;
         setTimeout(function () {
-          that.$refs['vue-superscroll'].onTopLoaded();
+//          that.$refs['vue-superscroll'].onTopLoaded();
         }, 1000)
       }
     }
