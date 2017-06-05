@@ -19,8 +19,8 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;overflow-y: auto;">
-  <vue-pulltorefresh
-    ref="vue-pulltorefresh"
+  <vue-superscroll
+    ref="vue-superscroll"
     :top-method="topMethod">
       <div style="background: #fff;height: 1200px;">
         <ul>
@@ -30,14 +30,14 @@
           <li>4</li>
         </ul>
       </div>
-  </vue-pulltorefresh>
+  </vue-superscroll>
 </div>
 <script src="../node_modules/vue/dist/vue.js"></script>
-<script src="../dist/vue-pulltorefresh.js"></script>
+<script src="../dist/vue-superscroll.js"></script>
 <script>
   new Vue({
     el: '#app',
-    components: {VuePulltorefresh: VuePulltorefresh.default},
+    components: {VueSuperscroll: VueSuperscroll.default},
     computed: {},
     data: {
     },
@@ -47,7 +47,7 @@
       topMethod: function () {
         var that = this;
         setTimeout(function () {
-          that.$refs['vue-pulltorefresh'].onTopLoaded();
+          that.$refs['vue-superscroll'].onTopLoaded();
         }, 1000)
       }
     }

@@ -1,6 +1,6 @@
 <template>
-  <div class="vue-pulltorefresh-wapper">
-    <div class="vue-pulltorefresh-content" :class="{dropped: topDropped}"
+  <div class="vue-superscroll-wapper">
+    <div class="vue-superscroll-content" :class="{dropped: topDropped || bottomDropped}"
          :style="{ 'transform': 'translate3d(0, ' + translate + 'px, 0)' }">
       <slot name="top">
         <p v-if="topMethod" class="status-text status-text-top">{{ topText }}</p>
@@ -11,18 +11,18 @@
 </template>
 
 <style>
-  .vue-pulltorefresh-wapper {
+  .vue-superscroll-wapper {
   }
 
-  .vue-pulltorefresh-wapper .dropped {
+  .vue-superscroll-wapper .dropped {
     transition: .2s;
   }
 
-  .vue-pulltorefresh-content {
+  .vue-superscroll-content {
     position: relative;
   }
 
-  .vue-pulltorefresh-content .status-text {
+  .vue-superscroll-content .status-text {
     height: 50px;
     line-height: 50px;
     text-align: center;
@@ -35,8 +35,10 @@
 </style>
 
 <script type="text/babel">
+  import IScroll from 'iscroll'
+
   export default {
-    name: 'vue-pulltorefresh',
+    name: 'vue-superscroll',
     props: {
       maxDistance: {
         type: Number,
@@ -49,6 +51,10 @@
       distanceIndex: {
         type: Number,
         default: 2
+      },
+      isPullDown: {
+        type: Boolean,
+        default: true
       },
       topPullText: {
         type: String,
@@ -70,11 +76,34 @@
         type: Number,
         default: 400
       },
-      topDistance: {
+      topStayDistance: {
+        type: Number,
+        default: 50
+      },
+      topTriggerDistance: {
         type: Number,
         default: 70
       },
       topMethod: {
+        type: Function
+      },
+      isPullUp: {
+        type: Boolean,
+        default: true
+      },
+      bottomLoadedStayTime: {
+        type: Number,
+        default: 0
+      },
+      bottomStayDistance: {
+        type: Number,
+        default: 0
+      },
+      bottomTriggerDistance: {
+        type: Number,
+        default: 70
+      },
+      bottomMethod: {
         type: Function
       }
     },
@@ -85,10 +114,12 @@
         containerFilled: false,
         topText: '',
         topDropped: false,
+        bottomDropped: false,
         startY: 0,
         startScrollTop: 0,
         currentY: 0,
-        topStatus: ''
+        topStatus: '',
+        bottomStatus: ''
       };
     },
     watch: {
@@ -121,6 +152,18 @@
             this.topDropped = false;
           }, 200);
         }, this.topLoadedStayTime);
+      },
+
+      onBottomLoaded() {
+        this.bottomStatus = 'loaded';
+        setTimeout(() => {
+          this.translate = 0;
+          setTimeout(() => {
+            // reset status
+            this.bottomStatus = 'pull';
+            this.bottomDropped = false;
+          }, 200);
+        }, this.bottomLoadedStayTime);
       },
 
       getScrollTop(element) {
@@ -170,9 +213,14 @@
 
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
+        this.startScrollTop = this.getScrollTop(this.scrollEventTarget);
         if (this.topStatus !== 'loading') {
           this.topStatus = 'pull';
           this.topDropped = false;
+        }
+        if (this.bottomStatus !== 'loading') {
+          this.bottomStatus = 'pull';
+          this.bottomDropped = false;
         }
       },
 
@@ -184,15 +232,19 @@
         this.currentY = event.touches[0].clientY;
         let distance = (this.currentY - this.startY) / this.distanceIndex;
 
-        // 当上拉和下拉的时候通过判断props中的topMethod和bottomMethod是否传入回调函数来检测是否要改变位置及状态
-        if (this.getScrollTop(this.scrollEventTarget) === 0 && distance > 0 && typeof this.topMethod === 'function') {
+        if (this.getScrollTop(this.scrollEventTarget) === 0 && distance > 0 && this.isPullDown === true) {
           event.preventDefault();
           event.stopPropagation();
-          if (distance >= this.topDistance) {
+          if (distance >= this.topTriggerDistance) {
             this.topStatus = 'drop';
           }
           this.translate = distance;
-        } else if (this.checkBottomReached() && distance < 0) {
+        } else if (this.checkBottomReached() && distance < 0 && this.isPullUp === true) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (distance >= this.bottomTriggerDistance) {
+            this.bottomStatus = 'drop';
+          }
           this.translate = distance;
         }
       },
@@ -201,7 +253,7 @@
         if (this.getScrollTop(this.scrollEventTarget) === 0 && this.translate > 0) {
           this.topDropped = true;
           if (this.topStatus === 'drop') {
-            this.translate = 50;
+            this.translate = this.topStayDistance;
             this.topStatus = 'loading';
             // 判断topMethod是否为function，如果是执行topMethod否则将translate距离置空
             typeof this.topMethod === 'function'
@@ -210,9 +262,18 @@
           } else {
             this.translate = 0;
           }
-        } else if (this.checkBottomReached()) {
-          this.translate = 0;
-          this.topDropped = true;
+        } else if (this.checkBottomReached() && this.translate < 0) {
+          this.bottomDropped = true;
+          if (this.bottomStatus === 'drop') {
+            this.translate = this.bottomStayDistance;
+            this.bottomStatus = 'loading';
+            // 判断bottomMethod是否为function，如果是执行topMethod否则将translate距离置空
+            typeof this.bottomMethod === 'function'
+              ? this.bottomMethod()
+              : this.translate = 0;
+          } else {
+            this.translate = 0;
+          }
         }
       },
 

@@ -1,3 +1,3 @@
-import VuePulltorefresh from './vue-pulltorefresh.vue';
+import VueSuperscroll from './vue-superscroll.vue';
 
-export default VuePulltorefresh;
+export default VueSuperscroll;
