@@ -184,13 +184,15 @@
         this.currentY = event.touches[0].clientY;
         let distance = (this.currentY - this.startY) / this.distanceIndex;
 
-        // 当上拉的时候通过判断props中的topMethod和bottomMethod是否传入回调函数来检测是否要改变位置及状态
+        // 当上拉和下拉的时候通过判断props中的topMethod和bottomMethod是否传入回调函数来检测是否要改变位置及状态
         if (this.getScrollTop(this.scrollEventTarget) === 0 && distance > 0 && typeof this.topMethod === 'function') {
           event.preventDefault();
           event.stopPropagation();
           if (distance >= this.topDistance) {
             this.topStatus = 'drop';
           }
+          this.translate = distance;
+        } else if (this.checkBottomReached() && distance < 0) {
           this.translate = distance;
         }
       },
@@ -208,6 +210,9 @@
           } else {
             this.translate = 0;
           }
+        } else if (this.checkBottomReached()) {
+          this.translate = 0;
+          this.topDropped = true;
         }
       },
 
