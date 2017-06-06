@@ -14,10 +14,10 @@
 
 <style>
   .vue-superscroll-wapper {
+    position: relative;
     height: 100%;
     width: 100%;
     overflow: hidden;
-    position: relative;
   }
 
   .vue-superscroll-wapper .dropped {
@@ -42,31 +42,97 @@
 </style>
 
 <script type="text/babel">
-  import IScroll from 'iscroll'
+  import IScroll from '../node_modules/iscroll/build/iscroll-probe'
+
+  const TOP_DEFAULT_CONFIG = {
+    topPullText: '下拉刷新',
+    topDropText: '释放更新',
+    topLoadingText: '加载中...',
+    topLoadedText: '加载完成',
+    topLoadedStayTime: 400,
+    topStayDistance: 50,
+    topTriggerDistance: 70
+  };
+
+  const BOTTOM_DEFAULT_CONFIG = {
+    bottomPullText: '上拉加载',
+    bottomDropText: '释放更新',
+    bottomLoadingText: '加载中...',
+    bottomLoadedText: '加载完成',
+    bottomLoadedStayTime: 400,
+    bottomStayDistance: 50,
+    bottomTriggerDistance: 70
+  };
+
+  const utils = {
+    //  验证prop config如果不存在配置项将默认配置项加入配置对象中
+    configValidator(config, defaultConfig) {
+      if (config !== {} && config !== null) {
+        Object.keys(defaultConfig).forEach((key) => {
+          if (!config.hasOwnProperty(key)) {
+            config[key] = defaultConfig[key]
+          }
+        });
+        return config;
+      }
+      return defaultConfig;
+    }
+  }
 
   export default {
     name: 'vue-superscroll',
     props: {
       pullDownConfig: {
-        type: Object
+        type: Object,
+        default: () => {
+          return {};
+        },
+        validator: (config) => {
+          return utils.configValidator(config, TOP_DEFAULT_CONFIG);
+        }
       },
-      isPullUpConfig: {
-        type: Object
+
+      pullUpConfig: {
+        type: Object,
+        default: () => {
+          return {};
+        },
+        validator: (config) => {
+          return utils.configValidator(config, BOTTOM_DEFAULT_CONFIG);
+        }
       }
     },
     data() {
       return {
-        scroller: null
+        scroller: null,
+        startY: ''
       };
     },
-    watch: {
-    },
+    watch: {},
     methods: {
+      handleScrollStart() {
+        this.startY = this.scroller.y;
+      },
+
+      handleScroll() {
+        console.log(this.scroller.y);
+      },
+
+      handleScrollEnd() {
+
+      },
+
       bindEvents() {
+        this.scroller.on('scrollStart', this.handleScrollStart);
+        this.scroller.on('scroll', this.handleScroll);
+        this.scroller.on('scrollEnd', this.handleScrollEnd);
       },
 
       init() {
-        this.scroller = new IScroll(this.$el);
+        console.log(this.pullDownConfig)
+        this.scroller = new IScroll(this.$el, {
+          probeType: 3
+        });
         this.bindEvents();
       }
     },
