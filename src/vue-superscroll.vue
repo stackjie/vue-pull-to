@@ -2,11 +2,11 @@
   <div class="vue-superscroll-wapper">
     <div class="vue-superscroll-container">
       <slot name="top">
-        <p class="status-text status-text-top">123</p>
+        <p class="state-text state-text-top">{{ topText }}</p>
       </slot>
       <slot></slot>
       <slot name="bottom">
-        <p class="status-text status-text-bottom">123</p>
+        <p class="state-text state-text-bottom">{{ bottomText }}</p>
       </slot>
     </div>
   </div>
@@ -24,7 +24,7 @@
     transition: .2s;
   }
 
-  .vue-superscroll-container .status-text {
+  .vue-superscroll-container .state-text {
     position: absolute;
     width: 100%;
     height: 50px;
@@ -32,11 +32,11 @@
     text-align: center;
   }
 
-  .status-text-top {
+  .state-text-top {
     margin-top: -50px;
   }
 
-  .status-text-bottom {
+  .state-text-bottom {
     margin-bottom: -50px;
   }
 </style>
@@ -105,17 +105,66 @@
     data() {
       return {
         scroller: null,
-        startY: ''
+        startY: '',
+        topState: '',
+        topText: '',
+        bottomState: '',
+        bottomText: ''
       };
     },
     watch: {},
     methods: {
+      changeState(direction, state) {
+        let config;
+        if (direction === 'top') {
+          this.topState = state;
+          config = this.pullDownConfig;
+          switch (state) {
+            case 'pull':
+              this.topText = config.topPullText;
+              break;
+            case 'drop':
+              this.topText = config.topDropText;
+              break;
+            case 'loading':
+              this.topText = config.topLoadingText;
+              break;
+            case 'loaded':
+              this.topText = config.topLoadedText;
+              break;
+          }
+        } else if (direction === 'bottom') {
+          this.bottomState = state;
+          config = this.pullUpConfig;
+          switch (state) {
+            case 'pull':
+              this.bottomText = config.bottomPullText;
+              break;
+            case 'drop':
+              this.bottomText = config.bottomDropText;
+              break;
+            case 'loading':
+              this.bottomText = config.bottomLoadingText;
+              break;
+            case 'loaded':
+              this.bottomText = config.bottomLoadedText;
+              break;
+          }
+        }
+      },
+
       handleScrollStart() {
         this.startY = this.scroller.y;
+
+        this.changeState('top', 'pull');
       },
 
       handleScroll() {
         console.log(this.scroller.y);
+        const currentY = this.scroller.y;
+        if (currentY >= this.pullDownConfig.topTriggerDistance) {
+          this.changeState('top', 'drop');
+        }
       },
 
       handleScrollEnd() {
