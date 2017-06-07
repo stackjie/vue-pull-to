@@ -25,20 +25,20 @@
   }
 
   .vue-superscroll-container .state-text {
-    position: absolute;
-    width: 100%;
+    /*position: absolute;*/
+    /*width: 100%;*/
     height: 50px;
     line-height: 50px;
     text-align: center;
   }
 
-  .state-text-top {
-    margin-top: -50px;
-  }
+  /*.state-text-top {*/
+    /*margin-top: -50px;*/
+  /*}*/
 
-  .state-text-bottom {
-    margin-bottom: -50px;
-  }
+  /*.state-text-bottom {*/
+    /*margin-bottom: -50px;*/
+  /*}*/
 </style>
 
 <script type="text/babel">
@@ -77,7 +77,7 @@
       }
       return defaultConfig;
     }
-  }
+  };
 
   export default {
     name: 'vue-superscroll',
@@ -109,53 +109,58 @@
         topState: '',
         topText: '',
         bottomState: '',
-        bottomText: ''
+        bottomText: '',
+        scrollerEl: null
       };
     },
-    watch: {},
+    watch: {
+      topState(state) {
+        const config = this.pullDownConfig;
+        switch (state) {
+          case 'pull':
+            this.topText = config.topPullText;
+            break;
+          case 'drop':
+            this.topText = config.topDropText;
+            break;
+          case 'loading':
+            this.topText = config.topLoadingText;
+            break;
+          case 'loaded':
+            this.topText = config.topLoadedText;
+            break;
+        }
+      },
+
+      bottomState(state) {
+        const config = this.pullUpConfig;
+        switch (state) {
+          case 'pull':
+            this.bottomText = config.bottomPullText;
+            break;
+          case 'drop':
+            this.bottomText = config.bottomDropText;
+            break;
+          case 'loading':
+            this.bottomText = config.bottomLoadingText;
+            break;
+          case 'loaded':
+            this.bottomText = config.bottomLoadedText;
+            break;
+        }
+      }
+    },
     methods: {
       changeState(direction, state) {
-        let config;
         if (direction === 'top') {
           this.topState = state;
-          config = this.pullDownConfig;
-          switch (state) {
-            case 'pull':
-              this.topText = config.topPullText;
-              break;
-            case 'drop':
-              this.topText = config.topDropText;
-              break;
-            case 'loading':
-              this.topText = config.topLoadingText;
-              break;
-            case 'loaded':
-              this.topText = config.topLoadedText;
-              break;
-          }
         } else if (direction === 'bottom') {
           this.bottomState = state;
-          config = this.pullUpConfig;
-          switch (state) {
-            case 'pull':
-              this.bottomText = config.bottomPullText;
-              break;
-            case 'drop':
-              this.bottomText = config.bottomDropText;
-              break;
-            case 'loading':
-              this.bottomText = config.bottomLoadingText;
-              break;
-            case 'loaded':
-              this.bottomText = config.bottomLoadedText;
-              break;
-          }
         }
       },
 
       handleScrollStart() {
         this.startY = this.scroller.y;
-
         this.changeState('top', 'pull');
       },
 
@@ -165,6 +170,10 @@
         if (currentY >= this.pullDownConfig.topTriggerDistance) {
           this.changeState('top', 'drop');
         }
+
+//        if (this.topState === 'drop' && currentY >) {
+//          this.changeState('top', 'loading');
+//        }
       },
 
       handleScrollEnd() {
@@ -178,10 +187,11 @@
       },
 
       init() {
-        console.log(this.pullDownConfig)
         this.scroller = new IScroll(this.$el, {
-          probeType: 3
+          probeType: 3,
+          startY: -50
         });
+        this.scrollerEl = this.$el.querySelector('.vue-superscroll-container');
         this.bindEvents();
       }
     },
