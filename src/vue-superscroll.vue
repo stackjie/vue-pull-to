@@ -33,16 +33,16 @@
   }
 
   /*.state-text-top {*/
-    /*margin-top: -50px;*/
+  /*margin-top: -50px;*/
   /*}*/
 
   /*.state-text-bottom {*/
-    /*margin-bottom: -50px;*/
+  /*margin-bottom: -50px;*/
   /*}*/
 </style>
 
 <script type="text/babel">
-  import IScroll from '../node_modules/iscroll/build/iscroll-probe'
+  import BScroll from 'better-scroll'
 
   const TOP_DEFAULT_CONFIG = {
     topPullText: '下拉刷新',
@@ -109,8 +109,7 @@
         topState: '',
         topText: '',
         bottomState: '',
-        bottomText: '',
-        scrollerEl: null
+        bottomText: ''
       };
     },
     watch: {
@@ -180,6 +179,10 @@
 
       },
 
+      handleTouchEnd() {
+
+      },
+
       bindEvents() {
         this.scroller.on('scrollStart', this.handleScrollStart);
         this.scroller.on('scroll', this.handleScroll);
@@ -187,11 +190,11 @@
       },
 
       init() {
-        this.scroller = new IScroll(this.$el, {
+        this.scroller = new BScroll(this.$el, {
+          disableMouse: true,
           probeType: 3,
           startY: -50
         });
-        this.scrollerEl = this.$el.querySelector('.vue-superscroll-container');
         this.bindEvents();
       }
     },

@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/stackjie/vue-pulldown-pullup#readme",
   "dependencies": {
-    "iscroll": "^5.2.0",
+    "better-scroll": "^0.1.15",
     "vue": "^2.2.6"
   },
   "devDependencies": {
