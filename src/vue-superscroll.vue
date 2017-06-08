@@ -124,9 +124,13 @@
             break;
           case 'loading':
             this.topText = config.topLoadingText;
+            this.$emit('pull-down', this.topLoaded);
             break;
           case 'loaded':
             this.topText = config.topLoadedText;
+            setTimeout(() => {
+              this.scroll.scrollTo(0, -config.topStayDistance, 200);
+            }, config.topLoadedStayTime);
             break;
         }
       },
@@ -158,41 +162,43 @@
         }
       },
 
+      topLoaded() {
+        this.topState = 'loaded';
+      },
+
       handleScrollStart() {
-        this.startY = this.scroll.y;
         this.changeState('top', 'pull');
       },
 
-      handleScroll() {
-        console.log(this.scroll.y);
-        const currentY = this.scroll.y;
-        if (currentY >= this.pullDownConfig.topTriggerDistance) {
+      handleScroll(pos) {
+        console.log(pos.y);
+        const currentY = pos.y;
+        if (this.topState === 'pull' && currentY >= this.pullDownConfig.topTriggerDistance) {
           this.changeState('top', 'drop');
         }
-
       },
 
       handleScrollEnd() {
-        if (this.topState === 'drop') {
-          this.changeState('top', 'loading');
-        }
       },
 
       handleTouchEnd() {
-
+        if (this.topState === 'drop') {
+          console.log('wawa')
+          this.changeState('top', 'loading');
+        }
       },
 
       bindEvents() {
         this.scroll.on('scrollStart', this.handleScrollStart);
         this.scroll.on('scroll', this.handleScroll);
         this.scroll.on('scrollEnd', this.handleScrollEnd);
-        this.scroll.on('touchEnd', this.handleTouchEnd);
+        this.scroll.on('touchend', this.handleTouchEnd);
       },
 
       init() {
         this.scroll = new BScroll(this.$el, {
           probeType: 3,
-          startY: -50
+          startY: -this.pullDownConfig.topStayDistance
         });
         this.bindEvents();
       }

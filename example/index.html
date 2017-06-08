@@ -19,7 +19,7 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;">
-  <vue-superscroll>
+  <vue-superscroll @pull-down="topMethod">
       <div style="background: #fff;height: 1200px;">
         <ul>
           <li>1</li>
@@ -42,10 +42,10 @@
     created: function () {
     },
     methods: {
-      topMethod: function () {
+      topMethod: function (loaded) {
         var that = this;
         setTimeout(function () {
-//          that.$refs['vue-superscroll'].onTopLoaded();
+          loaded();
         }, 1000)
       }
     }
