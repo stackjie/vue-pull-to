@@ -104,7 +104,7 @@
     },
     data() {
       return {
-        scroller: null,
+        scroll: null,
         startY: '',
         topState: '',
         topText: '',
@@ -159,24 +159,23 @@
       },
 
       handleScrollStart() {
-        this.startY = this.scroller.y;
+        this.startY = this.scroll.y;
         this.changeState('top', 'pull');
       },
 
       handleScroll() {
-        console.log(this.scroller.y);
-        const currentY = this.scroller.y;
+        console.log(this.scroll.y);
+        const currentY = this.scroll.y;
         if (currentY >= this.pullDownConfig.topTriggerDistance) {
           this.changeState('top', 'drop');
         }
 
-//        if (this.topState === 'drop' && currentY >) {
-//          this.changeState('top', 'loading');
-//        }
       },
 
       handleScrollEnd() {
-
+        if (this.topState === 'drop') {
+          this.changeState('top', 'loading');
+        }
       },
 
       handleTouchEnd() {
@@ -184,14 +183,14 @@
       },
 
       bindEvents() {
-        this.scroller.on('scrollStart', this.handleScrollStart);
-        this.scroller.on('scroll', this.handleScroll);
-        this.scroller.on('scrollEnd', this.handleScrollEnd);
+        this.scroll.on('scrollStart', this.handleScrollStart);
+        this.scroll.on('scroll', this.handleScroll);
+        this.scroll.on('scrollEnd', this.handleScrollEnd);
+        this.scroll.on('touchEnd', this.handleTouchEnd);
       },
 
       init() {
-        this.scroller = new BScroll(this.$el, {
-          disableMouse: true,
+        this.scroll = new BScroll(this.$el, {
           probeType: 3,
           startY: -50
         });
