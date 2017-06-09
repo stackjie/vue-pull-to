@@ -1,11 +1,11 @@
 <template>
   <div class="vue-superscroll-wapper">
     <div class="vue-superscroll-container" :class="{dropped: topState === 'loading' || bottomState === 'loading'}">
-      <slot name="top">
+      <slot name="top from topText">
         <p class="state-text state-text-top">{{ topText }}</p>
       </slot>
       <slot></slot>
-      <slot name="bottom">
+      <slot name="bottom from bottomText">
         <p class="state-text state-text-bottom">{{ bottomText }}</p>
       </slot>
     </div>
@@ -176,8 +176,13 @@
       },
 
       handleScrollStart() {
-        this.changeState('top', 'pull');
-        this.changeState('bottom', 'pull');
+        if (this.topState === 'loaded') {
+          this.changeState('top', 'pull');
+        }
+
+        if (this.bottomState === 'loaded') {
+          this.changeState('bottom', 'pull');
+        }
       },
 
       handleScroll(pos) {
@@ -198,11 +203,11 @@
       handleTouchEnd(pos) {
         console.log(pos.y);
 
-        if (this.topState === 'drop') {
+        if (this.topState !== 'loading' && this.topState === 'drop') {
           this.changeState('top', 'loading');
         }
 
-        if (this.bottomState === 'drop') {
+        if (this.topState !== 'loading' && this.bottomState === 'drop') {
           this.changeState('bottom', 'loading');
         }
       },
@@ -219,6 +224,8 @@
           probeType: 3
         });
         this.bindEvents();
+        this.changeState('top', 'pull');
+        this.changeState('bottom', 'pull');
       }
     },
     mounted() {
