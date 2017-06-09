@@ -1,6 +1,6 @@
 <template>
   <div class="vue-superscroll-wapper">
-    <div class="vue-superscroll-container">
+    <div class="vue-superscroll-container" :class="{dropped: topState === 'loading' || bottomState === 'loading'}">
       <slot name="top">
         <p class="state-text state-text-top">{{ topText }}</p>
       </slot>
@@ -14,31 +14,30 @@
 
 <style>
   .vue-superscroll-wapper {
-    position: relative;
     height: 100%;
     width: 100%;
     overflow: hidden;
   }
 
   .vue-superscroll-wapper .dropped {
-    transition: .2s;
+    transition: .2s !important;
   }
 
   .vue-superscroll-container .state-text {
-    /*position: absolute;*/
-    /*width: 100%;*/
+    position: absolute;
+    width: 100%;
     height: 50px;
     line-height: 50px;
     text-align: center;
   }
 
-  /*.state-text-top {*/
-  /*margin-top: -50px;*/
-  /*}*/
+  .state-text-top {
+    margin-top: -50px;
+  }
 
-  /*.state-text-bottom {*/
-  /*margin-bottom: -50px;*/
-  /*}*/
+  .state-text-bottom {
+    margin-bottom: -50px;
+  }
 </style>
 
 <script type="text/babel">
@@ -105,11 +104,11 @@
     data() {
       return {
         scroll: null,
-        startY: '',
         topState: '',
         topText: '',
         bottomState: '',
-        bottomText: ''
+        bottomText: '',
+        currentY: ''
       };
     },
     watch: {
@@ -124,12 +123,13 @@
             break;
           case 'loading':
             this.topText = config.topLoadingText;
+            this.scroll.scrollTo(0, 50);
             this.$emit('pull-down', this.topLoaded);
             break;
           case 'loaded':
             this.topText = config.topLoadedText;
             setTimeout(() => {
-              this.scroll.scrollTo(0, -config.topStayDistance, 200);
+              this.scroll.scrollTo(0, 0, 200);
             }, config.topLoadedStayTime);
             break;
         }
@@ -146,9 +146,14 @@
             break;
           case 'loading':
             this.bottomText = config.bottomLoadingText;
+            this.scroll.scrollTo(0, this.scroll.maxScrollY - config.bottomStayDistance);
+            this.$emit('pull-up', this.bottomLoaded);
             break;
           case 'loaded':
             this.bottomText = config.bottomLoadedText;
+            setTimeout(() => {
+              this.scroll.scrollTo(0, this.scroll.maxScrollY, 200);
+            }, config.bottomLoadedStayTime);
             break;
         }
       }
@@ -166,25 +171,39 @@
         this.topState = 'loaded';
       },
 
+      bottomLoaded() {
+        this.bottomState = 'loaded';
+      },
+
       handleScrollStart() {
         this.changeState('top', 'pull');
+        this.changeState('bottom', 'pull');
       },
 
       handleScroll(pos) {
-        console.log(pos.y);
-        const currentY = pos.y;
-        if (this.topState === 'pull' && currentY >= this.pullDownConfig.topTriggerDistance) {
+        console.log(pos.y)
+        this.currentY = pos.y;
+        if (this.topState === 'pull' && pos.y >= this.pullDownConfig.topTriggerDistance) {
           this.changeState('top', 'drop');
+        }
+
+        if (this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.pullUpConfig.bottomTriggerDistance) {
+          this.changeState('bottom', 'drop');
         }
       },
 
       handleScrollEnd() {
       },
 
-      handleTouchEnd() {
+      handleTouchEnd(pos) {
+        console.log(pos.y);
+
         if (this.topState === 'drop') {
-          console.log('wawa')
           this.changeState('top', 'loading');
+        }
+
+        if (this.bottomState === 'drop') {
+          this.changeState('bottom', 'loading');
         }
       },
 
@@ -197,8 +216,7 @@
 
       init() {
         this.scroll = new BScroll(this.$el, {
-          probeType: 3,
-          startY: -this.pullDownConfig.topStayDistance
+          probeType: 3
         });
         this.bindEvents();
       }

@@ -19,7 +19,7 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;">
-  <vue-superscroll @pull-down="topMethod">
+  <vue-superscroll @pull-down="topMethod" @pull-up="bottomMethod">
       <div style="background: #fff;height: 1200px;">
         <ul>
           <li>1</li>
@@ -43,6 +43,12 @@
     },
     methods: {
       topMethod: function (loaded) {
+        var that = this;
+        setTimeout(function () {
+          loaded();
+        }, 1000)
+      },
+      bottomMethod: function (loaded) {
         var that = this;
         setTimeout(function () {
           loaded();
