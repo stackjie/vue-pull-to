@@ -223,23 +223,13 @@
         }
       },
 
-      topLoaded(state) {
-        this.topLoadedState = '';
-        if (state === 'done') {
-          this.topLoadedState = 'done';
-        } else if (state === 'fail') {
-          this.topLoadedState = 'fail';
-        }
+      topLoaded(state = 'done') {
+        this.topLoadedState = state;
         this.changeState('top', 'loaded');
       },
 
-      bottomLoaded(state) {
-        this.bottomLoadedState = '';
-        if (state === 'done') {
-          this.bottomLoadedState = 'done';
-        } else if (state === 'fail') {
-          this.bottomLoadedState = 'fail';
-        }
+      bottomLoaded(state = 'done') {
+        this.bottomLoadedState = state;
         this.changeState('bottom', 'loaded');
       },
 
