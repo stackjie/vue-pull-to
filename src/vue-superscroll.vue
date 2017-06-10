@@ -44,25 +44,25 @@
   import BScroll from 'better-scroll'
 
   const TOP_DEFAULT_CONFIG = {
-    topPullText: '下拉刷新',
-    topDropText: '释放更新',
-    topLoadingText: '加载中...',
-    topDoneText: '加载完成',
-    topFailText: '加载失败',
-    topLoadedStayTime: 400,
-    topStayDistance: 50,
-    topTriggerDistance: 70
+    pullText: '下拉刷新',
+    triggerText: '释放更新',
+    loadingText: '加载中...',
+    doneText: '加载完成',
+    failText: '加载失败',
+    loadedStayTime: 400,
+    stayDistance: 50,
+    triggerDistance: 70
   };
 
   const BOTTOM_DEFAULT_CONFIG = {
-    bottomPullText: '上拉加载',
-    bottomDropText: '释放更新',
-    bottomLoadingText: '加载中...',
-    bottomDoneText: '加载完成',
-    bottomFailText: '加载失败',
-    bottomLoadedStayTime: 400,
-    bottomStayDistance: 50,
-    bottomTriggerDistance: 70
+    pullText: '上拉加载',
+    triggerText: '释放更新',
+    loadingText: '加载中...',
+    doneText: '加载完成',
+    failText: '加载失败',
+    loadedStayTime: 400,
+    stayDistance: 50,
+    triggerDistance: 70
   };
 
   const utils = {
@@ -118,7 +118,7 @@
         default: 0.001
       },
 
-      pullDownConfig: {
+      topConfig: {
         type: Object,
         default: () => {
           return {};
@@ -128,7 +128,7 @@
         }
       },
 
-      pullUpConfig: {
+      bottomConfig: {
         type: Object,
         default: () => {
           return {};
@@ -154,62 +154,62 @@
     watch: {
       topState(state) {
         this.$emit('top-change-state', state);
-        const config = this.pullDownConfig;
+        const config = this.topConfig;
         switch (state) {
           case 'pull':
-            this.topText = config.topPullText;
+            this.topText = config.pullText;
             break;
           case 'drop':
-            this.topText = config.topDropText;
+            this.topText = config.triggerText;
             break;
           case 'loading':
-            this.topText = config.topLoadingText;
+            this.topText = config.loadingText;
             this.topDroped = true;
             setTimeout(() => {
               this.topDroped = false;
             }, 200);
-            this.scroll.scrollTo(0, this.pullDownConfig.topStayDistance);
+            this.scroll.scrollTo(0, this.topConfig.stayDistance);
             this.$emit('pull-down', this.topLoaded);
             break;
           case 'loaded':
             this.topLoadedState === 'done'
-              ? this.topText = config.topDoneText
-              : this.topText = config.topFailText;
+              ? this.topText = config.doneText
+              : this.topText = config.failText;
             setTimeout(() => {
               this.scroll.refresh();
               this.scroll.scrollTo(0, 0, 200);
-            }, config.topLoadedStayTime);
+            }, config.loadedStayTime);
             break;
         }
       },
 
       bottomState(state) {
         this.$emit('bottom-change-state', state);
-        const config = this.pullUpConfig;
+        const config = this.bottomConfig;
         switch (state) {
           case 'pull':
-            this.bottomText = config.bottomPullText;
+            this.bottomText = config.pullText;
             break;
           case 'drop':
-            this.bottomText = config.bottomDropText;
+            this.bottomText = config.triggerText;
             break;
           case 'loading':
-            this.bottomText = config.bottomLoadingText;
+            this.bottomText = config.loadingText;
             this.bottomDroped = true;
             setTimeout(() => {
               this.bottomDroped = false;
             }, 200);
-            this.scroll.scrollTo(0, this.scroll.maxScrollY - config.bottomStayDistance);
+            this.scroll.scrollTo(0, this.scroll.maxScrollY - config.stayDistance);
             this.$emit('pull-up', this.bottomLoaded);
             break;
           case 'loaded':
             this.bottomLoadedState === 'done'
-              ? this.bottomText = config.bottomDoneText
-              : this.bottomText = config.bottomFailText;
+              ? this.bottomText = config.doneText
+              : this.bottomText = config.failText;
             setTimeout(() => {
               this.scroll.refresh();
               this.scroll.scrollTo(0, this.scroll.maxScrollY, 200);
-            }, config.bottomLoadedStayTime);
+            }, config.loadedStayTime);
             break;
         }
       }
@@ -255,15 +255,15 @@
 
       handleScroll(pos) {
         this.$emit('scroll', pos);
-        if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.pullDownConfig.topTriggerDistance) {
+        if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.topConfig.triggerDistance) {
           this.changeState('top', 'drop');
-        } else if (this.topState === 'drop' && pos.y < this.pullDownConfig.topTriggerDistance) {
+        } else if (this.topState === 'drop' && pos.y < this.topConfig.triggerDistance) {
           this.changeState('top', 'pull');
         }
 
-        if (this.topState !== 'loading' && this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.pullUpConfig.bottomTriggerDistance) {
+        if (this.topState !== 'loading' && this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.bottomConfig.triggerDistance) {
           this.changeState('bottom', 'drop');
-        } else if (this.bottomState === 'drop' && pos.y > this.pullUpConfig.bottomTriggerDistance) {
+        } else if (this.bottomState === 'drop' && pos.y > this.bottomConfig.triggerDistance) {
           this.changeState('bottom', 'pull');
         }
       },
