@@ -8,9 +8,9 @@ function resolve (dir) {
 module.exports = {
   entry: './src/index.js',
   output: {
-    library: 'VueSuperscroll',
+    library: 'VueSuperScroll',
     libraryTarget: 'umd',
-    filename: 'vue-superscroll.js',
+    filename: 'vue-super-scroll.js',
     path: resolve('dist'),
   },
   resolve: {

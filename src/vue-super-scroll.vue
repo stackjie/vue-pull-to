@@ -1,6 +1,6 @@
 <template>
   <div class="super-scroll-wapper">
-    <div class="super-scroll-container" :class="{dropped: topDroped || bottomDroped}">
+    <div class="super-scroll-container" :class="{triggered: topTriggered || bottomTriggered}">
       <slot name="top from topText">
         <p class="state-text state-text-top">{{ topText }}</p>
       </slot>
@@ -19,7 +19,7 @@
     overflow: hidden;
   }
 
-  .super-scroll-wapper .dropped {
+  .super-scroll-wapper .triggered {
     transition: .2s !important;
   }
 
@@ -81,7 +81,7 @@
   };
 
   export default {
-    name: 'vue-superscroll',
+    name: 'super-scroll',
     props: {
       startY: {
         type: Number,
@@ -145,8 +145,8 @@
         topText: '',
         bottomState: '',
         bottomText: '',
-        topDroped: false,
-        bottomDroped: false,
+        topTriggered: false,
+        bottomTriggered: false,
         topLoadedState: '',
         bottomLoadedState: ''
       };
@@ -164,9 +164,9 @@
             break;
           case 'loading':
             this.topText = config.loadingText;
-            this.topDroped = true;
+            this.topTriggered = true;
             setTimeout(() => {
-              this.topDroped = false;
+              this.topTriggered = false;
             }, 200);
             this.scroll.scrollTo(0, this.topConfig.stayDistance);
             this.$emit('pull-down', this.topLoaded);
@@ -195,9 +195,9 @@
             break;
           case 'loading':
             this.bottomText = config.loadingText;
-            this.bottomDroped = true;
+            this.bottomTriggered = true;
             setTimeout(() => {
-              this.bottomDroped = false;
+              this.bottomTriggered = false;
             }, 200);
             this.scroll.scrollTo(0, this.scroll.maxScrollY - config.stayDistance);
             this.$emit('pull-up', this.bottomLoaded);

@@ -19,7 +19,7 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;">
-  <vue-superscroll @pull-down="topMethod" @pull-up="bottomMethod">
+  <super-scroll @pull-down="topMethod" @pull-up="bottomMethod">
       <div style="background: #fff;height: 1200px;">
         <ul>
           <li>1</li>
@@ -28,14 +28,14 @@
           <li>4</li>
         </ul>
       </div>
-  </vue-superscroll>
+  </super-scroll>
 </div>
 <script src="../node_modules/vue/dist/vue.js"></script>
-<script src="../dist/vue-superscroll.js"></script>
+<script src="../dist/vue-super-scroll.js"></script>
 <script>
   new Vue({
     el: '#app',
-    components: {VueSuperscroll: VueSuperscroll.default},
+    components: {superScroll: VueSuperScroll.default},
     computed: {},
     data: {
     },

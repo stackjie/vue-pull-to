@@ -1,3 +1,3 @@
-import VueSuperscroll from './vue-superscroll.vue';
+import superScroll from './vue-super-scroll.vue';
 
-export default VueSuperscroll;
+export default superScroll;
