@@ -83,6 +83,41 @@
   export default {
     name: 'vue-superscroll',
     props: {
+      startY: {
+        type: Number,
+        default: 0
+      },
+
+      momentum: {
+        type: Boolean,
+        default: true
+      },
+
+      momentumLimitTime: {
+        type: Number,
+        default: 300
+      },
+
+      momentumLimitDistance: {
+        type: Number,
+        default: 15
+      },
+
+      bounce: {
+        type: Boolean,
+        default: true
+      },
+
+      bounceTime: {
+        type: Number,
+        default: 700
+      },
+
+      deceleration: {
+        type: Number,
+        default: 0.001
+      },
+
       pullDownConfig: {
         type: Object,
         default: () => {
@@ -141,6 +176,7 @@
               ? this.topText = config.topDoneText
               : this.topText = config.topFailText;
             setTimeout(() => {
+              this.scroll.refresh();
               this.scroll.scrollTo(0, 0, 200);
             }, config.topLoadedStayTime);
             break;
@@ -171,6 +207,7 @@
               ? this.bottomText = config.bottomDoneText
               : this.bottomText = config.bottomFailText;
             setTimeout(() => {
+              this.scroll.refresh();
               this.scroll.scrollTo(0, this.scroll.maxScrollY, 200);
             }, config.bottomLoadedStayTime);
             break;
@@ -231,9 +268,6 @@
         }
       },
 
-      handleScrollEnd() {
-      },
-
       handleTouchEnd(pos) {
         console.log(pos.y);
 
@@ -249,13 +283,19 @@
       bindEvents() {
         this.scroll.on('scrollStart', this.handleScrollStart);
         this.scroll.on('scroll', this.handleScroll);
-        this.scroll.on('scrollEnd', this.handleScrollEnd);
         this.scroll.on('touchend', this.handleTouchEnd);
       },
 
       init() {
         this.scroll = new BScroll(this.$el, {
-          probeType: 3
+          probeType: 2,
+          startY: this.startY,
+          momentum: this.momentum,
+          momentumLimitTime: this.momentumLimitTime,
+          momentumLimitDistance: this.momentumLimitDistance,
+          bounce: this.bounce,
+          bounceTime: this.bounceTime,
+          deceleration: this.deceleration
         });
         this.bindEvents();
         this.changeState('top', 'pull');
