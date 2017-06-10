@@ -45,13 +45,13 @@
       topMethod: function (loaded) {
         var that = this;
         setTimeout(function () {
-          loaded();
+          loaded('fail');
         }, 5000)
       },
       bottomMethod: function (loaded) {
         var that = this;
         setTimeout(function () {
-          loaded();
+          loaded('done');
         }, 1000)
       }
     }

@@ -110,7 +110,6 @@
         topText: '',
         bottomState: '',
         bottomText: '',
-        currentY: '',
         topDroped: false,
         bottomDroped: false,
         topLoadedState: '',
@@ -119,6 +118,7 @@
     },
     watch: {
       topState(state) {
+        this.$emit('top-change-state', state);
         const config = this.pullDownConfig;
         switch (state) {
           case 'pull':
@@ -137,7 +137,9 @@
             this.$emit('pull-down', this.topLoaded);
             break;
           case 'loaded':
-            this.topText = config.topLoadedText;
+            this.topLoadedState === 'done'
+              ? this.topText = config.topDoneText
+              : this.topText = config.topFailText;
             setTimeout(() => {
               this.scroll.scrollTo(0, 0, 200);
             }, config.topLoadedStayTime);
@@ -146,6 +148,7 @@
       },
 
       bottomState(state) {
+        this.$emit('bottom-change-state', state);
         const config = this.pullUpConfig;
         switch (state) {
           case 'pull':
@@ -164,7 +167,9 @@
             this.$emit('pull-up', this.bottomLoaded);
             break;
           case 'loaded':
-            this.bottomText = config.bottomLoadedText;
+            this.bottomLoadedState === 'done'
+              ? this.bottomText = config.bottomDoneText
+              : this.bottomText = config.bottomFailText;
             setTimeout(() => {
               this.scroll.scrollTo(0, this.scroll.maxScrollY, 200);
             }, config.bottomLoadedStayTime);
@@ -182,6 +187,7 @@
       },
 
       topLoaded(state) {
+        this.topLoadedState = '';
         if (state === 'done') {
           this.topLoadedState = 'done';
         } else if (state === 'fail') {
@@ -191,6 +197,7 @@
       },
 
       bottomLoaded(state) {
+        this.bottomLoadedState = '';
         if (state === 'done') {
           this.bottomLoadedState = 'done';
         } else if (state === 'fail') {
@@ -210,7 +217,7 @@
       },
 
       handleScroll(pos) {
-        this.currentY = pos.y;
+        this.$emit('scroll', pos);
         if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.pullDownConfig.topTriggerDistance) {
           this.changeState('top', 'drop');
         } else if (this.topState === 'drop' && pos.y < this.pullDownConfig.topTriggerDistance) {
