@@ -1,6 +1,6 @@
 <template>
-  <div class="vue-superscroll-wapper">
-    <div class="vue-superscroll-container" :class="{dropped: topState === 'loading' || bottomState === 'loading'}">
+  <div class="super-scroll-wapper">
+    <div class="super-scroll-container" :class="{dropped: topDroped || bottomDroped}">
       <slot name="top from topText">
         <p class="state-text state-text-top">{{ topText }}</p>
       </slot>
@@ -12,18 +12,18 @@
   </div>
 </template>
 
-<style>
-  .vue-superscroll-wapper {
+<style scoped>
+  .super-scroll-wapper {
     height: 100%;
     width: 100%;
     overflow: hidden;
   }
 
-  .vue-superscroll-wapper .dropped {
+  .super-scroll-wapper .dropped {
     transition: .2s !important;
   }
 
-  .vue-superscroll-container .state-text {
+  .super-scroll-container .state-text {
     position: absolute;
     width: 100%;
     height: 50px;
@@ -47,7 +47,8 @@
     topPullText: '下拉刷新',
     topDropText: '释放更新',
     topLoadingText: '加载中...',
-    topLoadedText: '加载完成',
+    topDoneText: '加载完成',
+    topFailText: '加载失败',
     topLoadedStayTime: 400,
     topStayDistance: 50,
     topTriggerDistance: 70
@@ -57,7 +58,8 @@
     bottomPullText: '上拉加载',
     bottomDropText: '释放更新',
     bottomLoadingText: '加载中...',
-    bottomLoadedText: '加载完成',
+    bottomDoneText: '加载完成',
+    bottomFailText: '加载失败',
     bottomLoadedStayTime: 400,
     bottomStayDistance: 50,
     bottomTriggerDistance: 70
@@ -108,7 +110,11 @@
         topText: '',
         bottomState: '',
         bottomText: '',
-        currentY: ''
+        currentY: '',
+        topDroped: false,
+        bottomDroped: false,
+        topLoadedState: '',
+        bottomLoadedState: ''
       };
     },
     watch: {
@@ -123,7 +129,11 @@
             break;
           case 'loading':
             this.topText = config.topLoadingText;
-            this.scroll.scrollTo(0, 50);
+            this.topDroped = true;
+            setTimeout(() => {
+              this.topDroped = false;
+            }, 200);
+            this.scroll.scrollTo(0, this.pullDownConfig.topStayDistance);
             this.$emit('pull-down', this.topLoaded);
             break;
           case 'loaded':
@@ -146,6 +156,10 @@
             break;
           case 'loading':
             this.bottomText = config.bottomLoadingText;
+            this.bottomDroped = true;
+            setTimeout(() => {
+              this.bottomDroped = false;
+            }, 200);
             this.scroll.scrollTo(0, this.scroll.maxScrollY - config.bottomStayDistance);
             this.$emit('pull-up', this.bottomLoaded);
             break;
@@ -167,12 +181,22 @@
         }
       },
 
-      topLoaded() {
-        this.topState = 'loaded';
+      topLoaded(state) {
+        if (state === 'done') {
+          this.topLoadedState = 'done';
+        } else if (state === 'fail') {
+          this.topLoadedState = 'fail';
+        }
+        this.changeState('top', 'loaded');
       },
 
-      bottomLoaded() {
-        this.bottomState = 'loaded';
+      bottomLoaded(state) {
+        if (state === 'done') {
+          this.bottomLoadedState = 'done';
+        } else if (state === 'fail') {
+          this.bottomLoadedState = 'fail';
+        }
+        this.changeState('bottom', 'loaded');
       },
 
       handleScrollStart() {
@@ -186,14 +210,17 @@
       },
 
       handleScroll(pos) {
-        console.log(pos.y)
         this.currentY = pos.y;
-        if (this.topState === 'pull' && pos.y >= this.pullDownConfig.topTriggerDistance) {
+        if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.pullDownConfig.topTriggerDistance) {
           this.changeState('top', 'drop');
+        } else if (this.topState === 'drop' && pos.y < this.pullDownConfig.topTriggerDistance) {
+          this.changeState('top', 'pull');
         }
 
-        if (this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.pullUpConfig.bottomTriggerDistance) {
+        if (this.topState !== 'loading' && this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.pullUpConfig.bottomTriggerDistance) {
           this.changeState('bottom', 'drop');
+        } else if (this.bottomState === 'drop' && pos.y > this.pullUpConfig.bottomTriggerDistance) {
+          this.changeState('bottom', 'pull');
         }
       },
 
