@@ -83,6 +83,16 @@
   export default {
     name: 'super-scroll',
     props: {
+      isPullDown: {
+        type: Boolean,
+        default: false
+      },
+
+      isPullUp: {
+        type: Boolean,
+        default: false
+      },
+
       startY: {
         type: Number,
         default: 0
@@ -258,9 +268,7 @@
         }
       },
 
-      handleTouchEnd(pos) {
-        console.log(pos.y);
-
+      handleTouchEnd() {
         if (this.topState !== 'loading' && this.topState === 'drop') {
           this.changeState('top', 'loading');
         }
