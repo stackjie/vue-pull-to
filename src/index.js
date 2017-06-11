@@ -1,3 +1,3 @@
-import superScroll from './vue-super-scroll.vue';
+import FastScroll from './vue-fast-scroll.vue';
 
-export default superScroll;
+export default FastScroll;

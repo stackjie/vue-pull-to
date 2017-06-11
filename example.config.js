@@ -6,12 +6,10 @@ function resolve (dir) {
 }
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './example/main.js',
   output: {
-    library: 'VueFastScroll',
-    libraryTarget: 'umd',
-    filename: 'vue-fast-scroll.js',
-    path: resolve('dist'),
+    filename: 'main.js',
+    path: resolve('example/dist'),
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -45,6 +43,12 @@ module.exports = {
         loader: 'style-loader!css-loader',
         include: [resolve('src'), resolve('example')],
       },
+      {
+        test: /\.less/,
+        loader: 'style-loader!css-loader!less-loader',
+        include: [resolve('src'), resolve('example')],
+      }
     ],
   },
 };
+

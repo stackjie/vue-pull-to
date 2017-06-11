@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>pulldown-pullup-example</title>
+  <title>vue-fast-scroll-example</title>
   <style>
     * {
       margin: 0;
@@ -19,43 +19,7 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;">
-  <super-scroll @pull-down="topMethod" @pull-up="bottomMethod">
-      <div style="background: #fff;height: 1200px;">
-        <ul>
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
-          <li>4</li>
-        </ul>
-      </div>
-  </super-scroll>
 </div>
-<script src="../node_modules/vue/dist/vue.js"></script>
-<script src="../dist/vue-super-scroll.js"></script>
-<script>
-  new Vue({
-    el: '#app',
-    components: {superScroll: VueSuperScroll.default},
-    computed: {},
-    data: {
-    },
-    created: function () {
-    },
-    methods: {
-      topMethod: function (loaded) {
-        var that = this;
-        setTimeout(function () {
-          loaded();
-        }, 500)
-      },
-      bottomMethod: function (loaded) {
-        var that = this;
-        setTimeout(function () {
-          loaded('done');
-        }, 1000)
-      }
-    }
-  })
-</script>
+<script src="dist/main.js"></script>
 </body>
 </html>

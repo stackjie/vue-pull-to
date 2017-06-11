@@ -2,11 +2,11 @@
   <div class="super-scroll-wapper">
     <div class="super-scroll-container" :class="{triggered: topTriggered || bottomTriggered}">
       <slot name="top from topText">
-        <p class="state-text state-text-top">{{ topText }}</p>
+        <p v-if="isPullDown" class="state-text state-text-top">{{ topText }}</p>
       </slot>
       <slot></slot>
       <slot name="bottom from bottomText">
-        <p class="state-text state-text-bottom">{{ bottomText }}</p>
+        <p v-if="isPullUp" class="state-text state-text-bottom">{{ bottomText }}</p>
       </slot>
     </div>
   </div>
@@ -81,8 +81,18 @@
   };
 
   export default {
-    name: 'super-scroll',
+    name: 'fast-scroll',
     props: {
+      isPullDown: {
+        type: Boolean,
+        default: false
+      },
+
+      isPullUp: {
+        type: Boolean,
+        default: false
+      },
+
       startY: {
         type: Number,
         default: 0
@@ -244,28 +254,31 @@
       },
 
       handleScroll(pos) {
-        this.$emit('scroll', pos);
-        if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.topConfig.triggerDistance) {
-          this.changeState('top', 'drop');
-        } else if (this.topState === 'drop' && pos.y < this.topConfig.triggerDistance) {
-          this.changeState('top', 'pull');
+        if (this.isPullDown) {
+          if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.topConfig.triggerDistance) {
+            this.changeState('top', 'drop');
+          } else if (this.topState === 'drop' && pos.y < this.topConfig.triggerDistance) {
+            this.changeState('top', 'pull');
+          }
         }
 
-        if (this.topState !== 'loading' && this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.bottomConfig.triggerDistance) {
-          this.changeState('bottom', 'drop');
-        } else if (this.bottomState === 'drop' && pos.y > this.bottomConfig.triggerDistance) {
-          this.changeState('bottom', 'pull');
+        if (this.isPullUp) {
+          if (this.topState !== 'loading' && this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.bottomConfig.triggerDistance) {
+            this.changeState('bottom', 'drop');
+          } else if (this.bottomState === 'drop' && pos.y > this.bottomConfig.triggerDistance) {
+            this.changeState('bottom', 'pull');
+          }
         }
+
+        this.$emit('scroll', pos);
       },
 
-      handleTouchEnd(pos) {
-        console.log(pos.y);
-
-        if (this.topState !== 'loading' && this.topState === 'drop') {
+      handleTouchEnd() {
+        if (this.topState !== 'loading' && this.topState === 'drop' && this.isPullDown) {
           this.changeState('top', 'loading');
         }
 
-        if (this.topState !== 'loading' && this.bottomState === 'drop') {
+        if (this.topState !== 'loading' && this.bottomState === 'drop' && this.isPullUp) {
           this.changeState('bottom', 'loading');
         }
       },
