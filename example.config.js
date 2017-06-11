@@ -9,7 +9,7 @@ module.exports = {
   entry: './example/main.js',
   output: {
     filename: 'main.js',
-    path: resolve('dist'),
+    path: resolve('example/dist'),
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -43,6 +43,11 @@ module.exports = {
         loader: 'style-loader!css-loader',
         include: [resolve('src'), resolve('example')],
       },
+      {
+        test: /\.less/,
+        loader: 'style-loader!css-loader!less-loader',
+        include: [resolve('src'), resolve('example')],
+      }
     ],
   },
 };

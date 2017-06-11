@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import routes from './routes'
+import routes from './routers'
 
 const app = new Vue({
   el: '#app',
