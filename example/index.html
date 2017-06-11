@@ -19,15 +19,20 @@
 </head>
 <body style="height: 100%">
 <div id="app" style="background: #ccc;height: 100%;">
-  <super-scroll is-pull-down is-pull-up @pull-down="topMethod" @pull-up="bottomMethod">
-      <div style="background: #fff;height: 1200px;">
-        <ul>
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
-          <li>4</li>
-        </ul>
-      </div>
+  <super-scroll
+    is-pull-down
+    is-pull-up
+    @pull-down="topMethod"
+    @pull-up="bottomMethod"
+    @scroll="handleScroll">
+    <div style="background: #fff;height: 1200px;">
+      <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+      </ul>
+    </div>
   </super-scroll>
 </div>
 <script src="../node_modules/vue/dist/vue.js"></script>
@@ -37,8 +42,7 @@
     el: '#app',
     components: {superScroll: VueSuperScroll.default},
     computed: {},
-    data: {
-    },
+    data: {},
     created: function () {
     },
     methods: {
@@ -53,6 +57,9 @@
         setTimeout(function () {
           loaded('done');
         }, 1000)
+      },
+      handleScroll(pos) {
+        console.log(pos.y);
       }
     }
   })
