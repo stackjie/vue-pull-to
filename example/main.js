@@ -10,7 +10,7 @@ const app = new Vue({
     ViewComponent () {
       const matchingView = routes[this.currentRoute]
       if (matchingView) {
-        require('./pages/' + matchingView + '.vue')
+        return require('./pages/' + matchingView + '.vue')
       }
     }
   },

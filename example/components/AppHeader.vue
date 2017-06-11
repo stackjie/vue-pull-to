@@ -5,22 +5,6 @@
   </header>
 </template>
 
-<script type="text/babel">
-  export default {
-    name: 'app-header',
-    data () {
-      return {
-      }
-    },
-    props: {
-      isBack: true
-    },
-    methods: {},
-    watch: {}
-
-  }
-</script>
-
 <style scoped rel="stylesheet/less" lang="less">
   .app-header {
     z-index: 500;
@@ -42,4 +26,20 @@
     text-align: center;
   }
 </style>
+
+<script type="text/babel">
+  export default {
+    name: 'app-header',
+    data () {
+      return {
+      }
+    },
+    props: {
+      isBack: true
+    },
+    methods: {},
+    watch: {}
+
+  }
+</script>
 
