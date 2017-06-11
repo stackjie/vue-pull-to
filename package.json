@@ -1,5 +1,5 @@
 {
-  "name": "vue-pulldown-pullup",
+  "name": "vue-fast-scroll",
   "version": "1.0.0",
   "description": "A pull to refresh and lnfinite scroll component for vue.js",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stackjie/vue-pulldown-pullup.git"
+    "url": "git+https://github.com/stackjie/vue-fast-scroll.git"
   },
   "author": "stackjie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stackjie/vue-pulldown-pullup/issues"
+    "url": "https://github.com/stackjie/vue-fast-scroll/issues"
   },
-  "homepage": "https://github.com/stackjie/vue-pulldown-pullup#readme",
+  "homepage": "https://github.com/stackjie/vue-fast-scroll#readme",
   "dependencies": {
     "better-scroll": "^0.1.15",
     "vue": "^2.2.6"

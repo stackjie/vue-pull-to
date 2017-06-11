@@ -81,7 +81,7 @@
   };
 
   export default {
-    name: 'super-scroll',
+    name: 'fast-scroll',
     props: {
       isPullDown: {
         type: Boolean,
