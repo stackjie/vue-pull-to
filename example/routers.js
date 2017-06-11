@@ -1,4 +1,7 @@
 export default {
   '/': 'Home',
-  '/about': 'About'
+  '/bounce-scroll': 'BounceScroll',
+  '/simple-pullto-loadmore': 'SimplePullToLoadMore',
+  '/simple-pullto-refresh': 'SimplePullToRefresh',
+  '/infinite-scroll': 'InfiniteScroll'
 }
