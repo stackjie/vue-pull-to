@@ -4,7 +4,7 @@
   "description": "A pull to refresh and lnfinite scroll component for vue.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --config example.config.js --port 9091 --inline --hot --content-base ./example"
   },
   "repository": {
     "type": "git",
