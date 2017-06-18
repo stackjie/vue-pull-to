@@ -1,37 +1,37 @@
 export const topState = {
-  currentState: '',
+  state: '',
   actions: {
     pull(payload) {
-      this.currentState = 'pull';
+      this.state = 'pull';
     },
 
     trigger(payload) {
-      this.currentState = 'trigger';
+      this.state = 'trigger';
     },
 
     loading(payload) {
-      this.currentState = 'loading';
+      this.state = 'loading';
     },
 
     loaded(payload) {
-      this.currentState = 'loaded';
+      this.state = 'loaded';
     }
   }
 };
 
 export const bottomState = {
-  currentState: '',
+  state: '',
   actions: {
     pull(payload) {
-      this.currentState = 'pull';
+      this.state = 'pull';
     },
 
     trigger(payload) {
-      this.currentState = 'trigger';
+      this.state = 'trigger';
     },
 
     loading(payload) {
-      this.currentState = 'loading';
+      this.state = 'loading';
     },
 
     loaded(payload) {
