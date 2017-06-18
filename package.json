@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/stackjie/vue-fast-scroll#readme",
   "dependencies": {
-    "better-scroll": "^0.1.15",
+    "better-scroll": "^0.2.4",
     "vue": "^2.2.6"
   },
   "devDependencies": {
