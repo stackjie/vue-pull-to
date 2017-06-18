@@ -13,6 +13,7 @@
 <style scoped>
   .fast-scroll-wapper {
     height: 100%;
+    overflow-y: scroll;
   }
 
   .triggered {
@@ -35,3 +36,7 @@
     margin-bottom: -50px;
   }
 </style>
+
+<script type="text/babel">
+  import utils from './utils.js';
+</script>
