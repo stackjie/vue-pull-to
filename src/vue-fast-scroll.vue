@@ -38,5 +38,10 @@
 </style>
 
 <script type="text/babel">
-  import utils from './utils.js';
+  import utils from './utils';
+  import state from './state';
+
+  export default {
+    name: 'fast-scroll'
+  }
 </script>
