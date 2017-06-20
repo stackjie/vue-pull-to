@@ -1,15 +1,8 @@
 const utils = {
-  //  验证prop config如果不存在配置项将默认配置项加入配置对象中
-  configValidator(config, defaultConfig) {
-    if (config !== {} && config !== null) {
-      Object.keys(defaultConfig).forEach((key) => {
-        if (!config.hasOwnProperty(key)) {
-          config[key] = defaultConfig[key]
-        }
-      });
-      return config;
+  extend(target, source) {
+    for (let key in source) {
+      target[key] = source[key];
     }
-    return defaultConfig;
   },
 
   getScrollTop(element) {
@@ -26,7 +19,7 @@ const utils = {
     } else {
       return this.$el.getBoundingClientRect().bottom <= this.scrollEventTarget.getBoundingClientRect().bottom + 1;
     }
-  },
+  }
 };
 
 export default utils;
