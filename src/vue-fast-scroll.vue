@@ -1,5 +1,7 @@
 <template>
-  <div class="fast-scroll-wapper" :class="{triggered: topTriggered || bottomTriggered}">
+  <div class="fast-scroll-warpper"
+       :class="{ triggered: topTriggered || bottomTriggered }"
+       :style="{ transform: `translate3d(0, ${distance}px, 0)` }">
     <slot name="top from topText">
       <p class="state-text state-text-top">{{ topText }}</p>
     </slot>
@@ -11,7 +13,7 @@
 </template>
 
 <style scoped>
-  .fast-scroll-wapper {
+  .fast-scroll-warpper {
     height: 100%;
     overflow-y: scroll;
   }
@@ -92,11 +94,43 @@
       }
     },
     data() {
-      return{};
+      return {
+        startY: '',
+        distance: 0
+      };
     },
     methods: {
+      handleTouchStart(event) {
+        this.startY = event.touches[0].clientY;
+      },
+
+      handleTouchMove(event) {
+        if (this.startY < this.$el.getBoundingClientRect().top && this.startY > this.$el.getBoundingClientRect().bottom) {
+          return;
+        }
+
+        this.currentY = event.touches[0].clientY;
+        if (this.getScrollTop(this.$el) === 0 && this.distance > 0) {
+          event.preventDefault();
+          event.stopPropagation();
+//          if (distance >= this.topDistance) {
+//            this.topStatus = 'drop';
+//          }
+          this.distance = (this.currentY - this.startY) / this.distanceIndex;
+        }
+      },
+
+      handleTouchEnd(event) {
+      },
+
+      bindEvents() {
+        this.$el.addEventListener('touchstart', this.handleTouchStart);
+        this.$el.addEventListener('touchmove', this.handleTouchMove);
+        this.$el.addEventListener('touchend', this.handleTouchEnd);
+      }
     },
     mounted() {
+      this.bindEvents();
     }
   }
 </script>
