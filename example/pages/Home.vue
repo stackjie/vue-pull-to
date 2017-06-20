@@ -20,7 +20,7 @@
 </style>
 
 <script type="text/babel">
-  import FastScroll from '@/vue-fast-scroll_bak.vue'
+  import FastScroll from '@/vue-fast-scroll.vue'
 
   export default {
     name: 'home',

@@ -2,13 +2,13 @@
   <div class="fast-scroll-warpper"
        :class="{ triggered: topTriggered || bottomTriggered }"
        :style="{ transform: `translate3d(0, ${distance}px, 0)` }">
-    <slot name="top from topText">
-      <p class="state-text state-text-top">{{ topText }}</p>
-    </slot>
+    <!--<slot name="top from topText">-->
+      <!--<p class="state-text state-text-top">{{ topText }}</p>-->
+    <!--</slot>-->
     <slot></slot>
-    <slot name="bottom from bottomText">
-      <p class="state-text state-text-bottom">{{ bottomText }}</p>
-    </slot>
+    <!--<slot name="bottom from bottomText">-->
+      <!--<p class="state-text state-text-bottom">{{ bottomText }}</p>-->
+    <!--</slot>-->
   </div>
 </template>
 
@@ -41,7 +41,7 @@
 
 <script type="text/babel">
   import utils from './utils';
-  import { topState, bottomState } from './state';
+  import { topAction, bottomAction } from './actions';
 
   const TOP_DEFAULT_CONFIG = {
     pullText: '下拉刷新',
@@ -95,8 +95,16 @@
     },
     data() {
       return {
-        startY: '',
-        distance: 0
+        startY: 0,
+        currentY: 0,
+        distance: 0,
+        topTriggered: false,
+        bottomTriggered: false,
+        topAction,
+        bottomAction,
+        testObj() {
+          console.log(this);
+        }
       };
     },
     methods: {
@@ -110,13 +118,8 @@
         }
 
         this.currentY = event.touches[0].clientY;
-        if (this.getScrollTop(this.$el) === 0 && this.distance > 0) {
-          event.preventDefault();
-          event.stopPropagation();
-//          if (distance >= this.topDistance) {
-//            this.topStatus = 'drop';
-//          }
-          this.distance = (this.currentY - this.startY) / this.distanceIndex;
+        if (utils.getScrollTop(this.$el) === 0) {
+          this.topAction.pull();
         }
       },
 
@@ -131,6 +134,7 @@
     },
     mounted() {
       this.bindEvents();
+      this.testObj();
     }
   }
 </script>
