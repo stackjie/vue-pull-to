@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <fast-scroll>
+    <fast-scroll @top-load="topLoad">
       <div class="list-view">
       </div>
     </fast-scroll>
@@ -9,13 +9,14 @@
 
 <style>
   .wrapper {
+    padding-top: 50px;
     height: 100%;
+    z-index: 450;
   }
 
   .list-view {
-    z-index: 999;
+    height: 800px;
     background: #fff;
-    height: 569px;
   }
 </style>
 
@@ -34,7 +35,13 @@
     props: {
       isBack: true
     },
-    methods: {},
+    methods: {
+      topLoad(loaded) {
+        setTimeout(() => {
+          loaded();
+        }, 1000)
+      }
+    },
     watch: {}
   }
 </script>

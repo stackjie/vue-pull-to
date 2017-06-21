@@ -7,11 +7,14 @@
 
 <style scoped rel="stylesheet/less" lang="less">
   .app-header {
-    z-index: 500;
+    position: absolute;
+    left: 0;
+    top: 0;
     box-sizing: border-box;
     align-items: center;
     width: 100%;
     height: 50px;
+    z-index: 500;
     background: #35495e;
     color: #fff;
   }
