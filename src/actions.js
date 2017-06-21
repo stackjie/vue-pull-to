@@ -1,21 +1,31 @@
 const topAction = {
-  scope: this,
-  pull(payload) {
-    const scope = this.scope;
+  pull(scope) {
     scope.topState = 'pull';
+    scope.topText = scope.topConfig.pullText;
     scope.distance = (scope.currentY - scope.startY) / scope.distanceIndex;
   },
 
-  trigger(payload) {
-    this.topState = 'trigger';
+  trigger(scope) {
+    scope.topState = 'trigger';
+    scope.topText = scope.topConfig.triggerText;
   },
 
-  loading(payload) {
-    this.topState = 'loading';
+  loading(scope) {
+    scope.topState = 'loading';
+    scope.topText = scope.topConfig.loadingText;
+    scope.distance = scope.topConfig.stayDistance;
+    scope.$emit('top-load', scope.topLoaded);
   },
 
-  loaded(payload) {
+  loaded(scope, loadState) {
     this.topState = 'loaded';
+
+    scope.topText = loadState === 'done'
+      ? scope.topConfig.doneText
+      : scope.topConfig.failText;
+    setTimeout(() => {
+      scope.distance = 0;
+    }, scope.topConfig.loadedStayTime)
   }
 };
 

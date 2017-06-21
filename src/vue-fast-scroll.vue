@@ -2,13 +2,13 @@
   <div class="fast-scroll-warpper"
        :class="{ triggered: topTriggered || bottomTriggered }"
        :style="{ transform: `translate3d(0, ${distance}px, 0)` }">
-    <!--<slot name="top from topText">-->
-      <!--<p class="state-text state-text-top">{{ topText }}</p>-->
-    <!--</slot>-->
+    <slot name="top from topText">
+      <p class="state-text state-text-top">{{ topText }}</p>
+    </slot>
     <slot></slot>
-    <!--<slot name="bottom from bottomText">-->
-      <!--<p class="state-text state-text-bottom">{{ bottomText }}</p>-->
-    <!--</slot>-->
+    <slot name="bottom from bottomText">
+      <p class="state-text state-text-bottom">{{ bottomText }}</p>
+    </slot>
   </div>
 </template>
 
@@ -19,24 +19,23 @@
   }
 
   .triggered {
-    transition: .2s !important;
+    transition: .2s;
   }
 
-  .fast-scroll-wapper .state-text {
-    position: absolute;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-  }
+  /*.fast-scroll-warpper .state-text {*/
+    /*width: 100%;*/
+    /*height: 50px;*/
+    /*line-height: 50px;*/
+    /*text-align: center;*/
+  /*}*/
 
-  .state-text-top {
-    margin-top: -50px;
-  }
+  /*.state-text-top {*/
+    /*margin-top: -50px;*/
+  /*}*/
 
-  .state-text-bottom {
-    margin-bottom: -50px;
-  }
+  /*.state-text-bottom {*/
+    /*margin-bottom: -50px;*/
+  /*}*/
 </style>
 
 <script type="text/babel">
@@ -93,21 +92,42 @@
         }
       }
     },
+    computed: {
+      topTriggered() {
+        if (this.topState !== '' && this.topState !== 'pull') {
+          return true;
+        }
+        return false;
+      },
+      bottomTriggered() {
+        if (this.bottomState !== '' && this.bottomState !== 'pull') {
+          return true;
+        }
+        return false;
+      }
+    },
     data() {
       return {
         startY: 0,
         currentY: 0,
         distance: 0,
-        topTriggered: false,
-        bottomTriggered: false,
+        topText: '',
+        bottomText: '',
+        topState: '',
+        bottomState: '',
         topAction,
-        bottomAction,
-        testObj() {
-          console.log(this);
-        }
+        bottomAction
       };
     },
     methods: {
+      topLoaded(loadState = 'done') {
+        this.topAction.loaded(this, loadState);
+      },
+
+      bottomLoaded(loadState = 'done') {
+        this.bottomAction.loaded(this, loadState);
+      },
+
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
       },
@@ -119,11 +139,20 @@
 
         this.currentY = event.touches[0].clientY;
         if (utils.getScrollTop(this.$el) === 0) {
-          this.topAction.pull();
+          event.preventDefault();
+          event.stopPropagation();
+          this.topAction.pull(this);
+
+          if (this.distance >= this.topConfig.triggerDistance) {
+            this.topAction.trigger(this);
+          }
         }
       },
 
       handleTouchEnd(event) {
+        if (this.topState === 'trigger') {
+          this.topAction.loading(this);
+        }
       },
 
       bindEvents() {
@@ -134,7 +163,6 @@
     },
     mounted() {
       this.bindEvents();
-      this.testObj();
     }
   }
 </script>
