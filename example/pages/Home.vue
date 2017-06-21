@@ -15,7 +15,7 @@
   }
 
   .list-view {
-    height: 800px;
+    height: 1000px;
     background: #fff;
   }
 </style>

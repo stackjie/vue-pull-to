@@ -139,10 +139,7 @@
 
         this.currentY = event.touches[0].clientY;
         if (utils.getScrollTop(this.$el) === 0) {
-          event.preventDefault();
-          event.stopPropagation();
           this.topAction.pull(this);
-
           if (this.distance >= this.topConfig.triggerDistance) {
             this.topAction.trigger(this);
           }
