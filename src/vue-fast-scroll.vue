@@ -1,20 +1,26 @@
 <template>
-  <div class="fast-scroll-warpper"
-       :class="{ triggered: topTriggered || bottomTriggered }"
-       :style="{ transform: `translate3d(0, ${distance}px, 0)` }">
-    <slot name="top from topText">
-      <p class="state-text state-text-top">{{ topText }}</p>
-    </slot>
-    <slot></slot>
-    <slot name="bottom from bottomText">
-      <p class="state-text state-text-bottom">{{ bottomText }}</p>
-    </slot>
+  <div class="fast-scroll-wrapper">
+    <div class="fast-scroll-container"
+         :class="{ triggered: topTriggered || bottomTriggered }"
+         :style="{ transform: `translate3d(0, ${translate}px, 0)` }">
+      <slot name="top from topText">
+        <p class="state-text state-text-top">{{ topText }}</p>
+      </slot>
+      <slot></slot>
+      <slot name="bottom from bottomText">
+        <p class="state-text state-text-bottom">{{ bottomText }}</p>
+      </slot>
+    </div>
   </div>
 </template>
 
 <style scoped>
-  .fast-scroll-warpper {
+  .fast-scroll-wrapper {
     height: 100%;
+    overflow: hidden;
+  }
+
+  .fast-scroll-container {
     overflow-y: scroll;
   }
 
@@ -22,20 +28,21 @@
     transition: .2s;
   }
 
-  /*.fast-scroll-warpper .state-text {*/
-    /*width: 100%;*/
-    /*height: 50px;*/
-    /*line-height: 50px;*/
-    /*text-align: center;*/
-  /*}*/
+  .fast-scroll-wrapper .state-text {
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
 
-  /*.state-text-top {*/
-    /*margin-top: -50px;*/
-  /*}*/
+  .state-text-top {
+    margin-top: -50px;
+  }
 
-  /*.state-text-bottom {*/
-    /*margin-bottom: -50px;*/
-  /*}*/
+  .state-text-bottom {
+    margin-bottom: -50px;
+  }
 </style>
 
 <script type="text/babel">
@@ -111,6 +118,7 @@
         startY: 0,
         currentY: 0,
         distance: 0,
+        translate: 0,
         topText: '',
         bottomText: '',
         topState: '',
@@ -138,7 +146,10 @@
         }
 
         this.currentY = event.touches[0].clientY;
-        if (utils.getScrollTop(this.$el) === 0) {
+        this.distance = (this.currentY - this.startY) / this.distanceIndex;
+        if (utils.getScrollTop(this.$el) === 0 && this.distance > 0) {
+          event.preventDefault();
+          event.stopPropagation();
           this.topAction.pull(this);
           if (this.distance >= this.topConfig.triggerDistance) {
             this.topAction.trigger(this);

@@ -2,7 +2,7 @@ const topAction = {
   pull(scope) {
     scope.topState = 'pull';
     scope.topText = scope.topConfig.pullText;
-    scope.distance = (scope.currentY - scope.startY) / scope.distanceIndex;
+    scope.translate = scope.distance;
   },
 
   trigger(scope) {
@@ -13,7 +13,7 @@ const topAction = {
   loading(scope) {
     scope.topState = 'loading';
     scope.topText = scope.topConfig.loadingText;
-    scope.distance = scope.topConfig.stayDistance;
+    scope.translate = scope.topConfig.stayDistance;
     scope.$emit('top-load', scope.topLoaded);
   },
 
@@ -24,7 +24,7 @@ const topAction = {
       ? scope.topConfig.doneText
       : scope.topConfig.failText;
     setTimeout(() => {
-      scope.distance = 0;
+      scope.translate = 0;
     }, scope.topConfig.loadedStayTime)
   }
 };
