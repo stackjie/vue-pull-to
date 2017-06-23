@@ -1,27 +1,27 @@
 <template>
-  <div class="fast-scroll-wrapper">
-    <div class="fast-scroll-container"
-         :class="{ triggered: topTriggered || bottomTriggered }"
-         :style="{ transform: `translate3d(0, ${translate}px, 0)` }">
-      <slot name="top from topText">
-        <p class="state-text state-text-top">{{ topText }}</p>
-      </slot>
+  <div class="fast-scroll-wrapper"
+       :class="{ triggered: topTriggered || bottomTriggered }"
+       :style="{ transform: `translate3d(0, ${translate}px, 0)` }">
+    <slot name="top from topText">
+      <p class="state-text state-text-top">{{ topText }}</p>
+    </slot>
+    <div class="scroll-container">
       <slot></slot>
-      <slot name="bottom from bottomText">
-        <p class="state-text state-text-bottom">{{ bottomText }}</p>
-      </slot>
     </div>
+    <slot name="bottom from bottomText">
+      <p class="state-text state-text-bottom">{{ bottomText }}</p>
+    </slot>
   </div>
 </template>
 
 <style scoped>
   .fast-scroll-wrapper {
     height: 100%;
-    overflow: hidden;
   }
 
-  .fast-scroll-container {
-    overflow-y: scroll;
+  .scroll-container {
+    height: 100%;
+    overflow-y: auto;
   }
 
   .triggered {
@@ -29,7 +29,6 @@
   }
 
   .fast-scroll-wrapper .state-text {
-    position: absolute;
     width: 100%;
     height: 50px;
     line-height: 50px;
@@ -47,7 +46,7 @@
 
 <script type="text/babel">
   import utils from './utils';
-  import { topAction, bottomAction } from './actions';
+  import {topAction, bottomAction} from './actions';
 
   const TOP_DEFAULT_CONFIG = {
     pullText: '下拉刷新',
@@ -115,6 +114,7 @@
     },
     data() {
       return {
+        scrollEl: null,
         startY: 0,
         currentY: 0,
         distance: 0,
@@ -141,13 +141,13 @@
       },
 
       handleTouchMove(event) {
-        if (this.startY < this.$el.getBoundingClientRect().top && this.startY > this.$el.getBoundingClientRect().bottom) {
+        if (this.startY < this.scrollEl.getBoundingClientRect().top && this.startY > this.scrollEl.getBoundingClientRect().bottom) {
           return;
         }
 
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex;
-        if (utils.getScrollTop(this.$el) === 0 && this.distance > 0) {
+        if (utils.getScrollTop(this.scrollEl) === 0 && this.distance > 0) {
           event.preventDefault();
           event.stopPropagation();
           this.topAction.pull(this);
@@ -164,13 +164,18 @@
       },
 
       bindEvents() {
-        this.$el.addEventListener('touchstart', this.handleTouchStart);
-        this.$el.addEventListener('touchmove', this.handleTouchMove);
-        this.$el.addEventListener('touchend', this.handleTouchEnd);
+        this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
+        this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
+        this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
+      },
+
+      init() {
+        this.scrollEl = this.$el.querySelector('.scroll-container');
+        this.bindEvents();
       }
     },
     mounted() {
-      this.bindEvents();
+      this.init();
     }
   }
 </script>
