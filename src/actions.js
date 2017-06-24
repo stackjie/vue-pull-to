@@ -2,7 +2,10 @@ const topAction = {
   pull(scope) {
     scope.topState = 'pull';
     scope.topText = scope.topConfig.pullText;
-    scope.translate = scope.distance;
+  },
+
+  pullCancel(scope) {
+    scope.scrollTo(0);
   },
 
   trigger(scope) {
@@ -13,38 +16,38 @@ const topAction = {
   loading(scope) {
     scope.topState = 'loading';
     scope.topText = scope.topConfig.loadingText;
-    scope.translate = scope.topConfig.stayDistance;
+    scope.scrollTo(scope.topConfig.stayDistance);
     scope.$emit('top-load', scope.topLoaded);
   },
 
   loaded(scope, loadState) {
-    this.topState = 'loaded';
+    scope.topState = 'loaded';
 
     scope.topText = loadState === 'done'
       ? scope.topConfig.doneText
       : scope.topConfig.failText;
     setTimeout(() => {
-      scope.translate = 0;
+      scope.scrollTo(0);
     }, scope.topConfig.loadedStayTime)
   }
 };
 
 const bottomAction = {
-  pull(payload) {
-    this.bottomState = 'pull';
-  },
-
-  trigger(payload) {
-    this.bottomState = 'trigger';
-  },
-
-  loading(payload) {
-    this.bottomState = 'loading';
-  },
-
-  loaded(payload) {
-    this.bottomState = 'loaded';
-  }
+  // pull(payload) {
+  //   this.bottomState = 'pull';
+  // },
+  //
+  // trigger(payload) {
+  //   this.bottomState = 'trigger';
+  // },
+  //
+  // loading(payload) {
+  //   this.bottomState = 'loading';
+  // },
+  //
+  // loaded(payload) {
+  //   this.bottomState = 'loaded';
+  // }
 }
 
 export { topAction, bottomAction };

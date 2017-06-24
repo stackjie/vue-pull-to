@@ -1,7 +1,7 @@
 <template>
   <div class="fast-scroll-wrapper"
-       :class="{ triggered: topTriggered || bottomTriggered }"
-       :style="{ transform: `translate3d(0, ${translate}px, 0)` }">
+       :class="{ 'active-transition': activeTransition }"
+       :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
     <slot name="top from topText">
       <p class="state-text state-text-top">{{ topText }}</p>
     </slot>
@@ -24,7 +24,7 @@
     overflow-y: auto;
   }
 
-  .triggered {
+  .active-transition {
     transition: .2s;
   }
 
@@ -98,36 +98,32 @@
         }
       }
     },
-    computed: {
-      topTriggered() {
-        if (this.topState !== '' && this.topState !== 'pull') {
-          return true;
-        }
-        return false;
-      },
-      bottomTriggered() {
-        if (this.bottomState !== '' && this.bottomState !== 'pull') {
-          return true;
-        }
-        return false;
-      }
-    },
     data() {
       return {
         scrollEl: null,
         startY: 0,
         currentY: 0,
         distance: 0,
-        translate: 0,
+        diff: 0,
+        beforeDiff: 0,
         topText: '',
         bottomText: '',
         topState: '',
         bottomState: '',
+        activeTransition: false,
         topAction,
         bottomAction
       };
     },
     methods: {
+      scrollTo(y) {
+        this.activeTransition = true;
+        this.diff = y;
+        setTimeout(() => {
+          this.activeTransition = false;
+        }, 200)
+      },
+
       topLoaded(loadState = 'done') {
         this.topAction.loaded(this, loadState);
       },
@@ -138,6 +134,7 @@
 
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
+        this.beforeDiff = this.diff;
       },
 
       handleTouchMove(event) {
@@ -147,19 +144,29 @@
 
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex;
-        if (utils.getScrollTop(this.scrollEl) === 0 && this.distance > 0) {
-          event.preventDefault();
-          event.stopPropagation();
-          this.topAction.pull(this);
-          if (this.distance >= this.topConfig.triggerDistance) {
+        if (utils.getScrollTop(this.scrollEl) === 0) {
+          if (this.diff > 0) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          this.diff = this.distance + this.beforeDiff;
+
+          if (this.distance < this.topConfig.triggerDistance && this.topState !== 'pull' && this.topState !== 'loading') {
+            this.topAction.pull(this);
+            console.log('pull');
+          } else if (this.distance >= this.topConfig.triggerDistance && this.topState !== 'trigger' && this.topState !== 'loading') {
             this.topAction.trigger(this);
+            console.log('trigger');
           }
         }
       },
 
-      handleTouchEnd(event) {
+      handleTouchEnd() {
         if (this.topState === 'trigger') {
           this.topAction.loading(this);
+        } else {
+          this.topAction.pullCancel(this);
         }
       },
 
