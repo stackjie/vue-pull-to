@@ -134,7 +134,7 @@
       topLoad(loaded) {
         setTimeout(() => {
           loaded();
-        }, 1000)
+        }, 10000)
       }
     },
     watch: {}
