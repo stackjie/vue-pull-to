@@ -65,9 +65,13 @@
           </li>
           <li>
             123
-          </li><li>
-          123
-        </li>
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
           <li>
             123
           </li>
@@ -79,23 +83,28 @@
           </li>
           <li>
             123
-          </li><li>
-          123
-        </li><li>
-          123
-        </li><li>
-          123
-        </li><li>
-          123
-        </li><li>
-          123
-        </li><li>
-          123
-        </li><li>
-          123
-        </li><li>
-          123
-        </li>
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
+          <li>
+            123
+          </li>
         </ul>
       </div>
     </fast-scroll>
@@ -104,9 +113,9 @@
 
 <style>
   .wrapper {
+    box-sizing: border-box;
     padding-top: 50px;
     height: 100%;
-    z-index: 450;
   }
 
   .list-view {
@@ -124,8 +133,7 @@
       FastScroll
     },
     data () {
-      return {
-      }
+      return {}
     },
     props: {
       isBack: true
