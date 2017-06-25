@@ -16,11 +16,13 @@
 
 <style scoped>
   .fast-scroll-wrapper {
+    display: flex;
+    flex-direction: column;
     height: 100%;
   }
 
   .scroll-container {
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
   }
 
@@ -29,6 +31,8 @@
   }
 
   .fast-scroll-wrapper .state-text {
+    /*position: absolute;*/
+    position: relative;
     width: 100%;
     height: 50px;
     line-height: 50px;
@@ -124,6 +128,11 @@
         }, 200)
       },
 
+      checkBottomReached() {
+        console.log(this.scrollEl.scrollTop + this.scrollEl.offsetHeight);
+        return this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
+      },
+
       topLoaded(loadState = 'done') {
         this.topAction.loaded(this, loadState);
       },
@@ -144,7 +153,7 @@
 
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex;
-        if (utils.getScrollTop(this.scrollEl) === 0) {
+        if (this.scrollEl.scrollTop === 0) {
           if (this.diff > 0) {
             event.preventDefault();
             event.stopPropagation();
@@ -160,14 +169,35 @@
             console.log('trigger');
           }
         }
+//        else if (this.checkBottomReached()) {
+//          if (this.diff > 0) {
+//            event.preventDefault();
+//            event.stopPropagation();
+//          }
+//
+//          this.diff = this.distance + this.beforeDiff;
+//
+//          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
+//            this.bottomAction.pull(this);
+//            console.log('pull');
+//          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
+//            this.bottomAction.trigger(this);
+//            console.log('trigger');
+//          }
+//        }
       },
 
       handleTouchEnd() {
         if (this.topState === 'trigger') {
           this.topAction.loading(this);
-        } else {
+        } else if (this.topState !== 'trigger') {
           this.topAction.pullCancel(this);
         }
+//        if (this.bottomState === 'trigger') {
+//          this.bottomAction.loading(this);
+//        } else if (this.bottomState !== 'trigger') {
+//          this.bottomAction.pullCancel(this);
+//        }
       },
 
       bindEvents() {
