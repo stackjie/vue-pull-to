@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <fast-scroll @top-load="topLoad">
+    <fast-scroll @top-load="topLoad" @infinite-scroll="infiniteScrollLoad">
       <div class="list-view">
         <ul>
           <li>
@@ -143,6 +143,12 @@
         setTimeout(() => {
           loaded();
         }, 10000)
+      },
+      infiniteScrollLoad() {
+        console.log('开始');
+        setTimeout(() => {
+          console.log('结束');
+        }, 1000)
       }
     },
     watch: {}

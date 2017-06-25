@@ -147,10 +147,6 @@
         bottomAction.loaded(this, loadState);
       },
 
-      infiniteScrollLoaded() {
-        this.flagInfiniteScroll = false;
-      },
-
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
         this.beforeDiff = this.diff;
@@ -163,6 +159,7 @@
 
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
+
         if (this.scrollEl.scrollTop === 0) {
           if (this.distance >= 0) {
             event.preventDefault();
@@ -179,7 +176,7 @@
         } else if (this.checkBottomReached()) {
           if (!this.flagInfiniteScroll) {
             this.flagInfiniteScroll = true;
-            this.$emit('infinite-scroll', this.infiniteScrollLoaded);
+            this.$emit('infinite-scroll');
           }
 
           if (this.distance <= 0) {
@@ -190,7 +187,7 @@
           }
 
           if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
-            console.log('pull');
+            bottomAction.pull(this);
           } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
             bottomAction.trigger(this);
           }
@@ -206,6 +203,11 @@
         if (this.bottomState === 'trigger') {
           bottomAction.loading(this);
           return;
+        }
+
+        // reset flagInfiniteScroll
+        if (this.flagInfiniteScroll) {
+          this.flagInfiniteScroll = !(this.distance >= 30);
         }
 
         // pull cancel
