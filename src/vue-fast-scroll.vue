@@ -24,6 +24,7 @@
   .scroll-container {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .active-transition {
@@ -31,7 +32,6 @@
   }
 
   .fast-scroll-wrapper .state-text {
-    /*position: absolute;*/
     position: relative;
     width: 100%;
     height: 50px;
@@ -50,7 +50,7 @@
 
 <script type="text/babel">
   import utils from './utils';
-  import {topAction, bottomAction} from './actions';
+  import { topAction, bottomAction } from './actions';
 
   const TOP_DEFAULT_CONFIG = {
     pullText: '下拉刷新',
@@ -115,9 +115,16 @@
         topState: '',
         bottomState: '',
         activeTransition: false,
-        topAction,
-        bottomAction
+        flagInfiniteScroll: false
       };
+    },
+    watch: {
+      topState(val) {
+        this.$emit('top-state-change', val);
+      },
+      bottomState(val) {
+        this.$emit('bottom-state-change', val);
+      }
     },
     methods: {
       scrollTo(y) {
@@ -129,16 +136,19 @@
       },
 
       checkBottomReached() {
-        console.log(this.scrollEl.scrollTop + this.scrollEl.offsetHeight);
         return this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
       },
 
       topLoaded(loadState = 'done') {
-        this.topAction.loaded(this, loadState);
+        topAction.loaded(this, loadState);
       },
 
       bottomLoaded(loadState = 'done') {
-        this.bottomAction.loaded(this, loadState);
+        bottomAction.loaded(this, loadState);
+      },
+
+      infiniteScrollLoaded() {
+        this.flagInfiniteScroll = false;
       },
 
       handleTouchStart(event) {
@@ -152,52 +162,54 @@
         }
 
         this.currentY = event.touches[0].clientY;
-        this.distance = (this.currentY - this.startY) / this.distanceIndex;
+        this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
         if (this.scrollEl.scrollTop === 0) {
-          if (this.diff > 0) {
+          if (this.distance >= 0) {
             event.preventDefault();
             event.stopPropagation();
+            this.diff = this.distance;
+            this.$emit('top-pull', this.diff);
           }
-
-          this.diff = this.distance + this.beforeDiff;
 
           if (this.distance < this.topConfig.triggerDistance && this.topState !== 'pull' && this.topState !== 'loading') {
-            this.topAction.pull(this);
-            console.log('pull');
+            topAction.pull(this);
           } else if (this.distance >= this.topConfig.triggerDistance && this.topState !== 'trigger' && this.topState !== 'loading') {
-            this.topAction.trigger(this);
-            console.log('trigger');
+            topAction.trigger(this);
+          }
+        } else if (this.checkBottomReached()) {
+          if (!this.flagInfiniteScroll) {
+            this.flagInfiniteScroll = true;
+            this.$emit('infinite-scroll', this.infiniteScrollLoaded);
+          }
+
+          if (this.distance <= 0) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.diff = this.distance;
+            this.$emit('bottom-pull', this.diff);
+          }
+
+          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
+            console.log('pull');
+          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
+            bottomAction.trigger(this);
           }
         }
-//        else if (this.checkBottomReached()) {
-//          if (this.diff > 0) {
-//            event.preventDefault();
-//            event.stopPropagation();
-//          }
-//
-//          this.diff = this.distance + this.beforeDiff;
-//
-//          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
-//            this.bottomAction.pull(this);
-//            console.log('pull');
-//          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
-//            this.bottomAction.trigger(this);
-//            console.log('trigger');
-//          }
-//        }
       },
 
       handleTouchEnd() {
         if (this.topState === 'trigger') {
-          this.topAction.loading(this);
-        } else if (this.topState !== 'trigger') {
-          this.topAction.pullCancel(this);
+          topAction.loading(this);
+          return;
         }
-//        if (this.bottomState === 'trigger') {
-//          this.bottomAction.loading(this);
-//        } else if (this.bottomState !== 'trigger') {
-//          this.bottomAction.pullCancel(this);
-//        }
+
+        if (this.bottomState === 'trigger') {
+          bottomAction.loading(this);
+          return;
+        }
+
+        // pull cancel
+        this.scrollTo(0);
       },
 
       bindEvents() {

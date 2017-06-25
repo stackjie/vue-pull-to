@@ -4,10 +4,6 @@ const topAction = {
     scope.topText = scope.topConfig.pullText;
   },
 
-  pullCancel(scope) {
-    scope.scrollTo(0);
-  },
-
   trigger(scope) {
     scope.topState = 'trigger';
     scope.topText = scope.topConfig.triggerText;
@@ -38,10 +34,6 @@ const bottomAction = {
     scope.bottomText = scope.bottomConfig.pullText;
   },
 
-  pullCancel(scope) {
-    scope.scrollTo(0);
-  },
-
   trigger(scope) {
     scope.bottomState = 'trigger';
     scope.bottomText = scope.bottomConfig.triggerText;
@@ -51,7 +43,7 @@ const bottomAction = {
     scope.bottomState = 'loading';
     scope.bottomText = scope.bottomConfig.loadingText;
     scope.scrollTo(-scope.bottomConfig.stayDistance);
-    scope.$emit('top-load', scope.topLoaded);
+    scope.$emit('bottom-load', scope.bottomLoaded);
   },
 
   loaded(scope, loadState) {
