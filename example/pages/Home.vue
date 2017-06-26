@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <fast-scroll @top-load="topLoad" @bottom-load="bottomLoad" @infinite-scroll="infiniteScrollLoad">
+    <fast-scroll :is-pull-down="true" :is-pull-up="true" @top-load="topLoad" @bottom-load="bottomLoad" @infinite-scroll="infiniteScrollLoad">
       <div class="list-view">
         <ul>
           <li>
