@@ -81,6 +81,14 @@
         type: Number,
         default: 2
       },
+      isPullDown: {
+        type: Boolean,
+        default: false
+      },
+      isPullUp: {
+        type: Boolean,
+        default: false
+      },
       topConfig: {
         type: Object,
         default: () => {
@@ -168,6 +176,8 @@
             this.$emit('top-pull', this.diff);
           }
 
+          if (!this.isPullDown) return;
+
           if (this.distance < this.topConfig.triggerDistance && this.topState !== 'pull' && this.topState !== 'loading') {
             topAction.pull(this);
           } else if (this.distance >= this.topConfig.triggerDistance && this.topState !== 'trigger' && this.topState !== 'loading') {
@@ -185,6 +195,8 @@
             this.diff = this.distance;
             this.$emit('bottom-pull', this.diff);
           }
+
+          if (!this.isPullUp) return;
 
           if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
             bottomAction.pull(this);
