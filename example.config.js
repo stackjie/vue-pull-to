@@ -9,7 +9,7 @@ module.exports = {
   entry: './example/main.js',
   output: {
     filename: 'main.js',
-    path: resolve('example/dist'),
+    publicPath: '/assets/'
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],

@@ -11,7 +11,7 @@ module.exports = {
     library: 'VueFastScroll',
     libraryTarget: 'umd',
     filename: 'vue-fast-scroll.js',
-    path: resolve('dist'),
+    path: resolve('dist')
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],

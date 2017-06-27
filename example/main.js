@@ -1,24 +1,12 @@
 import Vue from 'vue'
-import routes from './routers'
+import AppHeader from './components/AppHeader.vue'
+import RouterView from './components/RouterView.vue'
 
-const app = new Vue({
+/* eslint-disable no-new */
+new Vue({
   el: '#app',
-  data: {
-    currentRoute: window.location.pathname
-  },
-  computed: {
-    ViewComponent () {
-      const matchingView = routes[this.currentRoute]
-      if (matchingView) {
-        require('./pages/' + matchingView + '.vue')
-      }
-    }
-  },
-  render (h) {
-    return h(this.ViewComponent)
+  components: {
+    AppHeader,
+    RouterView
   }
-})
-
-window.addEventListener('popstate', () => {
-  app.currentRoute = window.location.pathname
 })

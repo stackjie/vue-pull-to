@@ -1,3 +1,3 @@
-import FastScroll from './vue-fast-scroll.vue';
+import FastScroll from './vue-fast-scroll_bak.vue';
 
 export default FastScroll;

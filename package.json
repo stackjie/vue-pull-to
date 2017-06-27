@@ -4,7 +4,7 @@
   "description": "A pull to refresh and lnfinite scroll component for vue.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --config example.config.js --port 9095 --inline --hot --content-base ./example --host 0.0.0.0"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/stackjie/vue-fast-scroll#readme",
   "dependencies": {
-    "better-scroll": "^0.1.15",
     "vue": "^2.2.6"
   },
   "devDependencies": {
@@ -36,6 +35,7 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-html": "^2.0.3",
     "eslint-plugin-import": "^2.2.0",
+    "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "standard": "^10.0.2",
     "style-loader": "^0.16.1",

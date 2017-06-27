@@ -1,30 +1,38 @@
 <template>
-  <div class="super-scroll-wapper">
-    <div class="super-scroll-container" :class="{triggered: topTriggered || bottomTriggered}">
-      <slot name="top from topText">
-        <p v-if="isPullDown" class="state-text state-text-top">{{ topText }}</p>
-      </slot>
+  <div class="fast-scroll-wrapper"
+       :class="{ 'active-transition': activeTransition }"
+       :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
+    <slot name="top from topText">
+      <p class="state-text state-text-top">{{ topText }}</p>
+    </slot>
+    <div class="scroll-container">
       <slot></slot>
-      <slot name="bottom from bottomText">
-        <p v-if="isPullUp" class="state-text state-text-bottom">{{ bottomText }}</p>
-      </slot>
     </div>
+    <slot name="bottom from bottomText">
+      <p class="state-text state-text-bottom">{{ bottomText }}</p>
+    </slot>
   </div>
 </template>
 
 <style scoped>
-  .super-scroll-wapper {
+  .fast-scroll-wrapper {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    width: 100%;
-    overflow: hidden;
   }
 
-  .super-scroll-wapper .triggered {
-    transition: .2s !important;
+  .scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .super-scroll-container .state-text {
-    position: absolute;
+  .active-transition {
+    transition: .2s;
+  }
+
+  .fast-scroll-wrapper .state-text {
+    position: relative;
     width: 100%;
     height: 50px;
     line-height: 50px;
@@ -41,7 +49,8 @@
 </style>
 
 <script type="text/babel">
-  import BScroll from 'better-scroll'
+  import utils from './utils';
+  import { topAction, bottomAction } from './actions';
 
   const TOP_DEFAULT_CONFIG = {
     pullText: '下拉刷新',
@@ -65,248 +74,171 @@
     triggerDistance: 70
   };
 
-  const utils = {
-    //  验证prop config如果不存在配置项将默认配置项加入配置对象中
-    configValidator(config, defaultConfig) {
-      if (config !== {} && config !== null) {
-        Object.keys(defaultConfig).forEach((key) => {
-          if (!config.hasOwnProperty(key)) {
-            config[key] = defaultConfig[key]
-          }
-        });
-        return config;
-      }
-      return defaultConfig;
-    }
-  };
-
   export default {
     name: 'fast-scroll',
     props: {
+      distanceIndex: {
+        type: Number,
+        default: 2
+      },
       isPullDown: {
         type: Boolean,
         default: false
       },
-
       isPullUp: {
         type: Boolean,
         default: false
       },
-
-      startY: {
-        type: Number,
-        default: 0
-      },
-
-      momentum: {
-        type: Boolean,
-        default: true
-      },
-
-      momentumLimitTime: {
-        type: Number,
-        default: 300
-      },
-
-      momentumLimitDistance: {
-        type: Number,
-        default: 15
-      },
-
-      bounce: {
-        type: Boolean,
-        default: true
-      },
-
-      bounceTime: {
-        type: Number,
-        default: 700
-      },
-
-      deceleration: {
-        type: Number,
-        default: 0.001
-      },
-
       topConfig: {
         type: Object,
         default: () => {
           return {};
         },
         validator: (config) => {
-          return utils.configValidator(config, TOP_DEFAULT_CONFIG);
+          utils.extend(config, TOP_DEFAULT_CONFIG);
+          return config;
         }
       },
-
       bottomConfig: {
         type: Object,
         default: () => {
           return {};
         },
         validator: (config) => {
-          return utils.configValidator(config, BOTTOM_DEFAULT_CONFIG);
+          utils.extend(config, BOTTOM_DEFAULT_CONFIG);
+          return config;
         }
       }
     },
     data() {
       return {
-        scroll: null,
-        topState: '',
+        scrollEl: null,
+        startY: 0,
+        currentY: 0,
+        distance: 0,
+        diff: 0,
+        beforeDiff: 0,
         topText: '',
-        bottomState: '',
         bottomText: '',
-        topTriggered: false,
-        bottomTriggered: false,
-        topLoadedState: '',
-        bottomLoadedState: ''
+        topState: '',
+        bottomState: '',
+        activeTransition: false,
+        flagInfiniteScroll: false
       };
     },
     watch: {
-      topState(state) {
-        this.$emit('top-change-state', state);
-        const config = this.topConfig;
-        switch (state) {
-          case 'pull':
-            this.topText = config.pullText;
-            break;
-          case 'drop':
-            this.topText = config.triggerText;
-            break;
-          case 'loading':
-            this.topText = config.loadingText;
-            this.topTriggered = true;
-            setTimeout(() => {
-              this.topTriggered = false;
-            }, 200);
-            this.scroll.scrollTo(0, this.topConfig.stayDistance);
-            this.$emit('pull-down', this.topLoaded);
-            break;
-          case 'loaded':
-            this.topLoadedState === 'done'
-              ? this.topText = config.doneText
-              : this.topText = config.failText;
-            setTimeout(() => {
-              this.scroll.refresh();
-              this.scroll.scrollTo(0, 0, 200);
-            }, config.loadedStayTime);
-            break;
-        }
+      topState(val) {
+        this.$emit('top-state-change', val);
       },
-
-      bottomState(state) {
-        this.$emit('bottom-change-state', state);
-        const config = this.bottomConfig;
-        switch (state) {
-          case 'pull':
-            this.bottomText = config.pullText;
-            break;
-          case 'drop':
-            this.bottomText = config.triggerText;
-            break;
-          case 'loading':
-            this.bottomText = config.loadingText;
-            this.bottomTriggered = true;
-            setTimeout(() => {
-              this.bottomTriggered = false;
-            }, 200);
-            this.scroll.scrollTo(0, this.scroll.maxScrollY - config.stayDistance);
-            this.$emit('pull-up', this.bottomLoaded);
-            break;
-          case 'loaded':
-            this.bottomLoadedState === 'done'
-              ? this.bottomText = config.doneText
-              : this.bottomText = config.failText;
-            setTimeout(() => {
-              this.scroll.refresh();
-              this.scroll.scrollTo(0, this.scroll.maxScrollY, 200);
-            }, config.loadedStayTime);
-            break;
-        }
+      bottomState(val) {
+        this.$emit('bottom-state-change', val);
       }
     },
     methods: {
-      changeState(direction, state) {
-        if (direction === 'top') {
-          this.topState = state;
-        } else if (direction === 'bottom') {
-          this.bottomState = state;
+      scrollTo(y) {
+        this.activeTransition = true;
+        this.diff = y;
+        setTimeout(() => {
+          this.activeTransition = false;
+        }, 200)
+      },
+
+      checkBottomReached() {
+        return this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
+      },
+
+      topLoaded(loadState = 'done') {
+        topAction.loaded(this, loadState);
+      },
+
+      bottomLoaded(loadState = 'done') {
+        bottomAction.loaded(this, loadState);
+      },
+
+      handleTouchStart(event) {
+        this.startY = event.touches[0].clientY;
+        this.beforeDiff = this.diff;
+      },
+
+      handleTouchMove(event) {
+        if (this.startY < this.scrollEl.getBoundingClientRect().top && this.startY > this.scrollEl.getBoundingClientRect().bottom) {
+          return;
         }
-      },
 
-      topLoaded(state = 'done') {
-        this.topLoadedState = state;
-        this.changeState('top', 'loaded');
-      },
+        this.currentY = event.touches[0].clientY;
+        this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
 
-      bottomLoaded(state = 'done') {
-        this.bottomLoadedState = state;
-        this.changeState('bottom', 'loaded');
-      },
+        if (this.scrollEl.scrollTop === 0) {
+          if (this.distance >= 0) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.diff = this.distance;
+            this.$emit('top-pull', this.diff);
+          }
 
-      handleScrollStart() {
-        if (this.topState === 'loaded') {
-          this.changeState('top', 'pull');
-        }
+          if (!this.isPullDown) return;
 
-        if (this.bottomState === 'loaded') {
-          this.changeState('bottom', 'pull');
-        }
-      },
+          if (this.distance < this.topConfig.triggerDistance && this.topState !== 'pull' && this.topState !== 'loading') {
+            topAction.pull(this);
+          } else if (this.distance >= this.topConfig.triggerDistance && this.topState !== 'trigger' && this.topState !== 'loading') {
+            topAction.trigger(this);
+          }
+        } else if (this.checkBottomReached()) {
+          if (!this.flagInfiniteScroll) {
+            this.flagInfiniteScroll = true;
+            this.$emit('infinite-scroll');
+          }
 
-      handleScroll(pos) {
-        if (this.isPullDown) {
-          if (this.bottomState !== 'loading' && this.topState === 'pull' && pos.y >= this.topConfig.triggerDistance) {
-            this.changeState('top', 'drop');
-          } else if (this.topState === 'drop' && pos.y < this.topConfig.triggerDistance) {
-            this.changeState('top', 'pull');
+          if (this.distance <= 0) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.diff = this.distance;
+            this.$emit('bottom-pull', this.diff);
+          }
+
+          if (!this.isPullUp) return;
+
+          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
+            bottomAction.pull(this);
+          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
+            bottomAction.trigger(this);
           }
         }
-
-        if (this.isPullUp) {
-          if (this.topState !== 'loading' && this.bottomState === 'pull' && pos.y <= this.scroll.maxScrollY - this.bottomConfig.triggerDistance) {
-            this.changeState('bottom', 'drop');
-          } else if (this.bottomState === 'drop' && pos.y > this.bottomConfig.triggerDistance) {
-            this.changeState('bottom', 'pull');
-          }
-        }
-
-        this.$emit('scroll', pos);
       },
 
       handleTouchEnd() {
-        if (this.topState !== 'loading' && this.topState === 'drop' && this.isPullDown) {
-          this.changeState('top', 'loading');
+        if (this.topState === 'trigger') {
+          topAction.loading(this);
+          return;
         }
 
-        if (this.topState !== 'loading' && this.bottomState === 'drop' && this.isPullUp) {
-          this.changeState('bottom', 'loading');
+        if (this.bottomState === 'trigger') {
+          bottomAction.loading(this);
+          return;
         }
+
+        // reset flagInfiniteScroll
+        if (this.flagInfiniteScroll) {
+          this.flagInfiniteScroll = !(this.distance >= 30);
+        }
+
+        // pull cancel
+        this.scrollTo(0);
       },
 
       bindEvents() {
-        this.scroll.on('scrollStart', this.handleScrollStart);
-        this.scroll.on('scroll', this.handleScroll);
-        this.scroll.on('touchend', this.handleTouchEnd);
+        this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
+        this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
+        this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
       },
 
       init() {
-        this.scroll = new BScroll(this.$el, {
-          probeType: 2,
-          startY: this.startY,
-          momentum: this.momentum,
-          momentumLimitTime: this.momentumLimitTime,
-          momentumLimitDistance: this.momentumLimitDistance,
-          bounce: this.bounce,
-          bounceTime: this.bounceTime,
-          deceleration: this.deceleration
-        });
+        this.scrollEl = this.$el.querySelector('.scroll-container');
         this.bindEvents();
-        this.changeState('top', 'pull');
-        this.changeState('bottom', 'pull');
       }
     },
     mounted() {
       this.init();
     }
-  };
+  }
 </script>
