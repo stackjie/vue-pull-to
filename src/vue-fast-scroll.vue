@@ -3,13 +3,13 @@
        :class="{ 'active-transition': activeTransition }"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
     <slot name="top from topText">
-      <p class="state-text state-text-top">{{ topText }}</p>
+      <p v-if="enabledTopAction" class="state-text state-text-top">{{ topText }}</p>
     </slot>
     <div class="scroll-container">
       <slot></slot>
     </div>
     <slot name="bottom from bottomText">
-      <p class="state-text state-text-bottom">{{ bottomText }}</p>
+      <p v-if="enabledBottomAction" class="state-text state-text-bottom">{{ bottomText }}</p>
     </slot>
   </div>
 </template>
@@ -51,28 +51,7 @@
 <script type="text/babel">
   import utils from './utils';
   import { topAction, bottomAction } from './actions';
-
-  const TOP_DEFAULT_CONFIG = {
-    pullText: '下拉刷新',
-    triggerText: '释放更新',
-    loadingText: '加载中...',
-    doneText: '加载完成',
-    failText: '加载失败',
-    loadedStayTime: 400,
-    stayDistance: 50,
-    triggerDistance: 70
-  };
-
-  const BOTTOM_DEFAULT_CONFIG = {
-    pullText: '上拉加载',
-    triggerText: '释放更新',
-    loadingText: '加载中...',
-    doneText: '加载完成',
-    failText: '加载失败',
-    loadedStayTime: 400,
-    stayDistance: 50,
-    triggerDistance: 70
-  };
+  import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
 
   export default {
     name: 'fast-scroll',
@@ -81,11 +60,11 @@
         type: Number,
         default: 2
       },
-      isPullDown: {
+      enabledTopAction: {
         type: Boolean,
         default: false
       },
-      isPullUp: {
+      enabledBottomAction: {
         type: Boolean,
         default: false
       },
@@ -176,11 +155,13 @@
             this.$emit('top-pull', this.diff);
           }
 
-          if (!this.isPullDown) return;
+          if (!this.enabledTopAction) return;
 
-          if (this.distance < this.topConfig.triggerDistance && this.topState !== 'pull' && this.topState !== 'loading') {
+          if (this.distance < this.topConfig.triggerDistance &&
+            this.topState !== 'pull' && this.topState !== 'loading') {
             topAction.pull(this);
-          } else if (this.distance >= this.topConfig.triggerDistance && this.topState !== 'trigger' && this.topState !== 'loading') {
+          } else if (this.distance >= this.topConfig.triggerDistance &&
+            this.topState !== 'trigger' && this.topState !== 'loading') {
             topAction.trigger(this);
           }
         } else if (this.checkBottomReached()) {
@@ -196,11 +177,13 @@
             this.$emit('bottom-pull', this.diff);
           }
 
-          if (!this.isPullUp) return;
+          if (!this.enabledBottomAction) return;
 
-          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.bottomState !== 'pull' && this.bottomState !== 'loading') {
+          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance &&
+            this.bottomState !== 'pull' && this.bottomState !== 'loading') {
             bottomAction.pull(this);
-          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
+          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance &&
+            this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
             bottomAction.trigger(this);
           }
         }
