@@ -1,161 +1,54 @@
 <template>
   <div class="wrapper">
-    <fast-scroll :is-pull-down="true" :is-pull-up="true" @top-load="topLoad" @bottom-load="bottomLoad" @infinite-scroll="infiniteScrollLoad">
-      <div class="list-view">
-        <ul>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-          <li>
-            123
-          </li>
-        </ul>
-      </div>
-    </fast-scroll>
+    <ul class="list">
+      <li><a href="#">Bounce scroll</a></li>
+      <li><a href="#">Simple pull to refresh</a></li>
+      <li><a href="#">Simple pull to load more</a></li>
+      <li><a href="#">Infinite scroll</a></li>
+    </ul>
   </div>
 </template>
 
-<style>
+<style scoped>
   .wrapper {
     box-sizing: border-box;
     padding-top: 50px;
     height: 100%;
+    background: #f6f6f6;
   }
 
-  .list-view {
-    height: 1000px;
+  .list {
+    margin-top: 30px;
+  }
+
+  .list li {
+    padding-left: 15px;
+    height: 50px;
+    line-height: 50px;
+    border-bottom: 1px solid #d2d2d2;
     background: #fff;
+  }
+
+  .list li:last-child {
+    border: 0;
+  }
+
+  .list li a {
+    display: block;
+    height: 100%;
   }
 </style>
 
 <script type="text/babel">
-  import FastScroll from '@/vue-fast-scroll.vue'
-
   export default {
     name: 'home',
-    components: {
-      FastScroll
-    },
     data () {
       return {}
     },
     props: {
       isBack: true
     },
-    methods: {
-      topLoad(loaded) {
-        setTimeout(() => {
-          loaded();
-        }, 10000)
-      },
-      infiniteScrollLoad() {
-        console.log('开始');
-        setTimeout(() => {
-          console.log('结束');
-        }, 1000)
-      },
-      bottomLoad(loaded) {
-        setTimeout(() => {
-          loaded();
-        }, 1000)
-      }
-    },
+    methods: {},
     watch: {}
   }
 </script>
