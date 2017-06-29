@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <!--<i class="icon-back" v-show="isBack"></i>-->
-    <h2>vue-fast-scroll</h2>
+    <h2>enhanced-scroller-examples</h2>
   </header>
 </template>
 

@@ -1,5 +1,5 @@
 <script type="text/babel">
-  import routes from '../routers'
+  import routes from '../routes'
 
   export default {
     name: 'router-view',
@@ -21,6 +21,7 @@
     },
     created() {
       window.addEventListener('popstate', () => {
+        console.log('哈哈哈')
         this.currentRoute = window.location.pathname
       })
     }
