@@ -1,14 +1,14 @@
 <template>
   <a
     v-bind:href="href"
-    v-on:click="go"
-  >
+    v-on:click="go">
     <slot></slot>
   </a>
 </template>
 
 <script>
-  import routes from '../routes'
+  import routes from '../routes';
+
   export default {
     props: {
       href: {
@@ -18,14 +18,14 @@
     },
     methods: {
       go (event) {
-        event.preventDefault()
-        this.$root.currentRoute = this.href
+        event.preventDefault();
+        this.$root.currentRoute = this.href;
         window.history.pushState(
           null,
           routes[this.href],
           this.href
-        )
+        );
       }
     }
-  }
+  };
 </script>

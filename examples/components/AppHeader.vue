@@ -32,12 +32,12 @@
     name: 'app-header',
     data () {
       return {
-      }
+      };
     },
     props: {
       isBack: true
     },
     methods: {},
     watch: {}
-  }
+  };
 </script>

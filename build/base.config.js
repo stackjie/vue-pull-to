@@ -1,8 +1,8 @@
 var path = require('path');
-var autoprefixer = require('autoprefixer');
+var webpack = require('webpack');
 
 function resolve (dir) {
-  return path.join(__dirname, dir)
+  return path.join(__dirname, '..', dir)
 }
 
 module.exports = {
@@ -13,11 +13,20 @@ module.exports = {
     filename: 'vue-enhanced-scroll.js',
     path: resolve('dist')
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      sourceMap: true
+    })
+  ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src')
+      '@': resolve('src'),
+      'examples': resolve('examples')
     }
   },
   module: {
@@ -26,25 +35,25 @@ module.exports = {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: "pre",
-        include: [resolve('src'), resolve('example')],
+        include: [resolve('src'), resolve('examples')],
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        include: [resolve('src'), resolve('example')],
+        include: [resolve('src'), resolve('examples')],
         options: {
         },
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('example')],
+        include: [resolve('src'), resolve('examples')],
       },
       {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader',
-        include: [resolve('src'), resolve('example')],
-      },
-    ],
-  },
+        test: /\.css|.less$/,
+        loader: 'style-loader!css-loader!postcss-loader!less-loader',
+        include: [resolve('src'), resolve('examples')],
+      }
+    ]
+  }
 };

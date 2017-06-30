@@ -4,7 +4,9 @@
   "description": "A pull to refresh and lnfinite scroll component for vue.js",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config example.config.js --port 9095 --inline --hot --content-base ./example --host 0.0.0.0"
+    "dev": "node ./build/dev-server.js",
+    "build": "webpack --config ./build/prod.config.js",
+    "build-examples": "webpack --config ./build/examples.prod.config.js"
   },
   "repository": {
     "type": "git",
@@ -21,13 +23,11 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
-    "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
-    "babel-plugin-istanbul": "^3.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-runtime": "^6.22.0",
-    "babel-preset-env": "^1.2.1",
-    "babel-preset-stage-2": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.22.0",
     "css-loader": "^0.28.0",
     "eslint": "^3.19.0",
@@ -35,14 +35,17 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-html": "^2.0.3",
     "eslint-plugin-import": "^2.2.0",
+    "html-webpack-plugin": "^2.29.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
+    "postcss-loader": "^2.0.6",
     "standard": "^10.0.2",
     "style-loader": "^0.16.1",
     "vue-loader": "^11.3.4",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.2.6",
     "webpack": "^2.3.2",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.4.5",
+    "webpack-merge": "^4.1.0"
   }
 }
