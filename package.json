@@ -1,7 +1,7 @@
 {
   "name": "vue-enhanced-scroller",
   "version": "0.0.1",
-  "description": "A pull to refresh and lnfinite scroll component for vue.js",
+  "description": "A pull to refresh and an infinite scroll of the vue.js component",
   "main": "src/index.js",
   "scripts": {
     "dev": "node ./build/dev-server.js",
