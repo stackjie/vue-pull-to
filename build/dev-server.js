@@ -20,7 +20,7 @@ var server = new WebpackDevServer(compiler, {
   }
 });
 
-server.listen(9095, "127.0.0.1", function() {
+server.listen(9095, function() {
   console.log("Starting server on http://localhost:9095");
 });
 
