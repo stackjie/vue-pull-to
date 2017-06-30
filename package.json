@@ -1,6 +1,6 @@
 {
   "name": "vue-fast-scroll",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A pull to refresh and lnfinite scroll component for vue.js",
   "main": "index.js",
   "scripts": {
