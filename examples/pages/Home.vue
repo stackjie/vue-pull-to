@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <section>
     <div class="slogan">
       <h1>Enhanced-Scroller</h1>
       <p>for Vue.js 2.0</p>
@@ -43,17 +43,10 @@
         </li>
       </ul>
     </enhanced-scroller>
-  </div>
+  </section>
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
-  .wrapper {
-    box-sizing: border-box;
-    padding-top: 50px;
-    height: 100%;
-    background: #f6f6f6;
-  }
-
   .slogan {
     margin-top: 50px;
 
@@ -109,22 +102,14 @@
 </style>
 
 <script type="text/babel">
-  import EnhancedScroller from '../../src/vue-enhanced-scroller';
+  import EnhancedScroller from '@/vue-enhanced-scroller';
   import RouterLink from '../components/RouterLink';
 
   export default {
     name: 'home',
-    data () {
-      return {};
-    },
     components: {
       RouterLink,
       EnhancedScroller
-    },
-    props: {
-      isBack: true
-    },
-    methods: {},
-    watch: {}
+    }
   };
 </script>
