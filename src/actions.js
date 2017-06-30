@@ -24,7 +24,7 @@ const topAction = {
       : scope.topConfig.failText;
     setTimeout(() => {
       scope.scrollTo(0);
-    }, scope.topConfig.loadedStayTime)
+    }, scope.topConfig.loadedStayTime);
   }
 };
 
@@ -54,8 +54,8 @@ const bottomAction = {
       : scope.bottomConfig.failText;
     setTimeout(() => {
       scope.scrollTo(0);
-    }, scope.bottomConfig.loadedStayTime)
+    }, scope.bottomConfig.loadedStayTime);
   }
-}
+};
 
 export { topAction, bottomAction };

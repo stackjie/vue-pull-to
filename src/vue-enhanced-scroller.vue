@@ -1,5 +1,5 @@
 <template>
-  <div class="fast-scroll-wrapper"
+  <div class="enhanced-scroller-wrapper"
        :class="{ 'active-transition': activeTransition }"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
     <slot name="top from topText">
@@ -15,7 +15,7 @@
 </template>
 
 <style scoped>
-  .fast-scroll-wrapper {
+  .enhanced-scroller-wrapper {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -31,7 +31,7 @@
     transition: .2s;
   }
 
-  .fast-scroll-wrapper .state-text {
+  .enhanced-scroller-wrapper .state-text {
     position: relative;
     width: 100%;
     height: 50px;
@@ -54,7 +54,7 @@
   import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
 
   export default {
-    name: 'fast-scroll',
+    name: 'enhanced-scroller',
     props: {
       distanceIndex: {
         type: Number,
@@ -119,7 +119,7 @@
         this.diff = y;
         setTimeout(() => {
           this.activeTransition = false;
-        }, 200)
+        }, 200);
       },
 
       checkBottomReached() {
@@ -223,5 +223,5 @@
     mounted() {
       this.init();
     }
-  }
+  };
 </script>
