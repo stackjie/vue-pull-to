@@ -9,7 +9,7 @@ function resolve (dir) {
 module.exports = merge(baseConfig ,{
   entry: resolve('examples/main.js'),
   output: {
-    filename: 'main.[chunkhash].js',
+    filename: 'main.js',
     publicPath: '/assets/'
   }
 });

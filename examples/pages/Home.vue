@@ -115,7 +115,7 @@
   export default {
     name: 'home',
     data () {
-      return {}
+      return {};
     },
     components: {
       RouterLink,
@@ -126,5 +126,5 @@
     },
     methods: {},
     watch: {}
-  }
+  };
 </script>

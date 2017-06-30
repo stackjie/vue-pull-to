@@ -36,13 +36,14 @@ module.exports = {
         loader: 'eslint-loader',
         enforce: "pre",
         include: [resolve('src'), resolve('examples')],
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
         include: [resolve('src'), resolve('examples')],
-        options: {
-        },
       },
       {
         test: /\.js$/,

@@ -12,7 +12,9 @@ var server = new WebpackDevServer(compiler, {
   contentBase: resolve('examples'),
   port: 9095,
   hot: true,
+  publicPath: '/assets/',
   disableHostCheck: true,
+  historyApiFallback: true,
   stats: {
     colors: true
   }
