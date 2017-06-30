@@ -2,7 +2,7 @@
   "name": "vue-fast-scroll",
   "version": "0.0.1",
   "description": "A pull to refresh and lnfinite scroll component for vue.js",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "node ./build/dev-server.js",
     "build": "webpack --config ./build/prod.config.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stackjie/vue-fast-scroll.git"
+    "url": "git+https://github.com/stackjie/vue-enhanced-scroller.git"
   },
   "author": "stackjie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stackjie/vue-fast-scroll/issues"
+    "url": "https://github.com/stackjie/vue-enhanced-scroller/issues"
   },
-  "homepage": "https://github.com/stackjie/vue-fast-scroll#readme",
+  "homepage": "https://github.com/stackjie/vue-enhanced-scroller#readme",
   "dependencies": {
     "vue": "^2.2.6"
   },
