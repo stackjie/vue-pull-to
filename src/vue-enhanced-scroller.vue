@@ -2,14 +2,20 @@
   <div class="enhanced-scroller-wrapper"
        :class="{ 'active-transition': activeTransition }"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
-    <slot name="top from topText">
-      <p v-if="enabledTopAction" class="state-text state-text-top">{{ topText }}</p>
+    <slot v-if="enabledTopAction" name="top from topText">
+      <div class="default-block default-block-top">
+        <slot name="top-side"></slot>
+        {{ topText }}
+      </div>
     </slot>
     <div class="scroll-container">
       <slot></slot>
     </div>
-    <slot name="bottom from bottomText">
-      <p v-if="enabledBottomAction" class="state-text state-text-bottom">{{ bottomText }}</p>
+    <slot v-if="enabledBottomAction" name="bottom from bottomText">
+      <div class="default-block default-block-bottom">
+        <slot name="bottom-side"></slot>
+        {{ bottomText }}
+      </div>
     </slot>
   </div>
 </template>
@@ -31,7 +37,7 @@
     transition: .2s;
   }
 
-  .enhanced-scroller-wrapper .state-text {
+  .enhanced-scroller-wrapper .default-block {
     position: relative;
     width: 100%;
     height: 50px;
@@ -39,11 +45,11 @@
     text-align: center;
   }
 
-  .state-text-top {
+  .default-block-top {
     margin-top: -50px;
   }
 
-  .state-text-bottom {
+  .default-block-bottom {
     margin-bottom: -50px;
   }
 </style>
