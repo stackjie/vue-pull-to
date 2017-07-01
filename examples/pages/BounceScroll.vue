@@ -102,7 +102,7 @@
   import EnhancedScroller from '@/vue-enhanced-scroller';
 
   export default {
-    name: 'home',
+    name: 'bounce-scroll',
     components: {
       EnhancedScroller
     }

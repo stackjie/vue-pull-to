@@ -18,7 +18,7 @@
           </router-link>
         </li>
         <li>
-          <router-link href="#">
+          <router-link href="/simple-pullto-refresh">
             Simple pull to refresh
             <svg class="icon icon-arrow" aria-hidden="true">
               <use xlink:href="#icon-arrow-right"></use>
