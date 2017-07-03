@@ -3,7 +3,7 @@
     enabled-top-action
     @top-load="refresh">
     <template slot="top-default-block" scope="props">
-      <svg v-show="props.state !== 'loading'"
+      <svg v-show="props.state === 'pull' || props.state === 'trigger'"
            class="icon icon-arrow"
            aria-hidden="true"
            :class="{ triggered: props.state ===  'trigger' }">
@@ -13,6 +13,11 @@
            class="icon icon-loading"
            aria-hidden="true">
         <use xlink:href="#icon-loading"></use>
+      </svg>
+      <svg v-show="props.state === 'loaded'"
+           class="icon"
+           aria-hidden="true">
+        <use xlink:href="#icon-finish"></use>
       </svg>
       {{ props.stateText }}
     </template>

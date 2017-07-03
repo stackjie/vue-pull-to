@@ -1,6 +1,5 @@
 <template>
   <div class="enhanced-scroller-wrapper"
-       :class="{ 'active-transition': activeTransition }"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
     <slot v-if="enabledTopAction"
           name="top-block"
@@ -42,10 +41,6 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .active-transition {
-    transition: .2s;
-  }
-
   .enhanced-scroller-wrapper .default-block {
     position: relative;
     width: 100%;
@@ -65,8 +60,8 @@
 
 <script type="text/babel">
   import utils from './utils';
-  import { topAction, bottomAction } from './actions';
-  import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
+  import {topAction, bottomAction} from './actions';
+  import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
 
   export default {
     name: 'enhanced-scroller',
@@ -110,14 +105,15 @@
         startY: 0,
         currentY: 0,
         distance: 0,
+        beforeDistance: 0,
         diff: 0,
         beforeDiff: 0,
         topText: '',
         bottomText: '',
         topState: '',
         bottomState: '',
-        activeTransition: false,
-        flagInfiniteScroll: false
+        flagInfiniteScroll: false,
+        touching: false
       };
     },
     watch: {
@@ -129,12 +125,12 @@
       }
     },
     methods: {
-      scrollTo(y) {
-        this.activeTransition = true;
+      scrollTo(y, duration = 200) {
+        this.$el.style.transition = `${duration}ms`;
         this.diff = y;
         setTimeout(() => {
-          this.activeTransition = false;
-        }, 200);
+          this.$el.style.transition = '';
+        }, duration);
       },
 
       checkBottomReached() {
@@ -150,6 +146,7 @@
       },
 
       handleTouchStart(event) {
+        this.touching = true;
         this.startY = event.touches[0].clientY;
         this.beforeDiff = this.diff;
       },
@@ -158,14 +155,16 @@
         if (this.startY < this.scrollEl.getBoundingClientRect().top && this.startY > this.scrollEl.getBoundingClientRect().bottom) {
           return;
         }
-
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
 
         if (this.scrollEl.scrollTop === 0) {
+          this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
           if (this.distance >= 0) {
             event.preventDefault();
             event.stopPropagation();
+            this.distance -= this.beforeDistance;
+            console.log(this.beforeDistance);
             this.diff = this.distance;
             this.$emit('top-pull', this.diff);
           }
@@ -205,29 +204,52 @@
       },
 
       handleTouchEnd() {
-        if (this.topState === 'trigger') {
-          topAction.loading(this);
-          return;
-        }
+        this.touching = false;
+        this.beforeDistance = 0;
+        if (this.diff !== 0) {
+          if (this.topState === 'trigger') {
+            topAction.loading(this);
+            return;
+          }
 
-        if (this.bottomState === 'trigger') {
-          bottomAction.loading(this);
-          return;
+          if (this.bottomState === 'trigger') {
+            bottomAction.loading(this);
+            return;
+          }
+
+          // pull cancel
+          this.scrollTo(0);
         }
 
         // reset flagInfiniteScroll
         if (this.flagInfiniteScroll) {
           this.flagInfiniteScroll = !(this.distance >= 30);
         }
+      },
 
-        // pull cancel
-        this.scrollTo(0);
+      handleScroll() {
+        if (this.touching) {
+          return;
+        }
+
+        if (this.scrollEl.scrollTop === 0 && this.distance >= 30) {
+          this.scrollTo(30, 150);
+          setTimeout(() => {
+            this.scrollTo(0, 150);
+          }, 150);
+        } else if (this.checkBottomReached() && this.distance <= -30) {
+          this.scrollTo(-30, 150);
+          setTimeout(() => {
+            this.scrollTo(0, 150);
+          }, 150);
+        }
       },
 
       bindEvents() {
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
         this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
+        this.scrollEl.addEventListener('scroll', this.handleScroll);
       },
 
       init() {

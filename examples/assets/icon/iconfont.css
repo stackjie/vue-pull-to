@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1498746478124'); /* IE9*/
-  src: url('iconfont.eot?t=1498746478124#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1498746478124') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1498746478124') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1498746478124#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1499004025419'); /* IE9*/
+  src: url('iconfont.eot?t=1499004025419#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1499004025419') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1499004025419') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1499004025419#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -14,6 +14,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.icon-finish:before { content: "\e7de"; }
 
 .icon-loading:before { content: "\e60d"; }
 
