@@ -157,16 +157,20 @@
         }
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
+        console.log(this.distance);
 
         if (this.scrollEl.scrollTop === 0) {
+          // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
           this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
+          this.distance -= this.beforeDistance;
+
           if (this.distance >= 0) {
             event.preventDefault();
             event.stopPropagation();
-            this.distance -= this.beforeDistance;
-            console.log(this.beforeDistance);
             this.diff = this.distance;
             this.$emit('top-pull', this.diff);
+          } else {
+            this.beforeDistance = 0;
           }
 
           if (!this.enabledTopAction) return;
@@ -179,6 +183,10 @@
             topAction.trigger(this);
           }
         } else if (this.checkBottomReached()) {
+          // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
+          this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
+          this.distance -= this.beforeDistance;
+
           if (!this.flagInfiniteScroll) {
             this.flagInfiniteScroll = true;
             this.$emit('infinite-scroll');
@@ -187,8 +195,11 @@
           if (this.distance <= 0) {
             event.preventDefault();
             event.stopPropagation();
+
             this.diff = this.distance;
             this.$emit('bottom-pull', this.diff);
+          } else {
+            this.beforeDistance = 0;
           }
 
           if (!this.enabledBottomAction) return;
