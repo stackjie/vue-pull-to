@@ -112,8 +112,7 @@
         bottomText: '',
         topState: '',
         bottomState: '',
-        flagInfiniteScroll: false,
-        touching: false
+        flagInfiniteScroll: false
       };
     },
     watch: {
@@ -146,7 +145,6 @@
       },
 
       handleTouchStart(event) {
-        this.touching = true;
         this.startY = event.touches[0].clientY;
         this.beforeDiff = this.diff;
       },
@@ -157,16 +155,16 @@
         }
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
-        console.log(this.distance);
+
+        this.distance -= this.beforeDistance;
 
         if (this.scrollEl.scrollTop === 0) {
-          // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
-          this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
-          this.distance -= this.beforeDistance;
-
           if (this.distance >= 0) {
             event.preventDefault();
             event.stopPropagation();
+
+            // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
+            this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
             this.diff = this.distance;
             this.$emit('top-pull', this.diff);
           } else {
@@ -183,19 +181,19 @@
             topAction.trigger(this);
           }
         } else if (this.checkBottomReached()) {
-          // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
-          this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
-          this.distance -= this.beforeDistance;
-
           if (!this.flagInfiniteScroll) {
             this.flagInfiniteScroll = true;
             this.$emit('infinite-scroll');
           }
 
+          this.distance -= this.beforeDistance;
+
           if (this.distance <= 0) {
             event.preventDefault();
             event.stopPropagation();
 
+            // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
+            this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
             this.diff = this.distance;
             this.$emit('bottom-pull', this.diff);
           } else {
@@ -215,7 +213,6 @@
       },
 
       handleTouchEnd() {
-        this.touching = false;
         this.beforeDistance = 0;
         if (this.diff !== 0) {
           if (this.topState === 'trigger') {
@@ -238,29 +235,10 @@
         }
       },
 
-      handleScroll() {
-        if (this.touching) {
-          return;
-        }
-
-        if (this.scrollEl.scrollTop === 0 && this.distance >= 30) {
-          this.scrollTo(30, 150);
-          setTimeout(() => {
-            this.scrollTo(0, 150);
-          }, 150);
-        } else if (this.checkBottomReached() && this.distance <= -30) {
-          this.scrollTo(-30, 150);
-          setTimeout(() => {
-            this.scrollTo(0, 150);
-          }, 150);
-        }
-      },
-
       bindEvents() {
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
         this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
-        this.scrollEl.addEventListener('scroll', this.handleScroll);
       },
 
       init() {
