@@ -17,13 +17,18 @@ const topAction = {
   },
 
   loaded(scope, loadState) {
-    scope.topState = 'loaded';
+    scope.topState = `loaded-${loadState}`;
 
     scope.topText = loadState === 'done'
       ? scope.topConfig.doneText
       : scope.topConfig.failText;
     setTimeout(() => {
       scope.scrollTo(0);
+
+      // reset state
+      setTimeout(() => {
+        scope.topState = '';
+      }, 200);
     }, scope.topConfig.loadedStayTime);
   }
 };
@@ -47,13 +52,18 @@ const bottomAction = {
   },
 
   loaded(scope, loadState) {
-    scope.bottomState = 'loaded';
+    scope.bottomState = `loaded-${loadState}`;
 
     scope.bottomText = loadState === 'done'
       ? scope.bottomConfig.doneText
       : scope.bottomConfig.failText;
     setTimeout(() => {
       scope.scrollTo(0);
+
+      // reset state
+      setTimeout(() => {
+        scope.bottomState = '';
+      }, 200);
     }, scope.bottomConfig.loadedStayTime);
   }
 };
