@@ -1,24 +1,17 @@
 <template>
   <enhanced-scroller
     enabled-top-action
-    @top-load="refresh">
+    @top-load="refresh"
+    @top-state-change="stateChange">
     <template slot="top-block" scope="props">
       <div class="top-load-wrapper">
-        <svg v-show="props.state === 'pull' || props.state === 'trigger'"
-             class="icon icon-arrow"
-             aria-hidden="true"
-             :class="{ triggered: props.state ===  'trigger' }">
-          <use xlink:href="#icon-arrow-bottom"></use>
-        </svg>
-        <svg v-show="props.state === 'loading'"
-             class="icon icon-loading"
+        <svg class="icon"
+             :class="{
+                'icon-arrow': props.state === 'trigger',
+                'icon-loading': props.state === 'loading'
+             }"
              aria-hidden="true">
-          <use xlink:href="#icon-loading"></use>
-        </svg>
-        <svg v-show="props.state === 'loaded'"
-             class="icon"
-             aria-hidden="true">
-          <use xlink:href="#icon-finish"></use>
+          <use :xlink:href="iconLink"></use>
         </svg>
         {{ props.stateText }}
       </div>
@@ -39,6 +32,7 @@
 
   .icon-arrow {
     transition: .2s;
+    transform: rotate(180deg);
   }
 
   .icon-loading {
@@ -47,10 +41,6 @@
     animation-duration: 3s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
-  }
-
-  .triggered {
-    transform: rotate(180deg);
   }
 
   @keyframes loading
@@ -75,7 +65,8 @@
           'o(*≧▽≦)ツ', '(≖ ‿ ≖)✧', '(o^∇^o)ﾉ', ' (´・ω・)ﾉ',
           '(´・ω・`)', 'ヽ(･ω･｡)ﾉ', '(｀･ω･´)', '╰(*°▽°*)╯',
           '╮(￣▽￣)╭', '(￣▽￣)~*', '(⊙ˍ⊙)', '(￣0 ￣)y'
-        ]
+        ],
+        iconLink: ''
       };
     },
     methods: {
@@ -84,6 +75,18 @@
           this.dataList.reverse();
           loaded('done');
         }, 2000);
+      },
+
+      stateChange(state) {
+        if (state === 'pull' || state === 'trigger') {
+          this.iconLink = '#icon-arrow-bottom';
+        } else if (state === 'loading') {
+          this.iconLink = '#icon-loading';
+        } else if (state === 'loaded-done') {
+          this.iconLink = '#icon-finish';
+        }
+
+        console.log(this.iconLink);
       }
     }
   };
