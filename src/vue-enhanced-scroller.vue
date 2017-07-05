@@ -1,7 +1,7 @@
 <template>
   <div class="enhanced-scroller-wrapper"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
-    <div v-if="enabledTopAction"
+    <div v-if="topLoadMethod"
          :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
          class="action-block">
       <slot name="top-block"
@@ -13,7 +13,7 @@
     <div class="scroll-container">
       <slot></slot>
     </div>
-    <div v-if="enabledBottomAction"
+    <div v-if="bottomLoadMethod"
          :style="{ height: `${bottomBlockHeight}px`, marginBottom: `${-bottomBlockHeight}px` }"
          class="action-block">
       <slot name="bottom-block"
@@ -77,6 +77,12 @@
       bottomBlockHeight: {
         type: Number,
         default: 50
+      },
+      topLoadMethod: {
+        type: Function
+      },
+      bottomLoadMethod: {
+        type: Function
       },
       topConfig: {
         type: Object,
@@ -160,7 +166,6 @@
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
         this.direction = this.distance > 0 ? 'down' : 'up';
-        console.log(this.topState);
 
         if (this.startScrollTop === 0 && this.direction === 'down') {
           event.preventDefault();
@@ -168,7 +173,7 @@
           this.diff = this.distance;
           this.$emit('top-pull', this.diff);
 
-          if (!this.enabledTopAction) return;
+          if (typeof this.topLoadMethod === 'undefined') return;
 
           if (this.distance < this.topConfig.triggerDistance &&
             this.topState !== 'pull' && this.topState !== 'loading') {
@@ -188,7 +193,7 @@
           this.diff = this.distance;
           this.$emit('bottom-pull', this.diff);
 
-          if (!this.enabledBottomAction) return;
+          if (typeof this.bottomLoadMethod === 'undefined') return;
 
           if (Math.abs(this.distance) < this.bottomConfig.triggerDistance &&
             this.bottomState !== 'pull' && this.bottomState !== 'loading') {

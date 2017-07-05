@@ -13,7 +13,7 @@ const topAction = {
     scope.topState = 'loading';
     scope.topText = scope.topConfig.loadingText;
     scope.scrollTo(scope.topConfig.stayDistance);
-    scope.$emit('top-load', scope.topLoaded);
+    scope.topLoadMethod(scope.topLoaded);
   },
 
   loaded(scope, loadState) {
@@ -48,7 +48,7 @@ const bottomAction = {
     scope.bottomState = 'loading';
     scope.bottomText = scope.bottomConfig.loadingText;
     scope.scrollTo(-scope.bottomConfig.stayDistance);
-    scope.$emit('bottom-load', scope.bottomLoaded);
+    scope.bottomLoadMethod(scope.bottomLoaded);
   },
 
   loaded(scope, loadState) {
