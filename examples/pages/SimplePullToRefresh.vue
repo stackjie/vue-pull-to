@@ -1,7 +1,6 @@
 <template>
   <enhanced-scroller
-    enabled-top-action
-    @top-load="refresh"
+    :top-load-method="refresh"
     @top-state-change="stateChange">
     <template slot="top-block" scope="props">
       <div class="top-load-wrapper">
