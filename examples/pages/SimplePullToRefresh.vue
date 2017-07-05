@@ -2,24 +2,26 @@
   <enhanced-scroller
     enabled-top-action
     @top-load="refresh">
-    <template slot="top-default-block" scope="props">
-      <svg v-show="props.state === 'pull' || props.state === 'trigger'"
-           class="icon icon-arrow"
-           aria-hidden="true"
-           :class="{ triggered: props.state ===  'trigger' }">
-        <use xlink:href="#icon-arrow-bottom"></use>
-      </svg>
-      <svg v-show="props.state === 'loading'"
-           class="icon icon-loading"
-           aria-hidden="true">
-        <use xlink:href="#icon-loading"></use>
-      </svg>
-      <svg v-show="props.state === 'loaded'"
-           class="icon"
-           aria-hidden="true">
-        <use xlink:href="#icon-finish"></use>
-      </svg>
-      {{ props.stateText }}
+    <template slot="top-block" scope="props">
+      <div class="top-load-wrapper">
+        <svg v-show="props.state === 'pull' || props.state === 'trigger'"
+             class="icon icon-arrow"
+             aria-hidden="true"
+             :class="{ triggered: props.state ===  'trigger' }">
+          <use xlink:href="#icon-arrow-bottom"></use>
+        </svg>
+        <svg v-show="props.state === 'loading'"
+             class="icon icon-loading"
+             aria-hidden="true">
+          <use xlink:href="#icon-loading"></use>
+        </svg>
+        <svg v-show="props.state === 'loaded'"
+             class="icon"
+             aria-hidden="true">
+          <use xlink:href="#icon-finish"></use>
+        </svg>
+        {{ props.stateText }}
+      </div>
     </template>
     <ul class="list">
       <li v-for="item in dataList">
@@ -30,6 +32,11 @@
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
+  .top-load-wrapper {
+    line-height: 50px;
+    text-align: center;
+  }
+
   .icon-arrow {
     transition: .2s;
   }

@@ -1,30 +1,27 @@
 <template>
   <div class="enhanced-scroller-wrapper"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
-    <slot v-if="enabledTopAction"
-          name="top-block"
-          :state-text="topText">
-      <div class="default-block top-default-block">
-        <slot name="top-default-block"
-              :state="topState"
-              :state-text="topText">
-          {{ topText }}
-        </slot>
-      </div>
-    </slot>
+    <div v-if="enabledTopAction"
+         :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
+         class="action-block">
+      <slot name="top-block"
+            :state="topState"
+            :state-text="topText">
+        <p class="defalut-text">{{ topText }}</p>
+      </slot>
+    </div>
     <div class="scroll-container">
       <slot></slot>
     </div>
-    <slot
-      v-if="enabledBottomAction"
-      name="bottom-block"
-      :state-text="bottomText">
-      <div class="default-block bottom-default-block">
-        <slot name="bottom-default-block" :state-text="bottomText">
-          {{ bottomText }}
-        </slot>
-      </div>
-    </slot>
+    <div v-if="enabledBottomAction"
+         :style="{ height: `${bottomBlockHeight}px`, marginBottom: `${-bottomBlockHeight}px` }"
+         class="action-block">
+      <slot name="bottom-block"
+            :state="bottomState"
+            :state-text="bottomText">
+        <p class="defalut-text">{{ bottomText }}</p>
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -41,27 +38,22 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .enhanced-scroller-wrapper .default-block {
+  .enhanced-scroller-wrapper .action-block {
     position: relative;
     width: 100%;
-    height: 50px;
+  }
+
+  .defalut-text {
+    height: 100%;
     line-height: 50px;
     text-align: center;
-  }
-
-  .top-default-block {
-    margin-top: -50px;
-  }
-
-  .bottom-default-block {
-    margin-bottom: -50px;
   }
 </style>
 
 <script type="text/babel">
   import utils from './utils';
-  import {topAction, bottomAction} from './actions';
-  import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
+  import { topAction, bottomAction } from './actions';
+  import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
 
   export default {
     name: 'enhanced-scroller',
@@ -77,6 +69,14 @@
       enabledBottomAction: {
         type: Boolean,
         default: false
+      },
+      topBlockHeight: {
+        type: Number,
+        default: 50
+      },
+      bottomBlockHeight: {
+        type: Number,
+        default: 50
       },
       topConfig: {
         type: Object,
@@ -102,16 +102,18 @@
     data() {
       return {
         scrollEl: null,
+        startScrollTop: 0,
         startY: 0,
         currentY: 0,
         distance: 0,
-        beforeDistance: 0,
+        direction: 0,
         diff: 0,
         beforeDiff: 0,
         topText: '',
         bottomText: '',
         topState: '',
         bottomState: '',
+        bottomReached: false,
         flagInfiniteScroll: false
       };
     },
@@ -147,6 +149,8 @@
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
         this.beforeDiff = this.diff;
+        this.startScrollTop = this.scrollEl.scrollTop;
+        this.bottomReached = this.checkBottomReached();
       },
 
       handleTouchMove(event) {
@@ -155,21 +159,14 @@
         }
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
+        this.direction = this.distance > 0 ? 'down' : 'up';
+        console.log(this.topState);
 
-        this.distance -= this.beforeDistance;
-
-        if (this.scrollEl.scrollTop === 0) {
-          if (this.distance >= 0) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
-            this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
-            this.diff = this.distance;
-            this.$emit('top-pull', this.diff);
-          } else {
-            this.beforeDistance = 0;
-          }
+        if (this.startScrollTop === 0 && this.direction === 'down') {
+          event.preventDefault();
+          event.stopPropagation();
+          this.diff = this.distance;
+          this.$emit('top-pull', this.diff);
 
           if (!this.enabledTopAction) return;
 
@@ -180,25 +177,16 @@
             this.topState !== 'trigger' && this.topState !== 'loading') {
             topAction.trigger(this);
           }
-        } else if (this.checkBottomReached()) {
+        } else if (this.bottomReached && this.direction === 'up') {
           if (!this.flagInfiniteScroll) {
             this.flagInfiniteScroll = true;
             this.$emit('infinite-scroll');
           }
 
-          this.distance -= this.beforeDistance;
-
-          if (this.distance <= 0) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            // 保存之前的distance，防止touch move事件上下滑动没有end导致意外更新diff的值
-            this.beforeDistance = this.beforeDistance === 0 ? this.distance : this.beforeDistance;
-            this.diff = this.distance;
-            this.$emit('bottom-pull', this.diff);
-          } else {
-            this.beforeDistance = 0;
-          }
+          event.preventDefault();
+          event.stopPropagation();
+          this.diff = this.distance;
+          this.$emit('bottom-pull', this.diff);
 
           if (!this.enabledBottomAction) return;
 
@@ -213,7 +201,6 @@
       },
 
       handleTouchEnd() {
-        this.beforeDistance = 0;
         if (this.diff !== 0) {
           if (this.topState === 'trigger') {
             topAction.loading(this);
@@ -226,7 +213,9 @@
           }
 
           // pull cancel
-          this.scrollTo(0);
+          if (this.diff !== 0) {
+            this.scrollTo(0);
+          }
         }
 
         // reset flagInfiniteScroll
