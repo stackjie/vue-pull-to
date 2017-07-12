@@ -26,7 +26,7 @@
           </router-link>
         </li>
         <li>
-          <router-link href="#">
+          <router-link href="/simple-pullto-loadmore">
             Simple pull to load more
             <svg class="icon icon-arrow" aria-hidden="true">
               <use xlink:href="#icon-arrow-right"></use>
