@@ -34,7 +34,7 @@
           </router-link>
         </li>
         <li>
-          <router-link href="#">
+          <router-link href="/infinite-scroll">
             Infinite scroll
             <svg class="icon icon-arrow" aria-hidden="true">
               <use xlink:href="#icon-arrow-right"></use>

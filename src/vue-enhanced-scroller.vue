@@ -152,6 +152,30 @@
         bottomAction.loaded(this, loadState);
       },
 
+      throttle(fn, delay, mustRunDelay) {
+        let timer = null;
+        let tStart;
+        return () => {
+          const context = this;
+          const args = arguments;
+          let tCurrent = +new Date();
+          clearTimeout(timer);
+
+          if (!tStart) {
+            tStart = tCurrent;
+          }
+
+          if (tCurrent - tStart >= mustRunDelay) {
+            fn.apply(context, args);
+            tStart = tCurrent;
+          } else {
+            timer = setTimeout(() => {
+              fn.apply(context, args);
+            }, delay);
+          }
+        };
+      },
+
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
         this.beforeDiff = this.diff;
