@@ -6,10 +6,12 @@ export function extend (target, source) {
 
 export function throttle (fn, delay) {
   let timer = null;
-  return () => {
+  return function() {
+    const context = this;
+    const args = arguments;
     clearTimeout(timer);
     timer = setTimeout(() => {
-      fn();
+      fn.apply(context, args);
     }, delay);
   };
 }
