@@ -228,7 +228,7 @@
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
         this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
-        this.scrollEl.addEventListener('scroll', throttle(this.handleScroll, 500));
+        this.scrollEl.addEventListener('scroll', throttle(this.handleScroll, 300));
       },
 
       init() {
