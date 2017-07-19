@@ -51,7 +51,7 @@
 </style>
 
 <script type="text/babel">
-  import utils from './utils';
+  import { extend, throttle } from './utils';
   import { topAction, bottomAction } from './actions';
   import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
 
@@ -90,7 +90,7 @@
           return {};
         },
         validator: (config) => {
-          utils.extend(config, TOP_DEFAULT_CONFIG);
+          extend(config, TOP_DEFAULT_CONFIG);
           return config;
         }
       },
@@ -100,7 +100,7 @@
           return {};
         },
         validator: (config) => {
-          utils.extend(config, BOTTOM_DEFAULT_CONFIG);
+          extend(config, BOTTOM_DEFAULT_CONFIG);
           return config;
         }
       }
@@ -119,8 +119,7 @@
         bottomText: '',
         topState: '',
         bottomState: '',
-        bottomReached: false,
-        flagInfiniteScroll: false
+        bottomReached: false
       };
     },
     watch: {
@@ -150,30 +149,6 @@
 
       bottomLoaded(loadState = 'done') {
         bottomAction.loaded(this, loadState);
-      },
-
-      throttle(fn, delay, mustRunDelay) {
-        let timer = null;
-        let tStart;
-        return () => {
-          const context = this;
-          const args = arguments;
-          let tCurrent = +new Date();
-          clearTimeout(timer);
-
-          if (!tStart) {
-            tStart = tCurrent;
-          }
-
-          if (tCurrent - tStart >= mustRunDelay) {
-            fn.apply(context, args);
-            tStart = tCurrent;
-          } else {
-            timer = setTimeout(() => {
-              fn.apply(context, args);
-            }, delay);
-          }
-        };
       },
 
       handleTouchStart(event) {
@@ -207,11 +182,6 @@
             topAction.trigger(this);
           }
         } else if (this.bottomReached && this.direction === 'up') {
-          if (!this.flagInfiniteScroll) {
-            this.flagInfiniteScroll = true;
-            this.$emit('infinite-scroll');
-          }
-
           event.preventDefault();
           event.stopPropagation();
           this.diff = this.distance;
@@ -246,10 +216,13 @@
             this.scrollTo(0);
           }
         }
+      },
 
-        // reset flagInfiniteScroll
-        if (this.flagInfiniteScroll) {
-          this.flagInfiniteScroll = !(this.distance >= 30);
+      handleScroll() {
+        if (this.checkBottomReached()) {
+          throttle(() => {
+            this.$emit('infinite-scroll');
+          }, 100)();
         }
       },
 
@@ -257,6 +230,7 @@
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
         this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
+        this.scrollEl.addEventListener('scroll', this.handleScroll);
       },
 
       init() {
