@@ -6,13 +6,21 @@
         {{ item }}
       </li>
     </ul>
+    <div class="loading-bar">
+      <svg class="icon icon-loading"
+           aria-hidden="true">
+        <use xlink:href="#icon-loading"></use>
+      </svg>
+      加载中...
+    </div>
   </enhanced-scroller>
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
-  .icon-arrow {
-    transition: .2s;
-    transform: rotate(180deg);
+  .loading-bar {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
   }
 
   .icon-loading {
@@ -54,16 +62,6 @@
         setTimeout(() => {
           this.dataList = this.dataList.concat(this.dataList);
         }, 500);
-      },
-
-      stateChange(state) {
-        if (state === 'pull' || state === 'trigger') {
-          this.iconLink = '#icon-arrow-bottom';
-        } else if (state === 'loading') {
-          this.iconLink = '#icon-loading';
-        } else if (state === 'loaded-done') {
-          this.iconLink = '#icon-finish';
-        }
       }
     }
   };
