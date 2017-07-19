@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="wrapper">
     <div class="slogan">
       <h1>Enhanced-Scroller</h1>
       <p>for Vue.js 2.0</p>
@@ -7,7 +7,7 @@
         <use xlink:href="#icon-face-20"></use>
       </svg>
     </div>
-    <enhanced-scroller>
+    <enhanced-scroller class="scroller-view">
       <ul class="list">
         <li>
           <router-link href="/bounce-scroll">
@@ -47,6 +47,16 @@
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .scroller-view {
+    flex: 1;
+  }
+
   .slogan {
     margin-top: 50px;
 
