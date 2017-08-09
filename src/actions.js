@@ -1,71 +1,65 @@
-const topAction = {
-  pull(scope) {
-    scope.topState = 'pull';
-    scope.topText = scope.topConfig.pullText;
-  },
+/* eslint-disable */
+export function topPull() {
+  this.topState = 'pull';
+  this.topText = this.topConfig.pullText;
+}
 
-  trigger(scope) {
-    scope.topState = 'trigger';
-    scope.topText = scope.topConfig.triggerText;
-  },
+export function topTrigger() {
+  this.topState = 'trigger';
+  this.topText = this.topConfig.triggerText;
+}
 
-  loading(scope) {
-    scope.topState = 'loading';
-    scope.topText = scope.topConfig.loadingText;
-    scope.scrollTo(scope.topConfig.stayDistance);
-    scope.topLoadMethod(scope.topLoaded);
-  },
+export function topLoading() {
+  this.topState = 'loading';
+  this.topText = this.topConfig.loadingText;
+  this.scrollTo(this.topConfig.stayDistance);
+  this.topLoadMethod(this.topLoaded);
+}
 
-  loaded(scope, loadState) {
-    scope.topState = `loaded-${loadState}`;
+export const topLoaded = (loadState = 'done') => {
+  this.topState = `loaded-${loadState}`;
+  this.topText = loadState === 'done'
+    ? this.topConfig.doneText
+    : this.topConfig.failText;
+  setTimeout(() => {
+    this.scrollTo(0);
 
-    scope.topText = loadState === 'done'
-      ? scope.topConfig.doneText
-      : scope.topConfig.failText;
+    // reset state
     setTimeout(() => {
-      scope.scrollTo(0);
-
-      // reset state
-      setTimeout(() => {
-        scope.topState = '';
-      }, 200);
-    }, scope.topConfig.loadedStayTime);
-  }
+      this.topState = '';
+    }, 200);
+  }, this.topConfig.loadedStayTime);
 };
 
-const bottomAction = {
-  pull(scope) {
-    scope.bottomState = 'pull';
-    scope.bottomText = scope.bottomConfig.pullText;
-  },
+export function bottomPull() {
+  this.bottomState = 'pull';
+  this.bottomText = this.bottomConfig.pullText;
+}
 
-  trigger(scope) {
-    scope.bottomState = 'trigger';
-    scope.bottomText = scope.bottomConfig.triggerText;
-  },
+export function bottomTrigger() {
+  this.bottomState = 'trigger';
+  this.bottomText = this.bottomConfig.triggerText;
+}
 
-  loading(scope) {
-    scope.bottomState = 'loading';
-    scope.bottomText = scope.bottomConfig.loadingText;
-    scope.scrollTo(-scope.bottomConfig.stayDistance);
-    scope.bottomLoadMethod(scope.bottomLoaded);
-  },
+export function bottomLoading() {
+  this.bottomState = 'loading';
+  this.bottomText = this.bottomConfig.loadingText;
+  this.scrollTo(-this.bottomConfig.stayDistance);
+  this.bottomLoadMethod(this.bottomLoaded);
+}
 
-  loaded(scope, loadState) {
-    scope.bottomState = `loaded-${loadState}`;
+export function bottomLoaded(loadState = 'done') {
+  this.bottomState = `loaded-${loadState}`;
 
-    scope.bottomText = loadState === 'done'
-      ? scope.bottomConfig.doneText
-      : scope.bottomConfig.failText;
+  this.bottomText = loadState === 'done'
+    ? this.bottomConfig.doneText
+    : this.bottomConfig.failText;
+  setTimeout(() => {
+    this.scrollTo(0);
+
+    // reset state
     setTimeout(() => {
-      scope.scrollTo(0);
-
-      // reset state
-      setTimeout(() => {
-        scope.bottomState = '';
-      }, 200);
-    }, scope.bottomConfig.loadedStayTime);
-  }
-};
-
-export { topAction, bottomAction };
+      this.bottomState = '';
+    }, 200);
+  }, this.bottomConfig.loadedStayTime);
+}

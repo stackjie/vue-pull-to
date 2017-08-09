@@ -5,7 +5,7 @@
          :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
          class="action-block">
       <slot name="top-block"
-            :state="topState"
+            :state="state"
             :state-text="topText">
         <p class="defalut-text">{{ topText }}</p>
       </slot>
@@ -17,7 +17,7 @@
          :style="{ height: `${bottomBlockHeight}px`, marginBottom: `${-bottomBlockHeight}px` }"
          class="action-block">
       <slot name="bottom-block"
-            :state="bottomState"
+            :state="state"
             :state-text="bottomText">
         <p class="defalut-text">{{ bottomText }}</p>
       </slot>
@@ -25,35 +25,9 @@
   </div>
 </template>
 
-<style scoped>
-  .enhanced-scroller-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  .scroll-container {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .enhanced-scroller-wrapper .action-block {
-    position: relative;
-    width: 100%;
-  }
-
-  .defalut-text {
-    height: 100%;
-    line-height: 50px;
-    text-align: center;
-  }
-</style>
-
 <script type="text/babel">
-  import { extend, throttle } from './utils';
-  import { topAction, bottomAction } from './actions';
-  import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
+  import {extend, throttle} from './utils';
+  import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
 
   export default {
     name: 'enhanced-scroller',
@@ -117,20 +91,68 @@
         beforeDiff: 0,
         topText: '',
         bottomText: '',
-        topState: '',
-        bottomState: '',
+        state: '',
         bottomReached: false
       };
     },
     watch: {
-      topState(val) {
-        this.$emit('top-state-change', val);
-      },
-      bottomState(val) {
-        this.$emit('bottom-state-change', val);
+      state(val) {
+        if (this.direction === 'up') {
+          this.$emit('top-state-change', val);
+        } else {
+          this.$emit('bottom-state-change', val);
+        }
       }
     },
     methods: {
+      actionPull() {
+        this.state = 'pull';
+        this.direction === 'down'
+          ? this.topText = this.topConfig.pullText
+          : this.bottomText = this.bottomConfig.pullText;
+      },
+      actionTrigger() {
+        this.state = 'trigger';
+        this.direction === 'down'
+          ? this.topText = this.topConfig.triggerText
+          : this.bottomText = this.bottomConfig.triggerText;
+      },
+      actionLoading() {
+        this.state = 'loading';
+        if (this.direction === 'down') {
+          this.topText = this.topConfig.loadingText;
+          /* eslint-disable no-useless-call */
+          this.topLoadMethod.call(this, this.actionLoaded);
+          this.scrollTo(this.topConfig.stayDistance);
+        } else {
+          this.bottomText = this.bottomConfig.loadingText;
+          this.bottomLoadMethod.call(this, this.actionLoaded);
+          this.scrollTo(-this.bottomConfig.stayDistance);
+        }
+      },
+      actionLoaded(loadState = 'done') {
+        this.state = `loaded-${loadState}`;
+        let loadedStayTime;
+        if (this.direction === 'down') {
+          this.topText = loadState === 'done'
+            ? this.topConfig.doneText
+            : this.topConfig.failText;
+          loadedStayTime = this.topConfig.loadedStayTime;
+        } else {
+          this.bottomText = loadState === 'done'
+            ? this.bottomConfig.doneText
+            : this.bottomConfig.failText;
+          loadedStayTime = this.bottomConfig.loadedStayTime;
+        }
+        setTimeout(() => {
+          this.scrollTo(0);
+
+          // reset state
+          setTimeout(() => {
+            this.state = '';
+          }, 200);
+        }, loadedStayTime);
+      },
       scrollTo(y, duration = 200) {
         this.$el.style.transition = `${duration}ms`;
         this.diff = y;
@@ -141,14 +163,6 @@
 
       checkBottomReached() {
         return this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
-      },
-
-      topLoaded(loadState = 'done') {
-        topAction.loaded(this, loadState);
-      },
-
-      bottomLoaded(loadState = 'done') {
-        bottomAction.loaded(this, loadState);
       },
 
       handleTouchStart(event) {
@@ -175,11 +189,11 @@
           if (typeof this.topLoadMethod === 'undefined') return;
 
           if (this.distance < this.topConfig.triggerDistance &&
-            this.topState !== 'pull' && this.topState !== 'loading') {
-            topAction.pull(this);
+            this.state !== 'pull' && this.state !== 'loading') {
+            this.actionPull();
           } else if (this.distance >= this.topConfig.triggerDistance &&
-            this.topState !== 'trigger' && this.topState !== 'loading') {
-            topAction.trigger(this);
+            this.state !== 'trigger' && this.state !== 'loading') {
+            this.actionTrigger();
           }
         } else if (this.bottomReached && this.direction === 'up') {
           event.preventDefault();
@@ -190,24 +204,24 @@
           if (typeof this.bottomLoadMethod === 'undefined') return;
 
           if (Math.abs(this.distance) < this.bottomConfig.triggerDistance &&
-            this.bottomState !== 'pull' && this.bottomState !== 'loading') {
-            bottomAction.pull(this);
+            this.state !== 'pull' && this.state !== 'loading') {
+            this.actionPull();
           } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance &&
-            this.bottomState !== 'trigger' && this.bottomState !== 'loading') {
-            bottomAction.trigger(this);
+            this.state !== 'trigger' && this.state !== 'loading') {
+            this.actionTrigger();
           }
         }
       },
 
       handleTouchEnd() {
         if (this.diff !== 0) {
-          if (this.topState === 'trigger') {
-            topAction.loading(this);
+          if (this.state === 'trigger') {
+            this.actionLoading();
             return;
           }
 
-          if (this.bottomState === 'trigger') {
-            bottomAction.loading(this);
+          if (this.state === 'trigger') {
+            this.actionLoading();
             return;
           }
 
@@ -241,3 +255,28 @@
     }
   };
 </script>
+
+<style scoped>
+  .enhanced-scroller-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .enhanced-scroller-wrapper .action-block {
+    position: relative;
+    width: 100%;
+  }
+
+  .defalut-text {
+    height: 100%;
+    line-height: 50px;
+    text-align: center;
+  }
+</style>
