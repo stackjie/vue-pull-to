@@ -1,5 +1,5 @@
 <template>
-  <div class="enhanced-scroller-wrapper"
+  <div class="vue-pull-to-wrapper"
        :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
     <div v-if="topLoadMethod"
          :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
@@ -30,19 +30,11 @@
   import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
 
   export default {
-    name: 'enhanced-scroller',
+    name: 'vue-pull-to',
     props: {
       distanceIndex: {
         type: Number,
         default: 2
-      },
-      enabledTopAction: {
-        type: Boolean,
-        default: false
-      },
-      enabledBottomAction: {
-        type: Boolean,
-        default: false
       },
       topBlockHeight: {
         type: Number,
@@ -57,6 +49,10 @@
       },
       bottomLoadMethod: {
         type: Function
+      },
+      isThrottle: {
+        type: Boolean,
+        default: true
       },
       topConfig: {
         type: Object,
@@ -97,7 +93,7 @@
     },
     watch: {
       state(val) {
-        if (this.direction === 'up') {
+        if (this.direction === 'down') {
           this.$emit('top-state-change', val);
         } else {
           this.$emit('bottom-state-change', val);
@@ -184,7 +180,7 @@
           event.preventDefault();
           event.stopPropagation();
           this.diff = this.distance;
-          this.$emit('top-pull', this.diff);
+          this.isThrottle ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
 
           if (typeof this.topLoadMethod === 'undefined') return;
 
@@ -199,7 +195,7 @@
           event.preventDefault();
           event.stopPropagation();
           this.diff = this.distance;
-          this.$emit('bottom-pull', this.diff);
+          this.isThrottle ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
 
           if (typeof this.bottomLoadMethod === 'undefined') return;
 
@@ -238,6 +234,14 @@
         }
       },
 
+      throttleEmitTopPull() {
+        this.$emit('top-pull', this.diff);
+      },
+
+      throttleEmitBottomPull() {
+        this.$emit('bottom-pull', this.diff);
+      },
+
       bindEvents() {
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
@@ -246,6 +250,8 @@
       },
 
       init() {
+        this.throttleEmitTopPull = throttle(this.throttleEmitTopPull, 200);
+        this.throttleEmitBottomPull = throttle(this.throttleEmitBottomPull, 200);
         this.scrollEl = this.$el.querySelector('.scroll-container');
         this.bindEvents();
       }
@@ -257,7 +263,7 @@
 </script>
 
 <style scoped>
-  .enhanced-scroller-wrapper {
+  .vue-pull-to-wrapper {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -269,7 +275,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .enhanced-scroller-wrapper .action-block {
+  .vue-pull-to-wrapper .action-block {
     position: relative;
     width: 100%;
   }

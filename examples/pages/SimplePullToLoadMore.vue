@@ -1,5 +1,5 @@
 <template>
-  <enhanced-scroller
+  <pull-to
     :bottom-load-method="loadmore"
     @bottom-state-change="stateChange">
     <ul class="list">
@@ -20,7 +20,7 @@
         {{ props.stateText }}
       </div>
     </template>
-  </enhanced-scroller>
+  </pull-to>
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
@@ -50,12 +50,12 @@
 </style>
 
 <script type="text/babel">
-  import EnhancedScroller from '@/vue-enhanced-scroller';
+  import PullTo from '@/vue-pull-to';
 
   export default {
     name: 'simple-pull-to-loadmore',
     components: {
-      EnhancedScroller
+      PullTo
     },
     data() {
       return {
@@ -84,8 +84,6 @@
         } else if (state === 'loaded-done') {
           this.iconLink = '#icon-finish';
         }
-
-        console.log(this.iconLink);
       }
     }
   };

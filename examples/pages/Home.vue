@@ -7,7 +7,7 @@
         <use xlink:href="#icon-face-20"></use>
       </svg>
     </div>
-    <enhanced-scroller class="scroller-view">
+    <pull-to class="scroller-view">
       <ul class="list">
         <li>
           <router-link href="/bounce-scroll">
@@ -42,7 +42,7 @@
           </router-link>
         </li>
       </ul>
-    </enhanced-scroller>
+    </pull-to>
   </section>
 </template>
 
@@ -112,14 +112,14 @@
 </style>
 
 <script type="text/babel">
-  import EnhancedScroller from '@/vue-enhanced-scroller';
+  import PullTo from '@/vue-pull-to';
   import RouterLink from '../components/RouterLink';
 
   export default {
     name: 'home',
     components: {
       RouterLink,
-      EnhancedScroller
+      PullTo
     }
   };
 </script>

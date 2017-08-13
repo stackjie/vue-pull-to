@@ -1,5 +1,5 @@
 <template>
-  <enhanced-scroller
+  <pull-to
     :top-load-method="refresh"
     @top-state-change="stateChange">
     <template slot="top-block" scope="props">
@@ -20,7 +20,7 @@
         {{ item }}
       </li>
     </ul>
-  </enhanced-scroller>
+  </pull-to>
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
@@ -50,12 +50,12 @@
 </style>
 
 <script type="text/babel">
-  import EnhancedScroller from '@/vue-enhanced-scroller';
+  import PullTo from '@/vue-pull-to';
 
   export default {
     name: 'simple-pull-to-refresh',
     components: {
-      EnhancedScroller
+      PullTo
     },
     data() {
       return {

@@ -1,5 +1,5 @@
 <template>
-  <enhanced-scroller>
+  <pull-to>
     <ul class="list">
       <li>
         (=ﾟωﾟ)ﾉ
@@ -92,19 +92,19 @@
         (╭￣3￣)╭♡
       </li>
     </ul>
-  </enhanced-scroller>
+  </pull-to>
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
 </style>
 
 <script type="text/babel">
-  import EnhancedScroller from '@/vue-enhanced-scroller';
+  import PullTo from '@/vue-pull-to';
 
   export default {
     name: 'bounce-scroll',
     components: {
-      EnhancedScroller
+      PullTo
     }
   };
 </script>

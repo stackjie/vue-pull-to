@@ -8,9 +8,9 @@ function resolve (dir) {
 module.exports = {
   entry: './src/index.js',
   output: {
-    library: 'VueEnhancedScroll',
+    library: 'VuePullTo',
     libraryTarget: 'umd',
-    filename: 'vue-enhanced-scroll.js',
+    filename: 'vue-pull-to.js',
     path: resolve('dist')
   },
   plugins: [

@@ -1,5 +1,5 @@
 <template>
-  <enhanced-scroller
+  <pull-to
     @infinite-scroll="loadmore">
     <ul class="list">
       <li v-for="item in dataList">
@@ -13,7 +13,7 @@
       </svg>
       加载中...
     </div>
-  </enhanced-scroller>
+  </pull-to>
 </template>
 
 <style scoped rel="stylesheet/less" lang="less">
@@ -39,12 +39,12 @@
 </style>
 
 <script type="text/babel">
-  import EnhancedScroller from '@/vue-enhanced-scroller';
+  import PullTo from '@/vue-pull-to';
 
   export default {
     name: 'infinite-scroll',
     components: {
-      EnhancedScroller
+      PullTo
     },
     data() {
       return {

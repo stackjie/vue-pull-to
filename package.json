@@ -1,7 +1,7 @@
 {
-  "name": "vue-enhanced-scroller",
+  "name": "vue-pull-to",
   "version": "0.0.1",
-  "description": "A pull to refresh and an infinite scroll of the vue.js component",
+  "description": "A pull to refresh and load more and an infinite scroll of the vue.js component",
   "main": "src/index.js",
   "scripts": {
     "dev": "node ./build/dev-server.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stackjie/vue-enhanced-scroller.git"
+    "url": "git+https://github.com/stackjie/vue-pull-to.git"
   },
   "author": "stackjie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stackjie/vue-enhanced-scroller/issues"
+    "url": "https://github.com/stackjie/vue-pull-to/issues"
   },
-  "homepage": "https://github.com/stackjie/vue-enhanced-scroller#readme",
+  "homepage": "https://github.com/stackjie/vue-pull-to#readme",
   "dependencies": {
     "vue": "^2.2.6"
   },
