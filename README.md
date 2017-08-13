@@ -1,5 +1,3 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
 # Vue-Pull-To
 A pull-down refresh and pull-up load more and infinite scroll of the vue.js component.
 
@@ -85,7 +83,7 @@ const TOP_DEFAULT_CONFIG = {
   loadedStayTime: 400, // 加载完后停留的时间ms
   stayDistance: 50, // 触发刷新后停留的距离
   triggerDistance: 70 // 下拉刷新触发的距离
-};
+}
 
 const BOTTOM_DEFAULT_CONFIG = {
   pullText: '上拉加载',
@@ -96,7 +94,7 @@ const BOTTOM_DEFAULT_CONFIG = {
   loadedStayTime: 400,
   stayDistance: 50,
   triggerDistance: 70
-};
+}
 ```
  ### slots
 | 名称 | 说明 | scope |
