@@ -1,5 +1,5 @@
 # Vue-Pull-To
-A pull-down refresh and pull-up load more and infinite scroll of the vue.js component.
+A pull-down refresh and pull-up load more and infinite scroll Vue.js component.
 
 一个集成了下拉刷新、上拉加载、无限滚动加载的Vue组件。
 
