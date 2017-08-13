@@ -54,9 +54,9 @@ A pull to refresh and load more and an infinite scroll of the vue.js component.
   }
 </script>
  ```
- 组件会默认占据父元素的百分之百高度。props `top-load-method`和`bottom-load-method`会默认传进一个`loaded`参数，该参数是一个改变组件加载状态的函数，必须调用一次`loaded`不然组件就会一直处于加载状态，如果执行`loaded('done')`组件内部状态就会变成成功加载的状态，`loaded('fail')`为失败。
+组件会默认占据父元素的百分之百高度。props `top-load-method`和`bottom-load-method`会默认传进一个`loaded`参数，该参数是一个改变组件加载状态的函数，必须调用一次`loaded`不然组件就会一直处于加载状态，如果执行`loaded('done')`组件内部状态就会变成成功加载的状态，`loaded('fail')`为失败。
 
- [更多使用示例请参考Examples的代码](https://github.com/stackjie/vue-pull-to/tree/master/examples)
+[更多使用示例请参考Examples的代码](https://github.com/stackjie/vue-pull-to/tree/master/examples)
  
  ## API Docs
  
