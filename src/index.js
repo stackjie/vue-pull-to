@@ -1,3 +1,3 @@
-import EnhancedScroller from './vue-enhanced-scroller';
+import PullTo from './vue-pull-to.vue';
 
-export default EnhancedScroller;
+export default PullTo;
