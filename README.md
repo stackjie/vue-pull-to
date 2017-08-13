@@ -1,5 +1,7 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 # Vue-Pull-To
-A pull to refresh and load more and an infinite scroll of the vue.js component.
+A pull-down refresh and pull-up load more and infinite scroll of the vue.js component.
 
 一个集成了下拉刷新、上拉加载、无限滚动加载的Vue组件。
 
@@ -9,7 +11,7 @@ A pull to refresh and load more and an infinite scroll of the vue.js component.
 [![npm](https://img.shields.io/npm/v/vue-pull-to.svg)](https://www.npmjs.com/package/vue-pull-to)
 
 ## Examples
-
+[examples]()
 
 ## Installation
 ```
