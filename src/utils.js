@@ -11,7 +11,6 @@ export function throttle (fn, delay) {
     const args = arguments;
     clearTimeout(timer);
     timer = setTimeout(() => {
-      console.log(123);
       fn.apply(context, args);
     }, delay);
   };
