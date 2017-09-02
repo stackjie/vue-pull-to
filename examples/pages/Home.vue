@@ -1,7 +1,7 @@
 <template>
   <section class="wrapper">
     <div class="slogan">
-      <h1>Enhanced-Scroller</h1>
+      <h1>Vue-Pull-To</h1>
       <p>for Vue.js 2.0</p>
       <svg class="icon icon-face" aria-hidden="true">
         <use xlink:href="#icon-face-20"></use>
