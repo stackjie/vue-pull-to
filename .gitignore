@@ -1,6 +1,0 @@
-.DS_Store
-node_modules
-.idea
-dist
-examples/dist
-npm-debug.log
