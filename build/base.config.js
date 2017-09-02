@@ -13,14 +13,6 @@ module.exports = {
     filename: 'vue-pull-to.js',
     path: resolve('dist')
   },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      },
-      sourceMap: true
-    })
-  ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
