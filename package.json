@@ -1,8 +1,8 @@
 {
   "name": "vue-pull-to",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A pull-down refresh and pull-up load more and infinite scroll of the vue.js component",
-  "main": "src/index.js",
+  "main": "dist/vue-pull-to.js",
   "scripts": {
     "dev": "node ./build/dev-server.js",
     "build": "webpack --config ./build/prod.config.js",
