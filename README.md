@@ -9,7 +9,7 @@ A pull-down refresh and pull-up load more and infinite scroll Vue.js component.
 [![npm](https://img.shields.io/npm/v/vue-pull-to.svg)](https://www.npmjs.com/package/vue-pull-to)
 
 ## Examples
-[examples](www.vuepullto.top)
+[examples](http://www.vuepullto.top)
 
 ## Installation
 ```
