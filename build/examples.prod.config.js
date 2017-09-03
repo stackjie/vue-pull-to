@@ -16,12 +16,13 @@ module.exports = merge(baseConfig ,{
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: resolve('examples/index.html'),
+      filename: 'index.html',
+      template: './examples/index.html',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
         removeAttributeQuotes: true
-      },
+      }
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {

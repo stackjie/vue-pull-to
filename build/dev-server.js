@@ -9,10 +9,9 @@ function resolve (dir) {
 
 var compiler = Webpack(webpackConfig);
 var server = new WebpackDevServer(compiler, {
-  contentBase: resolve('examples'),
+  contentBase: '/assets/',
   port: 9095,
   hot: true,
-  publicPath: '/assets/',
   disableHostCheck: true,
   historyApiFallback: true,
   stats: {
