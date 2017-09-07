@@ -94,22 +94,6 @@ var Component = __webpack_require__(7)(
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/stackjie/Documents/github_project/vue-fast-scroll/src/vue-pull-to.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] vue-pull-to.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-12abd9fb", Component.options)
-  } else {
-    hotAPI.reload("data-v-12abd9fb", Component.options)
-  }
-})()}
 
 module.exports = Component.exports
 
@@ -270,7 +254,7 @@ exports.default = {
     topConfig: {
       type: Object,
       default: function _default() {
-        return {};
+        return _config.TOP_DEFAULT_CONFIG;
       },
       validator: function validator(config) {
         (0, _utils.extend)(config, _config.TOP_DEFAULT_CONFIG);
@@ -280,7 +264,7 @@ exports.default = {
     bottomConfig: {
       type: Object,
       default: function _default() {
-        return {};
+        return _config.BOTTOM_DEFAULT_CONFIG;
       },
       validator: function validator(config) {
         (0, _utils.extend)(config, _config.BOTTOM_DEFAULT_CONFIG);
@@ -393,7 +377,7 @@ exports.default = {
         this.diff = this.distance;
         this.isThrottle ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
 
-        if (typeof this.topLoadMethod === 'undefined') return;
+        if (typeof this.topLoadMethod !== 'function') return;
 
         if (this.distance < this.topConfig.triggerDistance && this.state !== 'pull' && this.state !== 'loading') {
           this.actionPull();
@@ -406,7 +390,7 @@ exports.default = {
         this.diff = this.distance;
         this.isThrottle ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
 
-        if (typeof this.bottomLoadMethod === 'undefined') return;
+        if (typeof this.bottomLoadMethod !== 'function') return;
 
         if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.state !== 'pull' && this.state !== 'loading') {
           this.actionPull();
@@ -472,7 +456,7 @@ exports = module.exports = __webpack_require__(6)(undefined);
 
 
 // module
-exports.push([module.i, "\n.vue-pull-to-wrapper[data-v-12abd9fb] {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n          flex-direction: column;\n  height: 100%;\n}\n.scroll-container[data-v-12abd9fb] {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n          flex: 1;\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch;\n}\n.vue-pull-to-wrapper .action-block[data-v-12abd9fb] {\n  position: relative;\n  width: 100%;\n}\n.defalut-text[data-v-12abd9fb] {\n  height: 100%;\n  line-height: 50px;\n  text-align: center;\n}\n", ""]);
+exports.push([module.i, ".vue-pull-to-wrapper[data-v-12abd9fb]{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;height:100%}.scroll-container[data-v-12abd9fb]{-webkit-box-flex:1;-webkit-flex:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}.vue-pull-to-wrapper .action-block[data-v-12abd9fb]{position:relative;width:100%}.defalut-text[data-v-12abd9fb]{height:100%;line-height:50px;text-align:center}", ""]);
 
 // exports
 
@@ -618,7 +602,7 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
@@ -652,13 +636,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     stateText: _vm.bottomText
   })], 2) : _vm._e()])
 },staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-12abd9fb", module.exports)
-  }
-}
 
 /***/ }),
 /* 9 */
@@ -671,20 +648,7 @@ var content = __webpack_require__(5);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(10)("4ce9aaf4", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-12abd9fb\",\"scoped\":true,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./vue-pull-to.vue", function() {
-     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-12abd9fb\",\"scoped\":true,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./vue-pull-to.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
+var update = __webpack_require__(10)("0cd817f2", content, true);
 
 /***/ }),
 /* 10 */
