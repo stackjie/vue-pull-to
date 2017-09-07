@@ -3,10 +3,6 @@ var Webpack = require("webpack");
 var WebpackDevServer = require("webpack-dev-server");
 var webpackConfig = require("./examples.dev.config");
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
-
 var compiler = Webpack(webpackConfig);
 var server = new WebpackDevServer(compiler, {
   contentBase: '/assets/',

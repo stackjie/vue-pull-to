@@ -14,5 +14,10 @@ module.exports = merge(baseConfig, {
     libraryTarget: 'umd',
     filename: 'vue-pull-to.js',
     path: resolve('dist')
-  }
+  },
+  plugins: [
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    })
+  ]
 });
