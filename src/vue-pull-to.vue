@@ -26,7 +26,7 @@
 </template>
 
 <script type="text/babel">
-  import {extend, throttle} from './utils';
+  import {extend, throttle, throttleRunDelay} from './utils';
   import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
 
   export default {
@@ -246,12 +246,12 @@
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
         this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
-        this.scrollEl.addEventListener('scroll', throttle(this.handleScroll, 300));
+        this.scrollEl.addEventListener('scroll', throttle(this.handleScroll, 500));
       },
 
       init() {
-        this.throttleEmitTopPull = throttle(this.throttleEmitTopPull, 200);
-        this.throttleEmitBottomPull = throttle(this.throttleEmitBottomPull, 200);
+        this.throttleEmitTopPull = throttleRunDelay(this.throttleEmitTopPull, 200, 300);
+        this.throttleEmitBottomPull = throttleRunDelay(this.throttleEmitBottomPull, 200, 300);
         this.scrollEl = this.$el.querySelector('.scroll-container');
         this.bindEvents();
       }
