@@ -1,1 +1,945 @@
-!function(t,e){"object"==typeof exports&&"object"==typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.VuePullTo=e():t.VuePullTo=e()}(this,function(){return function(t){function e(i){if(o[i])return o[i].exports;var n=o[i]={i:i,l:!1,exports:{}};return t[i].call(n.exports,n,n.exports,e),n.l=!0,n.exports}var o={};return e.m=t,e.c=o,e.i=function(t){return t},e.d=function(t,o,i){e.o(t,o)||Object.defineProperty(t,o,{configurable:!1,enumerable:!0,get:i})},e.n=function(t){var o=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(o,"a",o),o},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=2)}([function(t,e,o){o(9);var i=o(7)(o(4),o(8),"data-v-12abd9fb",null);i.options.__file="/Users/stackjie/Documents/github_project/vue-fast-scroll/src/vue-pull-to.vue",i.esModule&&Object.keys(i.esModule).some(function(t){return"default"!==t&&"__esModule"!==t}),i.options.functional,t.exports=i.exports},function(t,e,o){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i={pullText:"下拉刷新",triggerText:"释放更新",loadingText:"加载中...",doneText:"加载完成",failText:"加载失败",loadedStayTime:400,stayDistance:50,triggerDistance:70},n={pullText:"上拉加载",triggerText:"释放更新",loadingText:"加载中...",doneText:"加载完成",failText:"加载失败",loadedStayTime:400,stayDistance:50,triggerDistance:70};e.TOP_DEFAULT_CONFIG=i,e.BOTTOM_DEFAULT_CONFIG=n},function(t,e,o){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=o(0),n=function(t){return t&&t.__esModule?t:{default:t}}(i);e.default=n.default,t.exports=e.default},function(t,e,o){"use strict";function i(t,e){for(var o in e)t[o]=e[o]}function n(t,e){var o=null;return function(){var i=this,n=arguments;clearTimeout(o),o=setTimeout(function(){t.apply(i,n)},e)}}Object.defineProperty(e,"__esModule",{value:!0}),e.extend=i,e.throttle=n},function(t,e,o){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=o(3),n=o(1);e.default={name:"vue-pull-to",props:{distanceIndex:{type:Number,default:2},topBlockHeight:{type:Number,default:50},bottomBlockHeight:{type:Number,default:50},topLoadMethod:{type:Function},bottomLoadMethod:{type:Function},isThrottle:{type:Boolean,default:!0},topConfig:{type:Object,default:function(){return{}},validator:function(t){return(0,i.extend)(t,n.TOP_DEFAULT_CONFIG),t}},bottomConfig:{type:Object,default:function(){return{}},validator:function(t){return(0,i.extend)(t,n.BOTTOM_DEFAULT_CONFIG),t}}},data:function(){return{scrollEl:null,startScrollTop:0,startY:0,currentY:0,distance:0,direction:0,diff:0,beforeDiff:0,topText:"",bottomText:"",state:"",bottomReached:!1}},watch:{state:function(t){"down"===this.direction?this.$emit("top-state-change",t):this.$emit("bottom-state-change",t)}},methods:{actionPull:function(){this.state="pull","down"===this.direction?this.topText=this.topConfig.pullText:this.bottomText=this.bottomConfig.pullText},actionTrigger:function(){this.state="trigger","down"===this.direction?this.topText=this.topConfig.triggerText:this.bottomText=this.bottomConfig.triggerText},actionLoading:function(){this.state="loading","down"===this.direction?(this.topText=this.topConfig.loadingText,this.topLoadMethod.call(this,this.actionLoaded),this.scrollTo(this.topConfig.stayDistance)):(this.bottomText=this.bottomConfig.loadingText,this.bottomLoadMethod.call(this,this.actionLoaded),this.scrollTo(-this.bottomConfig.stayDistance))},actionLoaded:function(){var t=this,e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"done";this.state="loaded-"+e;var o=void 0;"down"===this.direction?(this.topText="done"===e?this.topConfig.doneText:this.topConfig.failText,o=this.topConfig.loadedStayTime):(this.bottomText="done"===e?this.bottomConfig.doneText:this.bottomConfig.failText,o=this.bottomConfig.loadedStayTime),setTimeout(function(){t.scrollTo(0),setTimeout(function(){t.state=""},200)},o)},scrollTo:function(t){var e=this,o=arguments.length>1&&void 0!==arguments[1]?arguments[1]:200;this.$el.style.transition=o+"ms",this.diff=t,setTimeout(function(){e.$el.style.transition=""},o)},checkBottomReached:function(){return this.scrollEl.scrollTop+this.scrollEl.offsetHeight>=this.scrollEl.scrollHeight},handleTouchStart:function(t){this.startY=t.touches[0].clientY,this.beforeDiff=this.diff,this.startScrollTop=this.scrollEl.scrollTop,this.bottomReached=this.checkBottomReached()},handleTouchMove:function(t){if(!(this.startY<this.scrollEl.getBoundingClientRect().top&&this.startY>this.scrollEl.getBoundingClientRect().bottom))if(this.currentY=t.touches[0].clientY,this.distance=(this.currentY-this.startY)/this.distanceIndex+this.beforeDiff,this.direction=this.distance>0?"down":"up",0===this.startScrollTop&&"down"===this.direction){if(t.preventDefault(),t.stopPropagation(),this.diff=this.distance,this.isThrottle?this.throttleEmitTopPull():this.$emit("top-pull",this.diff),void 0===this.topLoadMethod)return;this.distance<this.topConfig.triggerDistance&&"pull"!==this.state&&"loading"!==this.state?this.actionPull():this.distance>=this.topConfig.triggerDistance&&"trigger"!==this.state&&"loading"!==this.state&&this.actionTrigger()}else if(this.bottomReached&&"up"===this.direction){if(t.preventDefault(),t.stopPropagation(),this.diff=this.distance,this.isThrottle?this.throttleEmitBottomPull():this.$emit("bottom-pull",this.diff),void 0===this.bottomLoadMethod)return;Math.abs(this.distance)<this.bottomConfig.triggerDistance&&"pull"!==this.state&&"loading"!==this.state?this.actionPull():Math.abs(this.distance)>=this.bottomConfig.triggerDistance&&"trigger"!==this.state&&"loading"!==this.state&&this.actionTrigger()}},handleTouchEnd:function(){if(0!==this.diff){if("trigger"===this.state)return void this.actionLoading();if("trigger"===this.state)return void this.actionLoading();0!==this.diff&&this.scrollTo(0)}},handleScroll:function(){this.checkBottomReached()&&this.$emit("infinite-scroll")},throttleEmitTopPull:function(){this.$emit("top-pull",this.diff)},throttleEmitBottomPull:function(){this.$emit("bottom-pull",this.diff)},bindEvents:function(){this.scrollEl.addEventListener("touchstart",this.handleTouchStart),this.scrollEl.addEventListener("touchmove",this.handleTouchMove),this.scrollEl.addEventListener("touchend",this.handleTouchEnd),this.scrollEl.addEventListener("scroll",(0,i.throttle)(this.handleScroll,300))},init:function(){this.throttleEmitTopPull=(0,i.throttle)(this.throttleEmitTopPull,200),this.throttleEmitBottomPull=(0,i.throttle)(this.throttleEmitBottomPull,200),this.scrollEl=this.$el.querySelector(".scroll-container"),this.bindEvents()}},mounted:function(){this.init()}},t.exports=e.default},function(t,e,o){e=t.exports=o(6)(void 0),e.push([t.i,"\n.vue-pull-to-wrapper[data-v-12abd9fb] {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n          flex-direction: column;\n  height: 100%;\n}\n.scroll-container[data-v-12abd9fb] {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n          flex: 1;\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch;\n}\n.vue-pull-to-wrapper .action-block[data-v-12abd9fb] {\n  position: relative;\n  width: 100%;\n}\n.defalut-text[data-v-12abd9fb] {\n  height: 100%;\n  line-height: 50px;\n  text-align: center;\n}\n",""])},function(t,e){function o(t,e){var o=t[1]||"",n=t[3];if(!n)return o;if(e&&"function"==typeof btoa){var s=i(n);return[o].concat(n.sources.map(function(t){return"/*# sourceURL="+n.sourceRoot+t+" */"})).concat([s]).join("\n")}return[o].join("\n")}function i(t){return"/*# sourceMappingURL=data:application/json;charset=utf-8;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(t))))+" */"}t.exports=function(t){var e=[];return e.toString=function(){return this.map(function(e){var i=o(e,t);return e[2]?"@media "+e[2]+"{"+i+"}":i}).join("")},e.i=function(t,o){"string"==typeof t&&(t=[[null,t,""]]);for(var i={},n=0;n<this.length;n++){var s=this[n][0];"number"==typeof s&&(i[s]=!0)}for(n=0;n<t.length;n++){var r=t[n];"number"==typeof r[0]&&i[r[0]]||(o&&!r[2]?r[2]=o:o&&(r[2]="("+r[2]+") and ("+o+")"),e.push(r))}},e}},function(t,e){t.exports=function(t,e,o,i){var n,s=t=t||{},r=typeof t.default;"object"!==r&&"function"!==r||(n=t,s=t.default);var a="function"==typeof s?s.options:s;if(e&&(a.render=e.render,a.staticRenderFns=e.staticRenderFns),o&&(a._scopeId=o),i){var l=Object.create(a.computed||null);Object.keys(i).forEach(function(t){var e=i[t];l[t]=function(){return e}}),a.computed=l}return{esModule:n,exports:s,options:a}}},function(t,e,o){t.exports={render:function(){var t=this,e=t.$createElement,o=t._self._c||e;return o("div",{staticClass:"vue-pull-to-wrapper",style:{transform:"translate3d(0, "+t.diff+"px, 0)"}},[t.topLoadMethod?o("div",{staticClass:"action-block",style:{height:t.topBlockHeight+"px",marginTop:-t.topBlockHeight+"px"}},[t._t("top-block",[o("p",{staticClass:"defalut-text"},[t._v(t._s(t.topText))])],{state:t.state,stateText:t.topText})],2):t._e(),t._v(" "),o("div",{staticClass:"scroll-container"},[t._t("default")],2),t._v(" "),t.bottomLoadMethod?o("div",{staticClass:"action-block",style:{height:t.bottomBlockHeight+"px",marginBottom:-t.bottomBlockHeight+"px"}},[t._t("bottom-block",[o("p",{staticClass:"defalut-text"},[t._v(t._s(t.bottomText))])],{state:t.state,stateText:t.bottomText})],2):t._e()])},staticRenderFns:[]},t.exports.render._withStripped=!0},function(t,e,o){var i=o(5);"string"==typeof i&&(i=[[t.i,i,""]]),i.locals&&(t.exports=i.locals);o(10)("4ce9aaf4",i,!1)},function(t,e,o){function i(t){for(var e=0;e<t.length;e++){var o=t[e],i=u[o.id];if(i){i.refs++;for(var n=0;n<i.parts.length;n++)i.parts[n](o.parts[n]);for(;n<o.parts.length;n++)i.parts.push(s(o.parts[n]));i.parts.length>o.parts.length&&(i.parts.length=o.parts.length)}else{for(var r=[],n=0;n<o.parts.length;n++)r.push(s(o.parts[n]));u[o.id]={id:o.id,refs:1,parts:r}}}}function n(){var t=document.createElement("style");return t.type="text/css",d.appendChild(t),t}function s(t){var e,o,i=document.querySelector('style[data-vue-ssr-id~="'+t.id+'"]');if(i){if(p)return g;i.parentNode.removeChild(i)}if(m){var s=f++;i=h||(h=n()),e=r.bind(null,i,s,!1),o=r.bind(null,i,s,!0)}else i=n(),e=a.bind(null,i),o=function(){i.parentNode.removeChild(i)};return e(t),function(i){if(i){if(i.css===t.css&&i.media===t.media&&i.sourceMap===t.sourceMap)return;e(t=i)}else o()}}function r(t,e,o,i){var n=o?"":i.css;if(t.styleSheet)t.styleSheet.cssText=v(e,n);else{var s=document.createTextNode(n),r=t.childNodes;r[e]&&t.removeChild(r[e]),r.length?t.insertBefore(s,r[e]):t.appendChild(s)}}function a(t,e){var o=e.css,i=e.media,n=e.sourceMap;if(i&&t.setAttribute("media",i),n&&(o+="\n/*# sourceURL="+n.sources[0]+" */",o+="\n/*# sourceMappingURL=data:application/json;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(n))))+" */"),t.styleSheet)t.styleSheet.cssText=o;else{for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(document.createTextNode(o))}}var l="undefined"!=typeof document;if("undefined"!=typeof DEBUG&&DEBUG&&!l)throw new Error("vue-style-loader cannot be used in a non-browser environment. Use { target: 'node' } in your Webpack config to indicate a server-rendering environment.");var c=o(11),u={},d=l&&(document.head||document.getElementsByTagName("head")[0]),h=null,f=0,p=!1,g=function(){},m="undefined"!=typeof navigator&&/msie [6-9]\b/.test(navigator.userAgent.toLowerCase());t.exports=function(t,e,o){p=o;var n=c(t,e);return i(n),function(e){for(var o=[],s=0;s<n.length;s++){var r=n[s],a=u[r.id];a.refs--,o.push(a)}e?(n=c(t,e),i(n)):n=[];for(var s=0;s<o.length;s++){var a=o[s];if(0===a.refs){for(var l=0;l<a.parts.length;l++)a.parts[l]();delete u[a.id]}}}};var v=function(){var t=[];return function(e,o){return t[e]=o,t.filter(Boolean).join("\n")}}()},function(t,e){t.exports=function(t,e){for(var o=[],i={},n=0;n<e.length;n++){var s=e[n],r=s[0],a=s[1],l=s[2],c=s[3],u={id:t+":"+n,css:a,media:l,sourceMap:c};i[r]?i[r].parts.push(u):o.push(i[r]={id:r,parts:[u]})}return o}}])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["VuePullTo"] = factory();
+	else
+		root["VuePullTo"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(9)
+
+var Component = __webpack_require__(7)(
+  /* script */
+  __webpack_require__(4),
+  /* template */
+  __webpack_require__(8),
+  /* scopeId */
+  "data-v-12abd9fb",
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/stackjie/Documents/github_project/vue-fast-scroll/src/vue-pull-to.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] vue-pull-to.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-12abd9fb", Component.options)
+  } else {
+    hotAPI.reload("data-v-12abd9fb", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var TOP_DEFAULT_CONFIG = {
+  pullText: '下拉刷新',
+  triggerText: '释放更新',
+  loadingText: '加载中...',
+  doneText: '加载完成',
+  failText: '加载失败',
+  loadedStayTime: 400,
+  stayDistance: 50,
+  triggerDistance: 70
+};
+
+var BOTTOM_DEFAULT_CONFIG = {
+  pullText: '上拉加载',
+  triggerText: '释放更新',
+  loadingText: '加载中...',
+  doneText: '加载完成',
+  failText: '加载失败',
+  loadedStayTime: 400,
+  stayDistance: 50,
+  triggerDistance: 70
+};
+
+exports.TOP_DEFAULT_CONFIG = TOP_DEFAULT_CONFIG;
+exports.BOTTOM_DEFAULT_CONFIG = BOTTOM_DEFAULT_CONFIG;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _vuePullTo = __webpack_require__(0);
+
+var _vuePullTo2 = _interopRequireDefault(_vuePullTo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _vuePullTo2.default;
+module.exports = exports['default'];
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.extend = extend;
+exports.throttle = throttle;
+function extend(target, source) {
+  for (var key in source) {
+    target[key] = source[key];
+  }
+}
+
+function throttle(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this;
+    var args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(3);
+
+var _config = __webpack_require__(1);
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+  name: 'vue-pull-to',
+  props: {
+    distanceIndex: {
+      type: Number,
+      default: 2
+    },
+    topBlockHeight: {
+      type: Number,
+      default: 50
+    },
+    bottomBlockHeight: {
+      type: Number,
+      default: 50
+    },
+    topLoadMethod: {
+      type: Function
+    },
+    bottomLoadMethod: {
+      type: Function
+    },
+    isThrottle: {
+      type: Boolean,
+      default: true
+    },
+    topConfig: {
+      type: Object,
+      default: function _default() {
+        return {};
+      },
+      validator: function validator(config) {
+        (0, _utils.extend)(config, _config.TOP_DEFAULT_CONFIG);
+        return config;
+      }
+    },
+    bottomConfig: {
+      type: Object,
+      default: function _default() {
+        return {};
+      },
+      validator: function validator(config) {
+        (0, _utils.extend)(config, _config.BOTTOM_DEFAULT_CONFIG);
+        return config;
+      }
+    }
+  },
+  data: function data() {
+    return {
+      scrollEl: null,
+      startScrollTop: 0,
+      startY: 0,
+      currentY: 0,
+      distance: 0,
+      direction: 0,
+      diff: 0,
+      beforeDiff: 0,
+      topText: '',
+      bottomText: '',
+      state: '',
+      bottomReached: false
+    };
+  },
+
+  watch: {
+    state: function state(val) {
+      if (this.direction === 'down') {
+        this.$emit('top-state-change', val);
+      } else {
+        this.$emit('bottom-state-change', val);
+      }
+    }
+  },
+  methods: {
+    actionPull: function actionPull() {
+      this.state = 'pull';
+      this.direction === 'down' ? this.topText = this.topConfig.pullText : this.bottomText = this.bottomConfig.pullText;
+    },
+    actionTrigger: function actionTrigger() {
+      this.state = 'trigger';
+      this.direction === 'down' ? this.topText = this.topConfig.triggerText : this.bottomText = this.bottomConfig.triggerText;
+    },
+    actionLoading: function actionLoading() {
+      this.state = 'loading';
+      if (this.direction === 'down') {
+        this.topText = this.topConfig.loadingText;
+        /* eslint-disable no-useless-call */
+        this.topLoadMethod.call(this, this.actionLoaded);
+        this.scrollTo(this.topConfig.stayDistance);
+      } else {
+        this.bottomText = this.bottomConfig.loadingText;
+        this.bottomLoadMethod.call(this, this.actionLoaded);
+        this.scrollTo(-this.bottomConfig.stayDistance);
+      }
+    },
+    actionLoaded: function actionLoaded() {
+      var _this = this;
+
+      var loadState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'done';
+
+      this.state = 'loaded-' + loadState;
+      var loadedStayTime = void 0;
+      if (this.direction === 'down') {
+        this.topText = loadState === 'done' ? this.topConfig.doneText : this.topConfig.failText;
+        loadedStayTime = this.topConfig.loadedStayTime;
+      } else {
+        this.bottomText = loadState === 'done' ? this.bottomConfig.doneText : this.bottomConfig.failText;
+        loadedStayTime = this.bottomConfig.loadedStayTime;
+      }
+      setTimeout(function () {
+        _this.scrollTo(0);
+
+        // reset state
+        setTimeout(function () {
+          _this.state = '';
+        }, 200);
+      }, loadedStayTime);
+    },
+    scrollTo: function scrollTo(y) {
+      var _this2 = this;
+
+      var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
+
+      this.$el.style.transition = duration + 'ms';
+      this.diff = y;
+      setTimeout(function () {
+        _this2.$el.style.transition = '';
+      }, duration);
+    },
+    checkBottomReached: function checkBottomReached() {
+      return this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
+    },
+    handleTouchStart: function handleTouchStart(event) {
+      this.startY = event.touches[0].clientY;
+      this.beforeDiff = this.diff;
+      this.startScrollTop = this.scrollEl.scrollTop;
+      this.bottomReached = this.checkBottomReached();
+    },
+    handleTouchMove: function handleTouchMove(event) {
+      if (this.startY < this.scrollEl.getBoundingClientRect().top && this.startY > this.scrollEl.getBoundingClientRect().bottom) {
+        return;
+      }
+      this.currentY = event.touches[0].clientY;
+      this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
+      this.direction = this.distance > 0 ? 'down' : 'up';
+
+      if (this.startScrollTop === 0 && this.direction === 'down') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.diff = this.distance;
+        this.isThrottle ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
+
+        if (typeof this.topLoadMethod === 'undefined') return;
+
+        if (this.distance < this.topConfig.triggerDistance && this.state !== 'pull' && this.state !== 'loading') {
+          this.actionPull();
+        } else if (this.distance >= this.topConfig.triggerDistance && this.state !== 'trigger' && this.state !== 'loading') {
+          this.actionTrigger();
+        }
+      } else if (this.bottomReached && this.direction === 'up') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.diff = this.distance;
+        this.isThrottle ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
+
+        if (typeof this.bottomLoadMethod === 'undefined') return;
+
+        if (Math.abs(this.distance) < this.bottomConfig.triggerDistance && this.state !== 'pull' && this.state !== 'loading') {
+          this.actionPull();
+        } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance && this.state !== 'trigger' && this.state !== 'loading') {
+          this.actionTrigger();
+        }
+      }
+    },
+    handleTouchEnd: function handleTouchEnd() {
+      if (this.diff !== 0) {
+        if (this.state === 'trigger') {
+          this.actionLoading();
+          return;
+        }
+
+        if (this.state === 'trigger') {
+          this.actionLoading();
+          return;
+        }
+
+        // pull cancel
+        if (this.diff !== 0) {
+          this.scrollTo(0);
+        }
+      }
+    },
+    handleScroll: function handleScroll() {
+      if (this.checkBottomReached()) {
+        this.$emit('infinite-scroll');
+      }
+    },
+    throttleEmitTopPull: function throttleEmitTopPull() {
+      this.$emit('top-pull', this.diff);
+    },
+    throttleEmitBottomPull: function throttleEmitBottomPull() {
+      this.$emit('bottom-pull', this.diff);
+    },
+    bindEvents: function bindEvents() {
+      this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
+      this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
+      this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
+      this.scrollEl.addEventListener('scroll', (0, _utils.throttle)(this.handleScroll, 300));
+    },
+    init: function init() {
+      this.throttleEmitTopPull = (0, _utils.throttle)(this.throttleEmitTopPull, 200);
+      this.throttleEmitBottomPull = (0, _utils.throttle)(this.throttleEmitBottomPull, 200);
+      this.scrollEl = this.$el.querySelector('.scroll-container');
+      this.bindEvents();
+    }
+  },
+  mounted: function mounted() {
+    this.init();
+  }
+};
+module.exports = exports['default'];
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(6)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.vue-pull-to-wrapper[data-v-12abd9fb] {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n          flex-direction: column;\n  height: 100%;\n}\n.scroll-container[data-v-12abd9fb] {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n          flex: 1;\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch;\n}\n.vue-pull-to-wrapper .action-block[data-v-12abd9fb] {\n  position: relative;\n  width: 100%;\n}\n.defalut-text[data-v-12abd9fb] {\n  height: 100%;\n  line-height: 50px;\n  text-align: center;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  scopeId,
+  cssModules
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  // inject cssModules
+  if (cssModules) {
+    var computed = Object.create(options.computed || null)
+    Object.keys(cssModules).forEach(function (key) {
+      var module = cssModules[key]
+      computed[key] = function () { return module }
+    })
+    options.computed = computed
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "vue-pull-to-wrapper",
+    style: ({
+      transform: ("translate3d(0, " + _vm.diff + "px, 0)")
+    })
+  }, [(_vm.topLoadMethod) ? _c('div', {
+    staticClass: "action-block",
+    style: ({
+      height: (_vm.topBlockHeight + "px"),
+      marginTop: ((-_vm.topBlockHeight) + "px")
+    })
+  }, [_vm._t("top-block", [_c('p', {
+    staticClass: "defalut-text"
+  }, [_vm._v(_vm._s(_vm.topText))])], {
+    state: _vm.state,
+    stateText: _vm.topText
+  })], 2) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "scroll-container"
+  }, [_vm._t("default")], 2), _vm._v(" "), (_vm.bottomLoadMethod) ? _c('div', {
+    staticClass: "action-block",
+    style: ({
+      height: (_vm.bottomBlockHeight + "px"),
+      marginBottom: ((-_vm.bottomBlockHeight) + "px")
+    })
+  }, [_vm._t("bottom-block", [_c('p', {
+    staticClass: "defalut-text"
+  }, [_vm._v(_vm._s(_vm.bottomText))])], {
+    state: _vm.state,
+    stateText: _vm.bottomText
+  })], 2) : _vm._e()])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-12abd9fb", module.exports)
+  }
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(5);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(10)("4ce9aaf4", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-12abd9fb\",\"scoped\":true,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./vue-pull-to.vue", function() {
+     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-12abd9fb\",\"scoped\":true,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./vue-pull-to.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(11)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction) {
+  isProduction = _isProduction
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ })
+/******/ ]);
+});

@@ -8,20 +8,11 @@ function resolve (dir) {
 }
 
 module.exports = merge(baseConfig, {
-  entry: resolve('src/index.js'),
+  entry: './src/index.js',
   output: {
     library: 'VuePullTo',
     libraryTarget: 'umd',
     filename: 'vue-pull-to.js',
     path: resolve('dist')
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: true,
-        drop_debugger: true
-      }
-    })
-  ],
+  }
 });

@@ -6,13 +6,6 @@ function resolve (dir) {
 }
 
 module.exports = {
-  entry: './src/index.js',
-  output: {
-    library: 'VuePullTo',
-    libraryTarget: 'umd',
-    filename: 'vue-pull-to.js',
-    path: resolve('dist')
-  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {

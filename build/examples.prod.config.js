@@ -8,7 +8,7 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-module.exports = merge(baseConfig ,{
+module.exports = merge(baseConfig, {
   entry: resolve('examples/main.js'),
   output: {
     filename: '[name]-[chunkhash].js',
