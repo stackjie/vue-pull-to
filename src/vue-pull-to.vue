@@ -26,7 +26,7 @@
 </template>
 
 <script type="text/babel">
-  import {extend, throttle, throttleRunDelay} from './utils';
+  import {throttle, throttleRunDelay} from './utils';
   import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
 
   export default {
@@ -57,21 +57,13 @@
       topConfig: {
         type: Object,
         default: () => {
-          return TOP_DEFAULT_CONFIG;
-        },
-        validator: (config) => {
-          extend(config, TOP_DEFAULT_CONFIG);
-          return config;
+          return {};
         }
       },
       bottomConfig: {
         type: Object,
         default: () => {
-          return BOTTOM_DEFAULT_CONFIG;
-        },
-        validator: (config) => {
-          extend(config, BOTTOM_DEFAULT_CONFIG);
-          return config;
+          return {};
         }
       }
     },
@@ -91,6 +83,14 @@
         bottomReached: false
       };
     },
+    computed: {
+      _topConfig: function () {
+        return Object.assign(TOP_DEFAULT_CONFIG, this.topConfig);
+      },
+      _bottomConfig: function () {
+        return Object.assign(BOTTOM_DEFAULT_CONFIG, this.bottomConfig);
+      }
+    },
     watch: {
       state(val) {
         if (this.direction === 'down') {
@@ -104,26 +104,26 @@
       actionPull() {
         this.state = 'pull';
         this.direction === 'down'
-          ? this.topText = this.topConfig.pullText
-          : this.bottomText = this.bottomConfig.pullText;
+          ? this.topText = this._topConfig.pullText
+          : this.bottomText = this._bottomConfig.pullText;
       },
       actionTrigger() {
         this.state = 'trigger';
         this.direction === 'down'
-          ? this.topText = this.topConfig.triggerText
-          : this.bottomText = this.bottomConfig.triggerText;
+          ? this.topText = this._topConfig.triggerText
+          : this.bottomText = this._bottomConfig.triggerText;
       },
       actionLoading() {
         this.state = 'loading';
         if (this.direction === 'down') {
-          this.topText = this.topConfig.loadingText;
+          this.topText = this._topConfig.loadingText;
           /* eslint-disable no-useless-call */
           this.topLoadMethod.call(this, this.actionLoaded);
-          this.scrollTo(this.topConfig.stayDistance);
+          this.scrollTo(this._topConfig.stayDistance);
         } else {
-          this.bottomText = this.bottomConfig.loadingText;
+          this.bottomText = this._bottomConfig.loadingText;
           this.bottomLoadMethod.call(this, this.actionLoaded);
-          this.scrollTo(-this.bottomConfig.stayDistance);
+          this.scrollTo(-this._bottomConfig.stayDistance);
         }
       },
       actionLoaded(loadState = 'done') {
@@ -131,14 +131,14 @@
         let loadedStayTime;
         if (this.direction === 'down') {
           this.topText = loadState === 'done'
-            ? this.topConfig.doneText
-            : this.topConfig.failText;
-          loadedStayTime = this.topConfig.loadedStayTime;
+            ? this._topConfig.doneText
+            : this._topConfig.failText;
+          loadedStayTime = this._topConfig.loadedStayTime;
         } else {
           this.bottomText = loadState === 'done'
-            ? this.bottomConfig.doneText
-            : this.bottomConfig.failText;
-          loadedStayTime = this.bottomConfig.loadedStayTime;
+            ? this._bottomConfig.doneText
+            : this._bottomConfig.failText;
+          loadedStayTime = this._bottomConfig.loadedStayTime;
         }
         setTimeout(() => {
           this.scrollTo(0);
@@ -184,10 +184,10 @@
 
           if (typeof this.topLoadMethod !== 'function') return;
 
-          if (this.distance < this.topConfig.triggerDistance &&
+          if (this.distance < this._topConfig.triggerDistance &&
             this.state !== 'pull' && this.state !== 'loading') {
             this.actionPull();
-          } else if (this.distance >= this.topConfig.triggerDistance &&
+          } else if (this.distance >= this._topConfig.triggerDistance &&
             this.state !== 'trigger' && this.state !== 'loading') {
             this.actionTrigger();
           }
@@ -199,10 +199,10 @@
 
           if (typeof this.bottomLoadMethod !== 'function') return;
 
-          if (Math.abs(this.distance) < this.bottomConfig.triggerDistance &&
+          if (Math.abs(this.distance) < this._bottomConfig.triggerDistance &&
             this.state !== 'pull' && this.state !== 'loading') {
             this.actionPull();
-          } else if (Math.abs(this.distance) >= this.bottomConfig.triggerDistance &&
+          } else if (Math.abs(this.distance) >= this._bottomConfig.triggerDistance &&
             this.state !== 'trigger' && this.state !== 'loading') {
             this.actionTrigger();
           }

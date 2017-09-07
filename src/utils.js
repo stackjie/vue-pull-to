@@ -1,9 +1,3 @@
-export function extend (target, source) {
-  for (let key in source) {
-    target[key] = source[key];
-  }
-}
-
 // http://www.alloyteam.com/2012/11/javascript-throttle/
 export function throttle (fn, delay) {
   let timer = null;
