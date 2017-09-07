@@ -165,12 +165,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.extend = extend;
 exports.throttle = throttle;
+exports.throttleRunDelay = throttleRunDelay;
 function extend(target, source) {
   for (var key in source) {
     target[key] = source[key];
   }
 }
 
+// http://www.alloyteam.com/2012/11/javascript-throttle/
 function throttle(fn, delay) {
   var timer = null;
   return function () {
@@ -180,6 +182,28 @@ function throttle(fn, delay) {
     timer = setTimeout(function () {
       fn.apply(context, args);
     }, delay);
+  };
+}
+
+function throttleRunDelay(fn, delay, mustRunDelay) {
+  var timer = null;
+  var tStart = void 0;
+  return function () {
+    var context = this;
+    var args = arguments;
+    var tCurr = +new Date();
+    clearTimeout(timer);
+    if (!tStart) {
+      tStart = tCurr;
+    }
+    if (tCurr - tStart >= mustRunDelay) {
+      fn.apply(context, args);
+      tStart = tCurr;
+    } else {
+      timer = setTimeout(function () {
+        fn.apply(context, args);
+      }, delay);
+    }
   };
 }
 
@@ -432,11 +456,11 @@ exports.default = {
       this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
       this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
       this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
-      this.scrollEl.addEventListener('scroll', (0, _utils.throttle)(this.handleScroll, 300));
+      this.scrollEl.addEventListener('scroll', (0, _utils.throttle)(this.handleScroll, 500));
     },
     init: function init() {
-      this.throttleEmitTopPull = (0, _utils.throttle)(this.throttleEmitTopPull, 200);
-      this.throttleEmitBottomPull = (0, _utils.throttle)(this.throttleEmitBottomPull, 200);
+      this.throttleEmitTopPull = (0, _utils.throttleRunDelay)(this.throttleEmitTopPull, 200, 300);
+      this.throttleEmitBottomPull = (0, _utils.throttleRunDelay)(this.throttleEmitBottomPull, 200, 300);
       this.scrollEl = this.$el.querySelector('.scroll-container');
       this.bindEvents();
     }

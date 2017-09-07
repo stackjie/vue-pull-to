@@ -1,6 +1,6 @@
 {
   "name": "vue-pull-to",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A pull-down refresh and pull-up load more and infinite scroll of the vue.js component",
   "main": "dist/vue-pull-to.js",
   "files": [
