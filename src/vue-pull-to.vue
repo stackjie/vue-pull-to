@@ -57,7 +57,7 @@
       topConfig: {
         type: Object,
         default: () => {
-          return {};
+          return TOP_DEFAULT_CONFIG;
         },
         validator: (config) => {
           extend(config, TOP_DEFAULT_CONFIG);
@@ -67,7 +67,7 @@
       bottomConfig: {
         type: Object,
         default: () => {
-          return {};
+          return BOTTOM_DEFAULT_CONFIG;
         },
         validator: (config) => {
           extend(config, BOTTOM_DEFAULT_CONFIG);
@@ -182,7 +182,7 @@
           this.diff = this.distance;
           this.isThrottle ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
 
-          if (typeof this.topLoadMethod === 'undefined') return;
+          if (typeof this.topLoadMethod !== 'function') return;
 
           if (this.distance < this.topConfig.triggerDistance &&
             this.state !== 'pull' && this.state !== 'loading') {
@@ -197,7 +197,7 @@
           this.diff = this.distance;
           this.isThrottle ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
 
-          if (typeof this.bottomLoadMethod === 'undefined') return;
+          if (typeof this.bottomLoadMethod !== 'function') return;
 
           if (Math.abs(this.distance) < this.bottomConfig.triggerDistance &&
             this.state !== 'pull' && this.state !== 'loading') {
