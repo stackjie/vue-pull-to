@@ -26,8 +26,8 @@
 </template>
 
 <script type="text/babel">
-  import {throttle, throttleRunDelay} from './utils';
-  import {TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG} from './config';
+  import { throttle } from './utils';
+  import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
 
   export default {
     name: 'vue-pull-to',
@@ -50,7 +50,15 @@
       bottomLoadMethod: {
         type: Function
       },
-      isThrottle: {
+      isThrottleTopPull: {
+        type: Boolean,
+        default: true
+      },
+      isThrottleBottomPull: {
+        type: Boolean,
+        default: true
+      },
+      isThrottleScroll: {
         type: Boolean,
         default: true
       },
@@ -80,7 +88,11 @@
         topText: '',
         bottomText: '',
         state: '',
-        bottomReached: false
+        bottomReached: false,
+        throttleEmitTopPull: null,
+        throttleEmitBottomPull: null,
+        throttleEmitScroll: null,
+        throttleOnInfiniteScroll: null
       };
     },
     computed: {
@@ -180,7 +192,7 @@
           event.preventDefault();
           event.stopPropagation();
           this.diff = this.distance;
-          this.isThrottle ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
+          this.isThrottleTopPull ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
 
           if (typeof this.topLoadMethod !== 'function') return;
 
@@ -195,7 +207,7 @@
           event.preventDefault();
           event.stopPropagation();
           this.diff = this.distance;
-          this.isThrottle ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
+          this.isThrottleBottomPull ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
 
           if (typeof this.bottomLoadMethod !== 'function') return;
 
@@ -216,42 +228,48 @@
             return;
           }
 
-          if (this.state === 'trigger') {
-            this.actionLoading();
-            return;
-          }
-
           // pull cancel
-          if (this.diff !== 0) {
-            this.scrollTo(0);
-          }
+          this.scrollTo(0);
         }
       },
 
-      handleScroll() {
+      handleScroll(event) {
+        this.isThrottleScroll ? this.throttleEmitScroll(event) : this.$emit('scroll', event);
+        this.throttleOnInfiniteScroll();
+      },
+
+      onInfiniteScroll() {
         if (this.checkBottomReached()) {
           this.$emit('infinite-scroll');
         }
       },
 
-      throttleEmitTopPull() {
-        this.$emit('top-pull', this.diff);
-      },
+      throttleEmit(delay, mustRunDelay = 0, eventName) {
+        const throttleMethod = function () {
+          const args = [...arguments];
+          args.unshift(eventName);
+          this.$emit.apply(this, args);
+        };
 
-      throttleEmitBottomPull() {
-        this.$emit('bottom-pull', this.diff);
+        return throttle(throttleMethod, delay, mustRunDelay);
       },
 
       bindEvents() {
         this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
         this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
         this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
-        this.scrollEl.addEventListener('scroll', throttle(this.handleScroll, 500));
+        this.scrollEl.addEventListener('scroll', this.handleScroll);
+      },
+
+      createThrottleMethods() {
+        this.throttleEmitTopPull = this.throttleEmit(200, 300, 'top-pull');
+        this.throttleEmitBottomPull = this.throttleEmit(200, 300, 'bottom-pull');
+        this.throttleEmitScroll = this.throttleEmit(100, 150, 'scroll');
+        this.throttleOnInfiniteScroll = throttle(this.onInfiniteScroll, 500);
       },
 
       init() {
-        this.throttleEmitTopPull = throttleRunDelay(this.throttleEmitTopPull, 200, 300);
-        this.throttleEmitBottomPull = throttleRunDelay(this.throttleEmitBottomPull, 200, 300);
+        this.createThrottleMethods();
         this.scrollEl = this.$el.querySelector('.scroll-container');
         this.bindEvents();
       }

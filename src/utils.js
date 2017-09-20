@@ -1,17 +1,6 @@
 // http://www.alloyteam.com/2012/11/javascript-throttle/
-export function throttle (fn, delay) {
-  let timer = null;
-  return function() {
-    const context = this;
-    const args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn.apply(context, args);
-    }, delay);
-  };
-}
 
-export function throttleRunDelay (fn, delay, mustRunDelay) {
+export function throttle (fn, delay, mustRunDelay = 0) {
   let timer = null;
   let tStart;
   return function () {
