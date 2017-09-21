@@ -265,7 +265,7 @@
         this.throttleEmitTopPull = this.throttleEmit(200, 300, 'top-pull');
         this.throttleEmitBottomPull = this.throttleEmit(200, 300, 'bottom-pull');
         this.throttleEmitScroll = this.throttleEmit(100, 150, 'scroll');
-        this.throttleOnInfiniteScroll = throttle(this.onInfiniteScroll, 500);
+        this.throttleOnInfiniteScroll = throttle(this.onInfiniteScroll, 400);
       },
 
       init() {

@@ -11,7 +11,7 @@ export function throttle (fn, delay, mustRunDelay = 0) {
     if (!tStart) {
       tStart = tCurr;
     }
-    if (tCurr - tStart >= mustRunDelay) {
+    if (mustRunDelay !== 0 && tCurr - tStart >= mustRunDelay) {
       fn.apply(context, args);
       tStart = tCurr;
     } else {
