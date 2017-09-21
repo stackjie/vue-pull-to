@@ -68,7 +68,9 @@ A pull-down refresh and pull-up load more and infinite scroll Vue.js component.
 | bottom-block-height | 底部在滚动容器外的块级元素区域高度 | Number | 50 |
 | top-load-method | 顶部下拉时执行的方法 | Function | |
 | bottom-load-method | 底部上拉时执行的方法 | Function | |
-| is-throttle | 是否截流`top-pull`和`bottom-pull`自定义事件的触发以保证性能 | Boolean | true |
+| is-throttle-top-pull | 是否截流`top-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
+| is-throttle-bottom-pull | 是否截流`bottom-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
+| is-throttle-scroll | 是否截流`scroll`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
 | top-config | 滚动容器顶部信息的一些配置 | Object | 默认配置 |
 | bottom-config | 滚动容器底部信息的一些配置 | Object | 默认配置 |
 
@@ -111,3 +113,4 @@ const BOTTOM_DEFAULT_CONFIG = {
 | top-pull | 下拉时触发，第一个参数为当前拉动的距离值，默认会被截流，可配置props `isThrottle`来实时触发 |
 | bottom-pull | 上拉时触发，第一个参数为当前拉动的距离值，默认会被截流，可配置props `isThrottle`来实时触发 |
 | infinite-scroll | 当滚动容器滚动到底部时触发 |
+| scroll | 滚动时触发，事件回调函数第一个参数为原生的`event`对象 |
