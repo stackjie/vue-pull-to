@@ -263,21 +263,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.throttle = throttle;
-exports.throttleRunDelay = throttleRunDelay;
 // http://www.alloyteam.com/2012/11/javascript-throttle/
-function throttle(fn, delay) {
-  var timer = null;
-  return function () {
-    var context = this;
-    var args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      fn.apply(context, args);
-    }, delay);
-  };
-}
 
-function throttleRunDelay(fn, delay, mustRunDelay) {
+function throttle(fn, delay) {
+  var mustRunDelay = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
   var timer = null;
   var tStart = void 0;
   return function () {
@@ -288,7 +278,7 @@ function throttleRunDelay(fn, delay, mustRunDelay) {
     if (!tStart) {
       tStart = tCurr;
     }
-    if (tCurr - tStart >= mustRunDelay) {
+    if (mustRunDelay !== 0 && tCurr - tStart >= mustRunDelay) {
       fn.apply(context, args);
       tStart = tCurr;
     } else {
@@ -369,7 +359,15 @@ exports.default = {
     bottomLoadMethod: {
       type: Function
     },
-    isThrottle: {
+    isThrottleTopPull: {
+      type: Boolean,
+      default: true
+    },
+    isThrottleBottomPull: {
+      type: Boolean,
+      default: true
+    },
+    isThrottleScroll: {
       type: Boolean,
       default: true
     },
@@ -399,7 +397,11 @@ exports.default = {
       topText: '',
       bottomText: '',
       state: '',
-      bottomReached: false
+      bottomReached: false,
+      throttleEmitTopPull: null,
+      throttleEmitBottomPull: null,
+      throttleEmitScroll: null,
+      throttleOnInfiniteScroll: null
     };
   },
 
@@ -497,7 +499,7 @@ exports.default = {
         event.preventDefault();
         event.stopPropagation();
         this.diff = this.distance;
-        this.isThrottle ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
+        this.isThrottleTopPull ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
 
         if (typeof this.topLoadMethod !== 'function') return;
 
@@ -510,7 +512,7 @@ exports.default = {
         event.preventDefault();
         event.stopPropagation();
         this.diff = this.distance;
-        this.isThrottle ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
+        this.isThrottleBottomPull ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
 
         if (typeof this.bottomLoadMethod !== 'function') return;
 
@@ -528,37 +530,45 @@ exports.default = {
           return;
         }
 
-        if (this.state === 'trigger') {
-          this.actionLoading();
-          return;
-        }
-
         // pull cancel
-        if (this.diff !== 0) {
-          this.scrollTo(0);
-        }
+        this.scrollTo(0);
       }
     },
-    handleScroll: function handleScroll() {
+    handleScroll: function handleScroll(event) {
+      this.isThrottleScroll ? this.throttleEmitScroll(event) : this.$emit('scroll', event);
+      this.throttleOnInfiniteScroll();
+    },
+    onInfiniteScroll: function onInfiniteScroll() {
       if (this.checkBottomReached()) {
         this.$emit('infinite-scroll');
       }
     },
-    throttleEmitTopPull: function throttleEmitTopPull() {
-      this.$emit('top-pull', this.diff);
-    },
-    throttleEmitBottomPull: function throttleEmitBottomPull() {
-      this.$emit('bottom-pull', this.diff);
+    throttleEmit: function throttleEmit(delay) {
+      var mustRunDelay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var eventName = arguments[2];
+
+      var throttleMethod = function throttleMethod() {
+        var args = [].concat(Array.prototype.slice.call(arguments));
+        args.unshift(eventName);
+        this.$emit.apply(this, args);
+      };
+
+      return (0, _utils.throttle)(throttleMethod, delay, mustRunDelay);
     },
     bindEvents: function bindEvents() {
       this.scrollEl.addEventListener('touchstart', this.handleTouchStart);
       this.scrollEl.addEventListener('touchmove', this.handleTouchMove);
       this.scrollEl.addEventListener('touchend', this.handleTouchEnd);
-      this.scrollEl.addEventListener('scroll', (0, _utils.throttle)(this.handleScroll, 500));
+      this.scrollEl.addEventListener('scroll', this.handleScroll);
+    },
+    createThrottleMethods: function createThrottleMethods() {
+      this.throttleEmitTopPull = this.throttleEmit(200, 300, 'top-pull');
+      this.throttleEmitBottomPull = this.throttleEmit(200, 300, 'bottom-pull');
+      this.throttleEmitScroll = this.throttleEmit(100, 150, 'scroll');
+      this.throttleOnInfiniteScroll = (0, _utils.throttle)(this.onInfiniteScroll, 400);
     },
     init: function init() {
-      this.throttleEmitTopPull = (0, _utils.throttleRunDelay)(this.throttleEmitTopPull, 200, 300);
-      this.throttleEmitBottomPull = (0, _utils.throttleRunDelay)(this.throttleEmitBottomPull, 200, 300);
+      this.createThrottleMethods();
       this.scrollEl = this.$el.querySelector('.scroll-container');
       this.bindEvents();
     }
