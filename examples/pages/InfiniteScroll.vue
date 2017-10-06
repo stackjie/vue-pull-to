@@ -59,9 +59,10 @@
     },
     methods: {
       loadmore() {
+//        console.log(123);
         setTimeout(() => {
           this.dataList = this.dataList.concat(this.dataList);
-        }, 500);
+        }, 1000);
       }
     }
   };

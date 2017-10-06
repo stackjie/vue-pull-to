@@ -84,8 +84,6 @@
         } else if (state === 'loaded-done') {
           this.iconLink = '#icon-finish';
         }
-
-        console.log(this.iconLink);
       }
     }
   };
