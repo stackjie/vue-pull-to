@@ -371,6 +371,14 @@ exports.default = {
       type: Boolean,
       default: true
     },
+    isTopBounce: {
+      type: Boolean,
+      default: true
+    },
+    isBottomBounce: {
+      type: Boolean,
+      default: true
+    },
     topConfig: {
       type: Object,
       default: function _default() {
@@ -495,7 +503,7 @@ exports.default = {
       this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
       this.direction = this.distance > 0 ? 'down' : 'up';
 
-      if (this.startScrollTop === 0 && this.direction === 'down') {
+      if (this.startScrollTop === 0 && this.direction === 'down' && this.isTopBounce) {
         event.preventDefault();
         event.stopPropagation();
         this.diff = this.distance;
@@ -508,7 +516,7 @@ exports.default = {
         } else if (this.distance >= this._topConfig.triggerDistance && this.state !== 'trigger' && this.state !== 'loading') {
           this.actionTrigger();
         }
-      } else if (this.bottomReached && this.direction === 'up') {
+      } else if (this.bottomReached && this.direction === 'up' && this.isBottomBounce) {
         event.preventDefault();
         event.stopPropagation();
         this.diff = this.distance;
