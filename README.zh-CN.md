@@ -69,6 +69,8 @@
 | is-throttle-top-pull | 是否截流`top-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
 | is-throttle-bottom-pull | 是否截流`bottom-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
 | is-throttle-scroll | 是否截流`scroll`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
+| is-top-bounce | 是否启用下拉回弹效果 | Boolean | true |
+| is-bottom-bounce | 是否启用上拉回弹效果 | Boolean | true |
 | top-config | 滚动容器顶部信息的一些配置 | Object | 默认配置 |
 | bottom-config | 滚动容器底部信息的一些配置 | Object | 默认配置 |
 
