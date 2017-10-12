@@ -487,7 +487,7 @@ exports.default = {
       }, duration);
     },
     checkBottomReached: function checkBottomReached() {
-      return this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
+      return this.scrollEl.scrollTop + this.scrollEl.offsetHeight + 1 >= this.scrollEl.scrollHeight;
     },
     handleTouchStart: function handleTouchStart(event) {
       this.startY = event.touches[0].clientY;
@@ -496,9 +496,6 @@ exports.default = {
       this.bottomReached = this.checkBottomReached();
     },
     handleTouchMove: function handleTouchMove(event) {
-      if (this.startY < this.scrollEl.getBoundingClientRect().top && this.startY > this.scrollEl.getBoundingClientRect().bottom) {
-        return;
-      }
       this.currentY = event.touches[0].clientY;
       this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
       this.direction = this.distance > 0 ? 'down' : 'up';
