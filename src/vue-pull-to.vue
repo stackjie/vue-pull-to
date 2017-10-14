@@ -1,13 +1,13 @@
 <template>
   <div class="vue-pull-to-wrapper"
-       :style="{ transform: `translate3d(0, ${diff}px, 0)` }">
+       :style="{ height: wrapperHeight, transform: `translate3d(0, ${diff}px, 0)` }">
     <div v-if="topLoadMethod"
          :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
          class="action-block">
       <slot name="top-block"
             :state="state"
             :state-text="topText">
-        <p class="defalut-text">{{ topText }}</p>
+        <p class="default-text">{{ topText }}</p>
       </slot>
     </div>
     <div class="scroll-container">
@@ -19,7 +19,7 @@
       <slot name="bottom-block"
             :state="state"
             :state-text="bottomText">
-        <p class="defalut-text">{{ bottomText }}</p>
+        <p class="default-text">{{ bottomText }}</p>
       </slot>
     </div>
   </div>
@@ -43,6 +43,10 @@
       bottomBlockHeight: {
         type: Number,
         default: 50
+      },
+      wrapperHeight: {
+        type: String,
+        default: '100%'
       },
       topLoadMethod: {
         type: Function
@@ -105,10 +109,10 @@
     },
     computed: {
       _topConfig: function () {
-        return Object.assign(TOP_DEFAULT_CONFIG, this.topConfig);
+        return Object.assign({}, TOP_DEFAULT_CONFIG, this.topConfig);
       },
       _bottomConfig: function () {
-        return Object.assign(BOTTOM_DEFAULT_CONFIG, this.bottomConfig);
+        return Object.assign({}, BOTTOM_DEFAULT_CONFIG, this.bottomConfig);
       }
     },
     watch: {
@@ -303,7 +307,7 @@
     width: 100%;
   }
 
-  .defalut-text {
+  .default-text {
     height: 100%;
     line-height: 50px;
     text-align: center;
