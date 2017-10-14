@@ -64,6 +64,7 @@
 | distance-index | 滑动的阀值（值越大滑动的速度越慢） | Number | 2 |
 | top-block-height | 顶部在滚动容器外的块级元素区域高度 | Number | 50 |
 | bottom-block-height | 底部在滚动容器外的块级元素区域高度 | Number | 50 |
+| wrapper-height | 滚动容器的高度 | String | '100%' |
 | top-load-method | 顶部下拉时执行的方法 | Function | |
 | bottom-load-method | 底部上拉时执行的方法 | Function | |
 | is-throttle-top-pull | 是否截流`top-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |

@@ -67,6 +67,7 @@ The component will occupy 100% height of the parent element by default. props to
 | distance-index | Slip the threshold (the greater the value the slower the sliding) | Number | 2 |
 | top-block-height | The height of the block element area outside the top of the scroll container | Number | 50 |
 | bottom-block-height | The height of the block element area outside the scrolling container | Number | 50 |
+| wrapper-height | The height of the scrolling container | String | '100%' |
 | top-load-method | Top drop-down method | Function | |
 | bottom-load-method | Bottom pull-up method | Function | |
 | is-throttle-top-pull | Whether the disable of the `top-pull` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
