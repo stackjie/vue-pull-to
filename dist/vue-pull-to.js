@@ -353,6 +353,10 @@ exports.default = {
       type: Number,
       default: 50
     },
+    wrapperHeight: {
+      type: String,
+      default: '100%'
+    },
     topLoadMethod: {
       type: Function
     },
@@ -415,10 +419,10 @@ exports.default = {
 
   computed: {
     _topConfig: function _topConfig() {
-      return (0, _assign2.default)(_config.TOP_DEFAULT_CONFIG, this.topConfig);
+      return (0, _assign2.default)({}, _config.TOP_DEFAULT_CONFIG, this.topConfig);
     },
     _bottomConfig: function _bottomConfig() {
-      return (0, _assign2.default)(_config.BOTTOM_DEFAULT_CONFIG, this.bottomConfig);
+      return (0, _assign2.default)({}, _config.BOTTOM_DEFAULT_CONFIG, this.bottomConfig);
     }
   },
   watch: {
@@ -1042,7 +1046,7 @@ exports = module.exports = __webpack_require__(43)(undefined);
 
 
 // module
-exports.push([module.i, ".vue-pull-to-wrapper[data-v-12abd9fb]{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;height:100%}.scroll-container[data-v-12abd9fb]{-webkit-box-flex:1;-webkit-flex:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}.vue-pull-to-wrapper .action-block[data-v-12abd9fb]{position:relative;width:100%}.defalut-text[data-v-12abd9fb]{height:100%;line-height:50px;text-align:center}", ""]);
+exports.push([module.i, ".vue-pull-to-wrapper[data-v-12abd9fb]{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;height:100%}.scroll-container[data-v-12abd9fb]{-webkit-box-flex:1;-webkit-flex:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}.vue-pull-to-wrapper .action-block[data-v-12abd9fb]{position:relative;width:100%}.default-text[data-v-12abd9fb]{height:100%;line-height:50px;text-align:center}", ""]);
 
 // exports
 
@@ -1194,6 +1198,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "vue-pull-to-wrapper",
     style: ({
+      height: _vm.wrapperHeight,
       transform: ("translate3d(0, " + _vm.diff + "px, 0)")
     })
   }, [(_vm.topLoadMethod) ? _c('div', {
@@ -1203,7 +1208,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       marginTop: ((-_vm.topBlockHeight) + "px")
     })
   }, [_vm._t("top-block", [_c('p', {
-    staticClass: "defalut-text"
+    staticClass: "default-text"
   }, [_vm._v(_vm._s(_vm.topText))])], {
     state: _vm.state,
     stateText: _vm.topText
@@ -1216,7 +1221,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       marginBottom: ((-_vm.bottomBlockHeight) + "px")
     })
   }, [_vm._t("bottom-block", [_c('p', {
-    staticClass: "defalut-text"
+    staticClass: "default-text"
   }, [_vm._v(_vm._s(_vm.bottomText))])], {
     state: _vm.state,
     stateText: _vm.bottomText
