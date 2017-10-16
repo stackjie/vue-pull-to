@@ -508,7 +508,7 @@ exports.default = {
         event.preventDefault();
         event.stopPropagation();
         this.diff = this.distance;
-        this.isThrottleTopPull ? this.throttleEmitTopPull() : this.$emit('top-pull', this.diff);
+        this.isThrottleTopPull ? this.throttleEmitTopPull(this.diff) : this.$emit('top-pull', this.diff);
 
         if (typeof this.topLoadMethod !== 'function') return;
 
@@ -521,7 +521,7 @@ exports.default = {
         event.preventDefault();
         event.stopPropagation();
         this.diff = this.distance;
-        this.isThrottleBottomPull ? this.throttleEmitBottomPull() : this.$emit('bottom-pull', this.diff);
+        this.isThrottleBottomPull ? this.throttleEmitBottomPull(this.diff) : this.$emit('bottom-pull', this.diff);
 
         if (typeof this.bottomLoadMethod !== 'function') return;
 
