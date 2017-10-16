@@ -16,7 +16,7 @@ const createElm = function () {
  * 回收 vm
  * @param  {Object} vm
  */
-export function destroyVM (vm) {
+export function destroyVM(vm) {
   vm.$el &&
   vm.$el.parentNode &&
   vm.$el.parentNode.removeChild(vm.$el);
@@ -28,9 +28,9 @@ export function destroyVM (vm) {
  * @param  {Boolean=false} mounted 是否添加到 DOM 上
  * @return {Object} vm
  */
-export function createVue (Compo, mounted = false) {
+export function createVue(Compo, mounted = false) {
   if (Object.prototype.toString.call(Compo) === '[object String]') {
-    Compo = { template: Compo };
+    Compo = {template: Compo};
   }
   return new Vue(Compo).$mount(mounted === false ? null : createElm());
 }
@@ -43,12 +43,18 @@ export function createVue (Compo, mounted = false) {
  * @param  {Boolean=false} mounted  - 是否添加到 DOM 上
  * @return {Object} vm
  */
-export function createTest (Compo, propsData = {}, mounted = false) {
+export function createTest(Compo, propsData = {}, mounted = false) {
   if (propsData === true || propsData === false) {
     mounted = propsData;
     propsData = {};
   }
   const elm = createElm();
   const Ctor = Vue.extend(Compo);
-  return new Ctor({ propsData }).$mount(mounted === false ? null : elm);
+  return new Ctor({propsData}).$mount(mounted === false ? null : elm);
+}
+
+export function createEvent(name, ...opts) {
+  const evt = document.createEvent('Events');
+  evt.initEvent(name, ...opts);
+  return evt;
 }

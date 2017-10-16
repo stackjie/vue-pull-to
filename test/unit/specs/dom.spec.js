@@ -33,4 +33,11 @@ describe('dom', () => {
     expect(elems[1].style.height).to.be.equal('60px');
     expect(elems[1].style.marginBottom).to.be.equal('-60px');
   });
+
+  it('set wrapperHeight', () => {
+    vm = createTest(PullTo, {
+      wrapperHeight: '80%'
+    }, true);
+    expect(vm.$el.style.height).to.be.equal('80%');
+  });
 });

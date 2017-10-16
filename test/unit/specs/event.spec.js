@@ -1,25 +1,68 @@
 /* eslint-disable */
-import {createTest, createVue} from '../utils';
+import {createTest, createVue, createEvent} from '../utils';
 import PullTo from '../../../src';
-
-const vm = createVue({
-  template: `
-        <pull-to></pull-to>
-      `,
-  components: { PullTo }
-}, true);
-
-const elem = vm.$el;
 
 describe('event', () => {
   it('top pull', (done) => {
     let res = false;
-    vm.$on('top-pull', function () {
-      res = true;
-    });
-    const event = document.createEvent('Events');
-    event.initEvent('touchmove', true, true);
-    console.log(event);
-    elem.dispatchEvent(event);
+    const vm = createVue({
+      template: `
+        <div style="height: 500px">
+          <pull-to @top-pull="onTopPull"><div></div></pull-to>
+        </div>
+      `,
+      components: {PullTo},
+      methods: {
+        onTopPull() {
+          res = true;
+        }
+      }
+    }, true);
+
+    let eTouchStart = createEvent('touchstart', true, true);
+    eTouchStart.touches = [{clientY: 0}];
+    let eTouchMove = createEvent('touchmove', true, true);
+    eTouchMove.touches = [{clientY: 10}];
+
+    const elem = vm.$el.querySelector('.scroll-container');
+    elem.dispatchEvent(eTouchStart);
+    elem.dispatchEvent(eTouchMove);
+
+    setTimeout(() => {
+      expect(res).to.be.ok;
+      done();
+    }, 350);
   });
+
+  it('bottom pull', (done) => {
+    let res = false;
+    const vm = createVue({
+      template: `
+         <div style="height: 500px">
+          <pull-to @bottom-pull="onBottomPull"><div></div></pull-to>
+        </div>
+      `,
+      components: {PullTo},
+      methods: {
+        onBottomPull() {
+          res = true;
+        }
+      }
+    }, true);
+
+    let eTouchStart = createEvent('touchstart', true, true);
+    eTouchStart.touches = [{clientY: 0}];
+    let eTouchMove = createEvent('touchmove', true, true);
+    eTouchMove.touches = [{clientY: -30}];
+
+    const elem = vm.$el.querySelector('.scroll-container');
+    elem.dispatchEvent(eTouchStart);
+    elem.dispatchEvent(eTouchMove);
+
+    setTimeout(() => {
+      expect(res).to.be.ok;
+      done();
+    }, 350);
+  });
+
 });
