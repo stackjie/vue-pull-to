@@ -12,8 +12,7 @@
     "build": "webpack --config ./build/prod.config.js && gulp --gulpfile build/minimize.js",
     "build-examples": "webpack --config ./build/examples.prod.config.js",
     "unit": "cross-env karma start test/unit/karma.conf.js --single-run",
-    "test": "npm run unit",
-    "coveralls": "cat ./test/unit/coverage/lcov/lcov.info | ./node_modules/.bin/coveralls"
+    "test": "npm run unit"
   },
   "repository": {
     "type": "git",
