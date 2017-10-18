@@ -11,7 +11,7 @@
     "dev": "node ./build/dev-server.js",
     "build": "webpack --config ./build/prod.config.js && gulp --gulpfile build/minimize.js",
     "build-examples": "webpack --config ./build/examples.prod.config.js",
-    "unit": "cross-env karma start test/unit/karma.conf.js --single-run",
+    "unit": "cross-env NODE_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit"
   },
   "repository": {
@@ -32,6 +32,7 @@
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-transform-runtime": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.22.0",
