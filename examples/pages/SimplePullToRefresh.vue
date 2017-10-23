@@ -2,7 +2,7 @@
   <pull-to
     :top-load-method="refresh"
     @top-state-change="stateChange">
-    <template slot="top-block" scope="props">
+    <template slot="top-block" scoped="props">
       <div class="top-load-wrapper">
         <svg class="icon"
              :class="{

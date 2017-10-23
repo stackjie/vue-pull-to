@@ -7,7 +7,7 @@
         {{ item }}
       </li>
     </ul>
-    <template slot="bottom-block" scope="props">
+    <template slot="bottom-block" scoped="props">
       <div class="bottom-load-wrapper">
         <svg class="icon"
              :class="{
