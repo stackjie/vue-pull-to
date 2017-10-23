@@ -1,5 +1,5 @@
 <template>
-  <pull-to @top-pull="topPull" @bottom-pull="bottomPull" @scroll="scroll">
+  <pull-to>
     <ul class="list">
       <li>
         (=ﾟωﾟ)ﾉ
@@ -106,16 +106,6 @@
     components: {
       PullTo
     },
-    methods: {
-      topPull() {
-        console.log(123);
-      },
-      bottomPull() {
-        console.log(123);
-      },
-      scroll(e) {
-        console.log(e);
-      }
-    }
+    methods: {}
   };
 </script>

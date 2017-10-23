@@ -7,7 +7,8 @@
         {{ item }}
       </li>
     </ul>
-    <template slot="bottom-block" scoped="props">
+    <!-- vue 2.5 use slot-scope -->
+    <template slot="bottom-block" slot-scope="props">
       <div class="bottom-load-wrapper">
         <svg class="icon"
              :class="{

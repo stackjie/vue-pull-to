@@ -2,7 +2,8 @@
   <pull-to
     :top-load-method="refresh"
     @top-state-change="stateChange">
-    <template slot="top-block" scoped="props">
+    <!-- vue 2.5 use slot-scope -->
+    <template slot="top-block" slot-scope="props">
       <div class="top-load-wrapper">
         <svg class="icon"
              :class="{
