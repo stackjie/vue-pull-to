@@ -8,8 +8,10 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stackjie/vue-pull-to/master/LICENSE)
 [![npm](https://img.shields.io/npm/v/vue-pull-to.svg)](https://www.npmjs.com/package/vue-pull-to)
 
-## 示例
+## 在线示例
 [examples](http://www.vuepullto.top)
+
+![qrcode](http://ot6wx4ryg.bkt.clouddn.com/vuepullto_qrcode.png)
 
 ## 安装
 ```
