@@ -11,8 +11,8 @@ A pull-down refresh and pull-up load more and infinite scroll component for Vue.
 [![npm](https://img.shields.io/npm/v/vue-pull-to.svg)](https://www.npmjs.com/package/vue-pull-to) 
 
 ## Live Examples
+<img src="http://ot6wx4ryg.bkt.clouddn.com/vuepullto_qrcode.png" style="display: block; max-width: 70%" alt="qrcode">
 [examples](http://www.vuepullto.top)
-![qrcode](http://ot6wx4ryg.bkt.clouddn.com/vuepullto_qrcode.png)
 
 ## Installation
 ```
