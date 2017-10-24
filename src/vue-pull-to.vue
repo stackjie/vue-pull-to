@@ -1,7 +1,7 @@
 <template>
   <div class="vue-pull-to-wrapper"
        :style="{ height: wrapperHeight, transform: `translate3d(0, ${diff}px, 0)` }">
-    <div v-if="topLoadMethod"
+    <div v-if="_showTopActionBlock"
          :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
          class="action-block">
       <slot name="top-block"
@@ -13,7 +13,7 @@
     <div class="scroll-container">
       <slot></slot>
     </div>
-    <div v-if="bottomLoadMethod"
+    <div v-if="_showBottomActionBlock"
          :style="{ height: `${bottomBlockHeight}px`, marginBottom: `${-bottomBlockHeight}px` }"
          class="action-block">
       <slot name="bottom-block"
@@ -104,7 +104,9 @@
         throttleEmitTopPull: null,
         throttleEmitBottomPull: null,
         throttleEmitScroll: null,
-        throttleOnInfiniteScroll: null
+        throttleOnInfiniteScroll: null,
+        showTopActionBlock: true,
+        showBottomActionBlock: true
       };
     },
     computed: {
@@ -113,6 +115,12 @@
       },
       _bottomConfig: function () {
         return Object.assign({}, BOTTOM_DEFAULT_CONFIG, this.bottomConfig);
+      },
+      _showTopActionBlock: function () {
+        return this.topLoadMethod && this.showTopActionBlock;
+      },
+      _showBottomActionBlock: function () {
+        return this.topLoadMethod && this.showBBottomActionBlock;
       }
     },
     watch: {
@@ -139,6 +147,8 @@
       },
       actionLoading() {
         this.state = 'loading';
+        this.showTopActionBlock = true;
+        this.showBottomActionBlock = true;
         if (this.direction === 'down') {
           this.topText = this._topConfig.loadingText;
           /* eslint-disable no-useless-call */
@@ -170,6 +180,8 @@
           // reset state
           setTimeout(() => {
             this.state = '';
+            this.showTopActionBlock = false;
+            this.showBottomActionBlock = false;
           }, 200);
         }, loadedStayTime);
       },
