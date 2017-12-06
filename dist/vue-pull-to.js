@@ -532,7 +532,8 @@ exports.default = {
         }
       }
     },
-    handleTouchEnd: function handleTouchEnd() {
+    handleTouchEnd: function handleTouchEnd(event) {
+      event.stopPropagation();
       if (this.diff !== 0) {
         if (this.state === 'trigger') {
           this.actionLoading();
