@@ -238,6 +238,7 @@
           }
 
           // pull cancel
+          this.state = '';
           this.scrollTo(0);
         }
       },
