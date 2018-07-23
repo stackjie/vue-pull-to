@@ -1,7 +1,8 @@
 <template>
   <pull-to
     :bottom-load-method="loadmore"
-    @bottom-state-change="stateChange">
+    @bottom-state-change="stateChange"
+    :is-bottom-triggerable="isBottomTriggerable">
     <ul class="list">
       <li v-for="item in dataList">
         {{ item }}
@@ -9,7 +10,7 @@
     </ul>
     <!-- vue 2.5 use slot-scope -->
     <template slot="bottom-block" slot-scope="props">
-      <div class="bottom-load-wrapper">
+      <div class="bottom-load-wrapper" v-if="isBottomTriggerable()">
         <svg class="icon"
              :class="{
                 'icon-arrow': props.state === 'trigger',
@@ -85,6 +86,10 @@
         } else if (state === 'loaded-done') {
           this.iconLink = '#icon-finish';
         }
+      },
+
+      isBottomTriggerable() {
+        return this.dataList.length <= 64;
       }
     }
   };

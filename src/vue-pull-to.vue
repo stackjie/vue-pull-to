@@ -70,9 +70,17 @@
         type: Boolean,
         default: true
       },
+      isTopTriggerable: {
+        type: Function,
+        default: () => true
+      },
       isBottomBounce: {
         type: Boolean,
         default: true
+      },
+      isBottomTriggerable: {
+        type: Function,
+        default: () => true
       },
       topConfig: {
         type: Object,
@@ -209,7 +217,7 @@
             this.state !== 'pull' && this.state !== 'loading') {
             this.actionPull();
           } else if (this.distance >= this._topConfig.triggerDistance &&
-            this.state !== 'trigger' && this.state !== 'loading') {
+            this.state !== 'trigger' && this.state !== 'loading' && this.isTopTriggerable()) {
             this.actionTrigger();
           }
         } else if (this.bottomReached && this.direction === 'up' && this.isBottomBounce) {
@@ -224,7 +232,7 @@
             this.state !== 'pull' && this.state !== 'loading') {
             this.actionPull();
           } else if (Math.abs(this.distance) >= this._bottomConfig.triggerDistance &&
-            this.state !== 'trigger' && this.state !== 'loading') {
+            this.state !== 'trigger' && this.state !== 'loading' && this.isBottomTriggerable()) {
             this.actionTrigger();
           }
         }
