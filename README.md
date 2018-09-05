@@ -13,7 +13,7 @@ A pull-down refresh and pull-up load more and infinite scroll component for Vue.
 ## Live Examples
 <img src="http://ot6wx4ryg.bkt.clouddn.com/vuepullto_qrcode.png" style="display: block;" alt="qrcode">
 
-[examples](http://www.vuepullto.top)
+[examples](https://stackjie.github.io/vue-pull-to)
 
 ## Installation
 ```
