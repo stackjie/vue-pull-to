@@ -11,7 +11,7 @@
 ## 在线示例
 <img src="http://ot6wx4ryg.bkt.clouddn.com/vuepullto_qrcode.png" style="display: block;" alt="qrcode">
 
-[examples](http://vuepullto.top)
+[examples](http://www.vuepullto.top)
 
 ## 安装
 ```
