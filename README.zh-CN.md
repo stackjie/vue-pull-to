@@ -11,7 +11,7 @@
 ## 在线示例
 <img src="http://ot6wx4ryg.bkt.clouddn.com/vuepullto_qrcode.png" style="display: block;" alt="qrcode">
 
-[examples](https://stackjie.github.io/vue-pull-to)
+[examples](http://vuepullto.top)
 
 ## 安装
 ```
