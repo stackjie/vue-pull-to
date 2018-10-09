@@ -92,6 +92,7 @@
         scrollEl: null,
         startScrollTop: 0,
         startY: 0,
+        startX: 0,
         currentY: 0,
         distance: 0,
         direction: 0,
@@ -187,6 +188,7 @@
 
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
+        this.startX = event.touches[0].clientY;
         this.beforeDiff = this.diff;
         this.startScrollTop = this.scrollEl.scrollTop;
         this.bottomReached = this.checkBottomReached();
@@ -195,6 +197,9 @@
       handleTouchMove(event) {
         this.currentY = event.touches[0].clientY;
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
+        // judge pan gesture direction, if not vertival just return
+        // make sure that if some components embeded can handle horizontal pan gesture in here
+        if (Math.abs(this.currentY - this.startY) < Math.abs(clinetX - this.startX)) return;
         this.direction = this.distance > 0 ? 'down' : 'up';
 
         if (this.startScrollTop === 0 && this.direction === 'down' && this.isTopBounce) {
@@ -298,7 +303,8 @@
 
   .scroll-container {
     flex: 1;
-    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
   }
 
