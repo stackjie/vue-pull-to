@@ -6,7 +6,9 @@
          class="action-block">
       <slot name="top-block"
             :state="state"
-            :state-text="topText">
+            :state-text="topText"
+            :trigger-distance="_topConfig.triggerDistance"
+            :diff="diff">
         <p class="default-text">{{ topText }}</p>
       </slot>
     </div>
@@ -18,7 +20,9 @@
          class="action-block">
       <slot name="bottom-block"
             :state="state"
-            :state-text="bottomText">
+            :state-text="bottomText"
+            :trigger-distance="_bottomConfig.triggerDistance"
+            :diff="diff">
         <p class="default-text">{{ bottomText }}</p>
       </slot>
     </div>
