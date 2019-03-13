@@ -189,7 +189,7 @@ var Component = __webpack_require__(44)(
   /* template */
   __webpack_require__(45),
   /* scopeId */
-  "data-v-12abd9fb",
+  "data-v-5669c6c0",
   /* cssModules */
   null
 )
@@ -337,6 +337,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
 
 exports.default = {
   name: 'vue-pull-to',
@@ -399,9 +403,12 @@ exports.default = {
   data: function data() {
     return {
       scrollEl: null,
+      scrollTopPosition: 0,
       startScrollTop: 0,
       startY: 0,
+      startX: 0,
       currentY: 0,
+      currentX: 0,
       distance: 0,
       direction: 0,
       diff: 0,
@@ -493,20 +500,31 @@ exports.default = {
     checkBottomReached: function checkBottomReached() {
       return this.scrollEl.scrollTop + this.scrollEl.offsetHeight + 1 >= this.scrollEl.scrollHeight;
     },
+
+
+    getScrollTop: function getScrollTop() {
+      return this.scrollEl.getBoundingClientRect().top;
+    },
+
     handleTouchStart: function handleTouchStart(event) {
       this.startY = event.touches[0].clientY;
+      this.startX = event.touches[0].clientX;
       this.beforeDiff = this.diff;
       this.startScrollTop = this.scrollEl.scrollTop;
       this.bottomReached = this.checkBottomReached();
     },
     handleTouchMove: function handleTouchMove(event) {
       this.currentY = event.touches[0].clientY;
+      this.currentX = event.touches[0].clientX;
       this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
+      // judge pan gesture direction, if not vertival just return
+      // make sure that if some components embeded can handle horizontal pan gesture in here
+      if (Math.abs(this.currentY - this.startY) < Math.abs(this.currentX - this.startX)) return;
       this.direction = this.distance > 0 ? 'down' : 'up';
 
-      if (this.startScrollTop === 0 && this.direction === 'down' && this.isTopBounce) {
+      if (this.getScrollTop() >= this.scrollTopPosition && this.direction === 'down' && this.isTopBounce) {
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
         this.diff = this.distance;
         this.isThrottleTopPull ? this.throttleEmitTopPull(this.diff) : this.$emit('top-pull', this.diff);
 
@@ -519,7 +537,7 @@ exports.default = {
         }
       } else if (this.bottomReached && this.direction === 'up' && this.isBottomBounce) {
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
         this.diff = this.distance;
         this.isThrottleBottomPull ? this.throttleEmitBottomPull(this.diff) : this.$emit('bottom-pull', this.diff);
 
@@ -533,15 +551,13 @@ exports.default = {
       }
     },
     handleTouchEnd: function handleTouchEnd() {
-      if (this.diff !== 0) {
-        if (this.state === 'trigger') {
-          this.actionLoading();
-          return;
-        }
-
-        // pull cancel
-        this.scrollTo(0);
+      if (this.diff === 0) return;
+      if (this.state === 'trigger') {
+        this.actionLoading();
+        return;
       }
+      // pull cancel
+      this.scrollTo(0);
     },
     handleScroll: function handleScroll(event) {
       this.isThrottleScroll ? this.throttleEmitScroll(event) : this.$emit('scroll', event);
@@ -580,6 +596,9 @@ exports.default = {
       this.createThrottleMethods();
       this.scrollEl = this.$el.querySelector('.scroll-container');
       this.bindEvents();
+      this.$nextTick(function () {
+        this.scrollTopPosition = this.scrollEl.getBoundingClientRect().top;
+      });
     }
   },
   mounted: function mounted() {
@@ -1046,7 +1065,7 @@ exports = module.exports = __webpack_require__(43)(undefined);
 
 
 // module
-exports.push([module.i, ".vue-pull-to-wrapper[data-v-12abd9fb]{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;height:100%}.scroll-container[data-v-12abd9fb]{-webkit-box-flex:1;-webkit-flex:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}.vue-pull-to-wrapper .action-block[data-v-12abd9fb]{position:relative;width:100%}.default-text[data-v-12abd9fb]{height:100%;line-height:50px;text-align:center}", ""]);
+exports.push([module.i, ".vue-pull-to-wrapper[data-v-5669c6c0]{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;height:100%}.scroll-container[data-v-5669c6c0]{-webkit-box-flex:1;-webkit-flex:1;flex:1;overflow-x:hidden;overflow-y:scroll;-webkit-overflow-scrolling:touch}.vue-pull-to-wrapper .action-block[data-v-5669c6c0]{position:relative;width:100%}.default-text[data-v-5669c6c0]{height:100%;line-height:50px;text-align:center}", ""]);
 
 // exports
 
@@ -1211,7 +1230,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "default-text"
   }, [_vm._v(_vm._s(_vm.topText))])], {
     state: _vm.state,
-    stateText: _vm.topText
+    stateText: _vm.topText,
+    triggerDistance: _vm._topConfig.triggerDistance,
+    diff: _vm.diff
   })], 2) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "scroll-container"
   }, [_vm._t("default")], 2), _vm._v(" "), (_vm.bottomLoadMethod) ? _c('div', {
@@ -1224,7 +1245,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "default-text"
   }, [_vm._v(_vm._s(_vm.bottomText))])], {
     state: _vm.state,
-    stateText: _vm.bottomText
+    stateText: _vm.bottomText,
+    triggerDistance: _vm._bottomConfig.triggerDistance,
+    diff: _vm.diff
   })], 2) : _vm._e()])
 },staticRenderFns: []}
 
@@ -1239,7 +1262,7 @@ var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(47)("0cd817f2", content, true);
+var update = __webpack_require__(47)("8648f014", content, true);
 
 /***/ }),
 /* 47 */

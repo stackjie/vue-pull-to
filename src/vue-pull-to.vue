@@ -94,7 +94,7 @@
     data() {
       return {
         scrollEl: null,
-	scrollTopPosition: 0,
+        scrollTopPosition: 0,
         startScrollTop: 0,
         startY: 0,
         startX: 0,
@@ -193,7 +193,7 @@
       },
 
       getScrollTop: function() {
-	return this.scrollEl.getBoundingClientRect().top;
+        return this.scrollEl.getBoundingClientRect().top;
       },
 
       handleTouchStart(event) {
@@ -215,7 +215,7 @@
 
         if (this.getScrollTop() >= this.scrollTopPosition && this.direction === 'down' && this.isTopBounce) {
           event.preventDefault();
-          //event.stopPropagation();
+          // event.stopPropagation();
           this.diff = this.distance;
           this.isThrottleTopPull ? this.throttleEmitTopPull(this.diff) : this.$emit('top-pull', this.diff);
 
@@ -230,7 +230,7 @@
           }
         } else if (this.bottomReached && this.direction === 'up' && this.isBottomBounce) {
           event.preventDefault();
-          //event.stopPropagation();
+          // event.stopPropagation();
           this.diff = this.distance;
           this.isThrottleBottomPull ? this.throttleEmitBottomPull(this.diff) : this.$emit('bottom-pull', this.diff);
 
@@ -247,7 +247,7 @@
       },
 
       handleTouchEnd() {
-        if (this.diff === 0) return
+        if (this.diff === 0) return;
         if (this.state === 'trigger') {
           this.actionLoading();
           return;
@@ -295,9 +295,9 @@
         this.createThrottleMethods();
         this.scrollEl = this.$el.querySelector('.scroll-container');
         this.bindEvents();
-	this.$nextTick(function() {
-	 this.scrollTopPosition = this.scrollEl.getBoundingClientRect().top;
-	})
+        this.$nextTick(function() {
+          this.scrollTopPosition = this.scrollEl.getBoundingClientRect().top;
+        });
       }
     },
     mounted() {
