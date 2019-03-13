@@ -210,7 +210,7 @@
 
         if (this.startScrollTop === 0 && this.direction === 'down' && this.isTopBounce) {
           event.preventDefault();
-          event.stopPropagation();
+          //event.stopPropagation();
           this.diff = this.distance;
           this.isThrottleTopPull ? this.throttleEmitTopPull(this.diff) : this.$emit('top-pull', this.diff);
 
@@ -225,7 +225,7 @@
           }
         } else if (this.bottomReached && this.direction === 'up' && this.isBottomBounce) {
           event.preventDefault();
-          event.stopPropagation();
+          //event.stopPropagation();
           this.diff = this.distance;
           this.isThrottleBottomPull ? this.throttleEmitBottomPull(this.diff) : this.$emit('bottom-pull', this.diff);
 
