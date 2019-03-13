@@ -210,7 +210,7 @@
         this.distance = (this.currentY - this.startY) / this.distanceIndex + this.beforeDiff;
         // judge pan gesture direction, if not vertival just return
         // make sure that if some components embeded can handle horizontal pan gesture in here
-        if (Math.abs(this.currentY - this.startY) < Math.abs(this.currentX - this.startX)) return;
+        if (Math.abs(this.currentY - this.startY) < Math.abs(this.currentX - this.startX) || Math.abs(this.currentX - this.startX) > 30) return;
         this.direction = this.distance > 0 ? 'down' : 'up';
 
         if (this.getScrollTop() >= this.scrollTopPosition && this.direction === 'down' && this.isTopBounce) {
