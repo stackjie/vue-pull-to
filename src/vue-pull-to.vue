@@ -94,6 +94,7 @@
     data() {
       return {
         scrollEl: null,
+	scrollTopPosition: 0,
         startScrollTop: 0,
         startY: 0,
         startX: 0,
@@ -191,6 +192,10 @@
         return this.scrollEl.scrollTop + this.scrollEl.offsetHeight + 1 >= this.scrollEl.scrollHeight;
       },
 
+      getScrollTop: function() {
+	return this.scrollEl.getBoundingClientRect().top;
+      },
+
       handleTouchStart(event) {
         this.startY = event.touches[0].clientY;
         this.startX = event.touches[0].clientX;
@@ -208,7 +213,7 @@
         if (Math.abs(this.currentY - this.startY) < Math.abs(this.currentX - this.startX)) return;
         this.direction = this.distance > 0 ? 'down' : 'up';
 
-        if (this.startScrollTop === 0 && this.direction === 'down' && this.isTopBounce) {
+        if (this.getScrollTop() >= this.scrollTopPosition && this.direction === 'down' && this.isTopBounce) {
           event.preventDefault();
           //event.stopPropagation();
           this.diff = this.distance;
@@ -290,6 +295,9 @@
         this.createThrottleMethods();
         this.scrollEl = this.$el.querySelector('.scroll-container');
         this.bindEvents();
+	this.$nextTick(function() {
+	 this.scrollTopPosition = this.scrollEl.getBoundingClientRect().top;
+	})
       }
     },
     mounted() {
