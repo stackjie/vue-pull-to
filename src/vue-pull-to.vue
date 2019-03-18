@@ -9,7 +9,7 @@
             :state-text="topText"
             :trigger-distance="_topConfig.triggerDistance"
             :diff="diff">
-        <p class="default-text">{{ topText }}</p>
+        <p class="default-text"><span :class="state">{{ topText }}</span></p>
       </slot>
     </div>
     <div class="scroll-container">

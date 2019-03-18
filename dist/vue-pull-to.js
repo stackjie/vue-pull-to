@@ -1228,7 +1228,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     })
   }, [_vm._t("top-block", [_c('p', {
     staticClass: "default-text"
-  }, [_vm._v(_vm._s(_vm.topText))])], {
+  }, [_c('span', {
+    class: _vm.state
+  }, [_vm._v(_vm._s(_vm.topText))])])], {
     state: _vm.state,
     stateText: _vm.topText,
     triggerDistance: _vm._topConfig.triggerDistance,
