@@ -77,8 +77,11 @@ The component will occupy 100% height of the parent element by default. props to
 | is-throttle-top-pull | Whether the disable of the `top-pull` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
 | is-throttle-bottom-pull | Whether the disable of the `bottom-pull` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
 | is-throttle-scroll | Whether the disable of the `scroll` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
+| is-touch-sensitive | Whether to handle touch events. | Boolean | true |
+| is-scroll-sensitive | Whether to handle scroll events. | Boolean | true |
 | is-top-bounce | Whether to enable the pull-down bounce effect | Boolean | true |
 | is-bottom-bounce | Whether to enable the pull-up bounce effect | Boolean | true |
+| is-bottom-keep-scroll | Whether to make the scroll container stay in place after completing the pull-down method | Boolean | false |
 | top-config | Scroll the container at the top of the configuration | Object | default config |
 | bottom-config | Scroll the container at the bottom of the configuration | Object | default config |
 

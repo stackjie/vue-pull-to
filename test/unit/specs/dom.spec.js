@@ -8,7 +8,7 @@ describe('dom', () => {
     vm = createTest(PullTo, true);
     const elem = vm.$el;
     expect(elem.classList.contains('vue-pull-to-wrapper')).to.be.ok;
-    expect(elem.querySelector('.scroll-container')).to.be.ok;
+    expect(vm.$refs['scroll-container'].classList.contains('scroll-container')).to.be.true;
   });
 
   it('create action block', () => {
