@@ -14,7 +14,7 @@
 [examples](http://www.vuepullto.top)
 
 ## 安装
-```
+``` sh
  npm install vue-pull-to --save
 ```
 

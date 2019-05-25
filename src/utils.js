@@ -2,6 +2,7 @@
 
 export function throttle (fn, delay, mustRunDelay = 0) {
   if (delay == null) return fn;
+  /* istanbul ignore next */
   const timestampProvider =
     typeof performance === 'object' ? performance : Date;
   let timer = null;
@@ -25,6 +26,26 @@ export function throttle (fn, delay, mustRunDelay = 0) {
     }
   };
 }
+
+export const PASSIVE_OPTS = (function () {
+  let value = false;
+  try {
+    window.addEventListener('test', noop, {
+      get passive() {
+        value = true;
+        return true;
+      }
+    });
+    window.removeEventListener('test', noop);
+  } catch (e) {
+    /* istanbul ignore next */
+    value = false;
+  }
+  return value && { passive: true };
+
+  /* istanbul ignore next */
+  function noop() {}
+})();
 
 export function create(prototype, properties) {
   const obj = Object.create(prototype);

@@ -17,7 +17,7 @@
       </div>
     </template>
     <ul class="list">
-      <li v-for="item in dataList">
+      <li v-for="(item, index) in dataList" :key="index">
         {{ item }}
       </li>
     </ul>
@@ -51,7 +51,7 @@
 </style>
 
 <script type="text/babel">
-  import PullTo from '@/vue-pull-to';
+  import PullTo from '@';
 
   export default {
     name: 'simple-pull-to-refresh',

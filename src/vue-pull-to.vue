@@ -17,7 +17,7 @@
     <div ref="scroll-container" class="scroll-container">
       <slot></slot>
       <div v-if="bottomLoadMethod && isBottomKeepScroll"
-	   class="bottom-filler" ref="bottom-filler"></div>
+           class="bottom-filler" ref="bottom-filler"></div>
     </div>
     <div v-if="bottomLoadMethod"
          :style="{ height: `${bottomBlockHeight}px`, marginBottom: `${-bottomBlockHeight}px` }"
@@ -35,7 +35,7 @@
 </template>
 
 <script type="text/babel">
-  import { throttle, create } from './utils';
+  import { throttle, create, PASSIVE_OPTS } from './utils';
   import { TOP_DEFAULT_CONFIG, BOTTOM_DEFAULT_CONFIG } from './config';
 
   const LOADED_PREFIX = 'loaded-';
@@ -47,6 +47,7 @@
   }
 
   function isLoadedState(state) {
+    /* istanbul ignore if */
     if (typeof state !== 'string') {
       return false;
     }
@@ -83,12 +84,8 @@
         type: String,
         default: '100%'
       },
-      topLoadMethod: {
-        type: Function
-      },
-      bottomLoadMethod: {
-        type: Function
-      },
+      topLoadMethod: Function,
+      bottomLoadMethod: Function,
       isThrottleTopPull: {
         type: Boolean,
         default: true
@@ -117,22 +114,9 @@
         type: Boolean,
         default: true
       },
-      isBottomKeepScroll: {
-        type: Boolean,
-        default: false
-      },
-      topConfig: {
-        type: Object,
-        default: () => {
-          return {};
-        }
-      },
-      bottomConfig: {
-        type: Object,
-        default: () => {
-          return {};
-        }
-      }
+      isBottomKeepScroll: Boolean,
+      topConfig: Object,
+      bottomConfig: Object
     },
     data() {
       return {
@@ -367,9 +351,9 @@
       updateTouchSensitivity(flag) {
         const el = this.$refs['scroll-container'];
         if (flag) {
-          el.addEventListener('touchstart', this.handleTouchStart);
+          el.addEventListener('touchstart', this.handleTouchStart, PASSIVE_OPTS);
           el.addEventListener('touchmove', this.handleTouchMove);
-          el.addEventListener('touchend', this.handleTouchEnd);
+          el.addEventListener('touchend', this.handleTouchEnd, PASSIVE_OPTS);
         } else {
           el.removeEventListener('touchstart', this.handleTouchStart);
           el.removeEventListener('touchmove', this.handleTouchMove);
@@ -380,7 +364,7 @@
       updateScrollSensitivity(flag) {
         const el = this.$refs['scroll-container'];
         if (flag) {
-          el.addEventListener('scroll', this.handleScroll);
+          el.addEventListener('scroll', this.handleScroll, PASSIVE_OPTS);
         } else {
           el.removeEventListener('scroll', this.handleScroll);
         }
