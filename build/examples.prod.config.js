@@ -1,14 +1,14 @@
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+'use strict';
+
 var merge = require('webpack-merge');
 var baseConfig = require('./base.config');
 var webpack = require('webpack');
-
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var resolve = require('./');
 
 module.exports = merge(baseConfig, {
+  mode: 'production',
   entry: resolve('examples/main.js'),
   output: {
     filename: '[name]-[chunkhash].js',
@@ -23,13 +23,20 @@ module.exports = merge(baseConfig, {
         collapseWhitespace: true,
         removeAttributeQuotes: true
       }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: true,
-        drop_debugger: true
-      }
     })
-  ]
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          warnings: false,
+          compress: {
+            drop_console: true,
+            drop_debugger: true
+          }
+        }
+      })
+    ]
+  }
 });

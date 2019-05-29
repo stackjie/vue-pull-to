@@ -2,18 +2,22 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
+    parser: 'babel-eslint',
     sourceType: 'module'
   },
   env: {
     browser: true,
   },
-  // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
-  extends: 'standard',
-  // required to lint *.vue files
+  extends: [
+    // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
+    'standard',
+
+    // required to lint *.vue files
+    'plugin:vue/essential'
+  ],
   plugins: [
-    'html'
+    'vue'
   ],
   // add your custom rules here
   'rules': {
@@ -23,6 +27,7 @@ module.exports = {
     'generator-star-spacing': 0,
     "semi": ["error", "always"],
     'space-before-function-paren': 0,
-    'no-useless-return': 0
+    'no-useless-return': 0,
+    'indent': 0
   }
 }

@@ -112,7 +112,7 @@
 </style>
 
 <script type="text/babel">
-  import PullTo from '@/vue-pull-to';
+  import PullTo from '@';
   import RouterLink from '../components/RouterLink';
 
   export default {

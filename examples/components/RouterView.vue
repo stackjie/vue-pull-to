@@ -3,16 +3,13 @@
 
   export default {
     name: 'router-view',
-    computed: {
-      ViewComponent() {
-        const matchingView = routes[this.$root.currentRoute];
-        if (matchingView) {
-          return require('../pages/' + matchingView + '.vue');
-        }
-      }
+    props: {
+      currentRoute: String,
+      defaultRoute: String
     },
     render(h) {
-      return h(this.ViewComponent);
+      return h(routes[this.currentRoute] ||
+               routes[this.defaultRoute] || 'div');
     }
   };
 </script>

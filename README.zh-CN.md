@@ -14,7 +14,7 @@
 [examples](http://www.vuepullto.top)
 
 ## 安装
-```
+``` sh
  npm install vue-pull-to --save
 ```
 
@@ -74,8 +74,11 @@
 | is-throttle-top-pull | 是否截流`top-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
 | is-throttle-bottom-pull | 是否截流`bottom-pull`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
 | is-throttle-scroll | 是否截流`scroll`事件的触发以保证性能，如果需要实时触发设为false | Boolean | true |
+| is-touch-sensitive | 是否处理触摸事件 | Boolean | true |
+| is-scroll-sensitive | 是否处理滚动事件 | Boolean | true |
 | is-top-bounce | 是否启用下拉回弹效果 | Boolean | true |
 | is-bottom-bounce | 是否启用上拉回弹效果 | Boolean | true |
+| is-bottom-keep-scroll | 是否在完成底部上拉时执行的方法后使滚动容器保持在原位 | Boolean | true |
 | top-config | 滚动容器顶部信息的一些配置 | Object | 默认配置 |
 | bottom-config | 滚动容器底部信息的一些配置 | Object | 默认配置 |
 

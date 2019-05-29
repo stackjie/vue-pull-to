@@ -99,7 +99,7 @@
 </style>
 
 <script type="text/babel">
-  import PullTo from '@/vue-pull-to';
+  import PullTo from '@';
 
   export default {
     name: 'bounce-scroll',

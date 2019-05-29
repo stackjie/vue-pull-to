@@ -3,7 +3,10 @@
 // we are also using it with karma-webpack
 //   https://github.com/webpack/karma-webpack
 
+process.env.CHROME_BIN = require('puppeteer').executablePath();
+
 var webpackConfig = require('../../build/base.config');
+webpackConfig.mode = 'development';
 webpackConfig.devtool = '#inline-source-map';
 
 module.exports = function (config) {
@@ -12,8 +15,8 @@ module.exports = function (config) {
     // 1. install corresponding karma launcher
     //    http://karma-runner.github.io/0.13/config/browsers.html
     // 2. add it to the `browsers` array below.
-    browsers: ['PhantomJS'],
-    frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
+    browsers: ['ChromeHeadless'],
+    frameworks: ['mocha', 'sinon-chai'],
     reporters: ['spec', 'coverage'],
     files: ['./index.js'],
     preprocessors: {

@@ -33,9 +33,6 @@
       return {
       };
     },
-    props: {
-      isBack: true
-    },
     methods: {},
     watch: {}
   };
