@@ -290,7 +290,6 @@
           return;
         }
 
-        event.preventDefault();
         if (!pe) {
           event.stopPropagation();
         }
