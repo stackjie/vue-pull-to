@@ -291,6 +291,7 @@
         }
 
         if (!pe) {
+          event.preventDefault();
           event.stopPropagation();
         }
         this.scrollTo(dist, 0);
