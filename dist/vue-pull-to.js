@@ -825,9 +825,8 @@ function getMessageByState(config, state) {
         return;
       }
 
-      event.preventDefault();
-
       if (!pe) {
+        event.preventDefault();
         event.stopPropagation();
       }
 
