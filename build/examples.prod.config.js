@@ -2,7 +2,6 @@
 
 var merge = require('webpack-merge');
 var baseConfig = require('./base.config');
-var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var resolve = require('./');

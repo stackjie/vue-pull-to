@@ -197,10 +197,8 @@ describe('event', () => {
     }));
   }));
 
-  let id = 0;
   [false, true].forEach((isSensitive) => {
     function toggleTester(vm, done, events, wc, fn, endfn) {
-      const myid = id++;
       const { $refs: { pt } } = vm;
       const elem = pt.$refs['scroll-container'];
       let waitCount = 0;
