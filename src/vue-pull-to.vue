@@ -1,6 +1,6 @@
 <template>
   <div class="vue-pull-to-wrapper"
-       :style="{ height: wrapperHeight }"
+       :style="{ height: wrapperHeight, position: useTransform ? 'static' : 'relative' }"
        @transitionend="handleTransitionEnd">
     <div v-if="topLoadMethod"
          :style="{ height: `${topBlockHeight}px`, marginTop: `${-topBlockHeight}px` }"
@@ -116,7 +116,11 @@
       },
       isBottomKeepScroll: Boolean,
       topConfig: Object,
-      bottomConfig: Object
+      bottomConfig: Object,
+      useTransform: {
+        type: Boolean,
+        default: true
+      }
     },
     data() {
       return {
@@ -244,10 +248,17 @@
         }
 
         const sd = this.$el.style;
-        setTransition(sd,
-          duration > 0 || delay > 0 ? 'transform' : 'none',
-          `${duration}ms`, `${delay}ms`);
-        sd.setProperty('transform', `translate(0, ${y}px)`);
+        if (this.useTransform) {
+          setTransition(sd,
+            duration > 0 || delay > 0 ? 'transform' : 'none',
+            `${duration}ms`, `${delay}ms`);
+          sd.setProperty('transform', `translate(0, ${y}px)`);
+        } else {
+          setTransition(sd,
+            duration > 0 || delay > 0 ? 'top' : 'none',
+            `${duration}ms`, `${delay}ms`);
+          sd.setProperty('top', `${y}px`);
+        }
       },
 
       checkBottomReached() {

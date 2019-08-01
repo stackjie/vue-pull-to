@@ -41,6 +41,14 @@
             </svg>
           </router-link>
         </li>
+        <li>
+          <router-link href="/use-position-relative-scroll">
+            Use Position Relative Scroll
+            <svg class="icon icon-arrow" aria-hidden="true">
+              <use xlink:href="#icon-arrow-right"></use>
+            </svg>
+          </router-link>
+        </li>
       </ul>
     </pull-to>
   </section>
