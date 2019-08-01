@@ -35,17 +35,19 @@ describe('dom', () => {
       .but.not.an('array').that.includes({ height: '80%' });
   }));
 
-  it('set useTransform false', () => createTest(PullTo, {
+  it('set useTransform false', (done) => createTest(PullTo, {
     useTransform: false,
     distanceIndex: 2
-  }, true, (vm) => {
+  }, true, done, (vm) => {
     expect(vm.$el.style).to.be.a('CSSStyleDeclaration')
-      .but.not.an('array').that.includes({ position: 'relative' });
+      .but.not.an('array');
+
+    expect(vm.$el.style.position).to.be.equal('relative');
 
     const elem = vm.$refs['scroll-container'];
     touch(elem, 'touchstart', 0);
     touch(elem, 'touchmove', 200);
 
-    expect(vm.$el.style.top).toBe('-100px');
+    expect(vm.$el.style.top).to.be.equal('100px');
   }));
 });
