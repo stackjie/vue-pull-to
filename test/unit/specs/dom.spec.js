@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { createTest } from '../utils';
+import { createTest, waitFor, touch } from '../utils';
 import PullTo from '../../../src';
 
 describe('dom', () => {
@@ -33,5 +33,21 @@ describe('dom', () => {
   }, true, (vm) => {
     expect(vm.$el.style).to.be.a('CSSStyleDeclaration')
       .but.not.an('array').that.includes({ height: '80%' });
+  }));
+
+  it('set useTransform false', () => createTest(PullTo, {
+    useTransform: false
+  }, true, (vm, done) => {
+    expect(vm.$el.style).to.be.a('CSSStyleDeclaration')
+      .but.not.an('array').that.includes({ position: 'relative' });
+
+    vm.$on('top-pull', () => {
+      expect(vm.$el.style).includes({ top: '0px' });
+      waitFor(350, done, false, true)();
+    });
+
+    const elem = vm.$refs['scroll-container'];
+    touch(elem, 'touchstart', 0);
+    touch(elem, 'touchmove', 10);
   }));
 });
