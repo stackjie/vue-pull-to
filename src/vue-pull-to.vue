@@ -248,11 +248,12 @@
         }
 
         const sd = this.$el.style;
+
         if (this.useTransform) {
           setTransition(sd,
             duration > 0 || delay > 0 ? 'transform' : 'none',
             `${duration}ms`, `${delay}ms`);
-          sd.setProperty('transform', `translate(0, ${y}px)`);
+          sd.setProperty('transform', y === 0 ? 'none' : `translate(0, ${y}px)`);
         } else {
           setTransition(sd,
             duration > 0 || delay > 0 ? 'top' : 'none',
