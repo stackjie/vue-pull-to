@@ -327,7 +327,10 @@ var render = function() {
     "div",
     {
       staticClass: "vue-pull-to-wrapper",
-      style: { height: _vm.wrapperHeight },
+      style: {
+        height: _vm.wrapperHeight,
+        position: _vm.useTransform ? "static" : "relative"
+      },
       on: { transitionend: _vm.handleTransitionEnd }
     },
     [
@@ -632,7 +635,11 @@ function getMessageByState(config, state) {
     },
     isBottomKeepScroll: Boolean,
     topConfig: Object,
-    bottomConfig: Object
+    bottomConfig: Object,
+    useTransform: {
+      type: Boolean,
+      default: true
+    }
   },
   data: function data() {
     return {
@@ -775,8 +782,14 @@ function getMessageByState(config, state) {
       }
 
       var sd = this.$el.style;
-      setTransition(sd, duration > 0 || delay > 0 ? 'transform' : 'none', "".concat(duration, "ms"), "".concat(delay, "ms"));
-      sd.setProperty('transform', "translate(0, ".concat(y, "px)"));
+
+      if (this.useTransform) {
+        setTransition(sd, duration > 0 || delay > 0 ? 'transform' : 'none', "".concat(duration, "ms"), "".concat(delay, "ms"));
+        sd.setProperty('transform', "translate(0, ".concat(y, "px)"));
+      } else {
+        setTransition(sd, duration > 0 || delay > 0 ? 'top' : 'none', "".concat(duration, "ms"), "".concat(delay, "ms"));
+        sd.setProperty('top', "".concat(y, "px"));
+      }
     },
     checkBottomReached: function checkBottomReached() {
       var el = this.$refs['scroll-container'];
