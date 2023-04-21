@@ -1,26 +1,40 @@
-var path = require('path');
+'use strict';
+
 var merge = require('webpack-merge');
 var baseConfig = require('./base.config');
 var webpack = require('webpack');
-var del = require('del');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var resolve = require('./');
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
-
-del.sync('./dist/*');
-
+var ENTRY = './src/index.js';
 module.exports = merge(baseConfig, {
-  entry: './src/index.js',
+  mode: 'production',
+  entry: {
+    'vue-pull-to': ENTRY,
+    'vue-pull-to.min': ENTRY
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[name].js.map',
+      append: '\n//# sourceMappingURL=[url]\n',
+      include: /\.min\.js$/,
+    }),
+  ],
   output: {
     library: 'VuePullTo',
     libraryTarget: 'umd',
-    filename: 'vue-pull-to.js',
+    filename: '[name].js',
     path: resolve('dist')
   },
-  plugins: [
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ]
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        include: /\.min\.js$/
+      })
+    ]
+  }
 });

@@ -16,11 +16,11 @@ A pull-down refresh and pull-up load more and infinite scroll component for Vue.
 [examples](http://www.vuepullto.top)
 
 ## Installation
-```
+``` sh
  npm install vue-pull-to --save
 ```
 
-## Use Setup
+## Usage
 ``` vue
 <template>
   <div>
@@ -61,7 +61,7 @@ A pull-down refresh and pull-up load more and infinite scroll component for Vue.
 
 The component will occupy 100% height of the parent element by default. props top-load-method and bottom-load-method will default to a loaded parameter, which is a function that changes the state of the component's load, and must be called once loaded. The component will always be loaded, if `loaded('done')` The internal state of the component will become a successful state of loading, `loaded('fail')` for the failure.
 
-[For more examples, please refer to examples of the code](https://github.com/stackjie/vue-pull-to/tree/master/examples)
+[More usage examples](https://github.com/stackjie/vue-pull-to/tree/master/examples)
  
  ## API Docs
  
@@ -77,10 +77,13 @@ The component will occupy 100% height of the parent element by default. props to
 | is-throttle-top-pull | Whether the disable of the `top-pull` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
 | is-throttle-bottom-pull | Whether the disable of the `bottom-pull` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
 | is-throttle-scroll | Whether the disable of the `scroll` throttle event is triggered to ensure performance if the real-time trigger is set to false | Boolean | true |
+| is-touch-sensitive | Whether to handle touch events | Boolean | true |
+| is-scroll-sensitive | Whether to handle scroll events | Boolean | true |
 | is-top-bounce | Whether to enable the pull-down bounce effect | Boolean | true |
 | is-bottom-bounce | Whether to enable the pull-up bounce effect | Boolean | true |
-| top-config | Scroll the container at the top of the configuration | Object | default config |
-| bottom-config | Scroll the container at the bottom of the configuration | Object | default config |
+| is-bottom-keep-scroll | Whether to make the scroll container stay in place after completing the pull-down method | Boolean | false |
+| top-config | Configuration for the topmost part of the scroll container | Object | default config |
+| bottom-config | Configuration for the bottommost part of the scroll container | Object | default config |
 
 `topConfig` and `bottomConfig` Configurable options and default configuration item values
 ``` javascript

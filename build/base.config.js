@@ -1,9 +1,8 @@
-var path = require('path');
-var webpack = require('webpack');
+'use strict';
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
+var webpack = require('webpack');
+var VueLoaderPlugin = require('vue-loader/lib/plugin');
+var resolve = require('./');
 
 module.exports = {
   resolve: {
@@ -14,31 +13,43 @@ module.exports = {
       'examples': resolve('examples')
     }
   },
+  plugins: [
+    new VueLoaderPlugin()
+  ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
+        use: [
+          {
+            loader: 'eslint-loader',
+            options: {
+              formatter: require('eslint-friendly-formatter')
+            }
+          }
+        ],
         enforce: 'pre',
         include: [resolve('src'), resolve('examples'), resolve('test')],
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
       },
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
+        use: 'vue-loader',
         include: [resolve('src'), resolve('examples'), resolve('test')],
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         include: [resolve('src'), resolve('examples'), resolve('test')],
       },
       {
         test: /\.css|.less$/,
-        loader: 'style-loader!css-loader!postcss-loader!less-loader',
-        include: [resolve('src'), resolve('examples'), resolve('examples')],
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'postcss-loader',
+          'less-loader'
+        ],
+        include: [resolve('src'), resolve('examples')],
       }
     ]
   }
